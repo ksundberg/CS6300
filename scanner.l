@@ -1,6 +1,7 @@
 %{
 #include <cstring>
-#include "parser.tab.h"
+#include <cstdlib>
+#include "parser.hpp"
 #include "ProcessLog.hpp"
 %}
 
@@ -61,14 +62,14 @@ write|WRITE         {return WRITESY;}
 "|"  {return ORSY;}
 "~"  {return NOTSY;}
 
-[a-zA-Z][a-zA-Z0-9_]* {yylval.char_ptr = strdup(yytext); return IDENTSY;}
+[a-zA-Z][a-zA-Z0-9_]* {yylval.str_val = strdup(yytext); return IDENTSY;}
 
-[0][0-7]+          {return INTSY;}
-[0][x][0-9a-fA-F]+ {return INTSY;}
-[0-9]+[0-9]*       {return INTSY;}
+[0][0-7]+          {yylval.int_val = strtol(yytext,nullptr,0);return INTSY;}
+[0][x][0-9a-fA-F]+ {yylval.int_val = strtol(yytext,nullptr,0);return INTSY;}
+[0-9]+[0-9]*       {yylval.int_val = strtol(yytext,nullptr,0);return INTSY;}
 
-'\\?.'             {return CHARCONSTSY;}
-\"[a-zA-Z0-9~`!@#$%^&*()_+=\-\[\]{}\\\/><,.:;| ]*\" {return STRINGSY;}
+'\\?.'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
+\"[a-zA-Z0-9~`!@#$%^&*()_+=\-\[\]{}\\\/><,.:;| ]*\" {yylval.str_val = strdup(yytext); return STRINGSY;}
 
 \$.*$ {ProcessLog::getInstance()->nextLine();}
 \n {ProcessLog::getInstance()->nextLine();}

@@ -7,7 +7,7 @@ void yyerror(const char*);
 
 %union
 {
-  char * char_ptr;
+  char * str_val;
   int int_val;
   char char_val;
 }
@@ -34,7 +34,7 @@ void yyerror(const char*);
 
 %type <int_val> INTSY
 %type <char_val> CHARCONSTSY
-%type <char_ptr>  STRINGSY IDENTSY
+%type <str_val>  STRINGSY IDENTSY
 
 %%
 Program : OptConstDecls OptTypeDecls OptVarDecls PFDecls Block DOTSY
