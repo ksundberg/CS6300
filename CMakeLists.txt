@@ -11,9 +11,18 @@ ADD_FLEX_BISON_DEPENDENCY(CpslScanner CpslParser)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(cpsl_srcs
+Expressions.cpp
+Expressions.hpp
 main.cpp
 ProcessLog.cpp
 ProcessLog.hpp
+RegisterPool.cpp
+RegisterPool.hpp
+StringTable.cpp
+StringTable.hpp
+SymbolTable.cpp
+SymbolTable.hpp
+Type.hpp
 ${BISON_CpslParser_OUTPUTS}
 ${FLEX_CpslScanner_OUTPUTS}
 

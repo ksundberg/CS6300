@@ -22,7 +22,7 @@ void ProcessLog::logError(std::string message)
 }
 
 ProcessLog::ProcessLog()
-:m_line(0)
+:m_line(1)
 {}
 
 
