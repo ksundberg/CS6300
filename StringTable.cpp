@@ -34,6 +34,6 @@ void StringTable::writeTable()
   for(auto & e:m_table)
   {
     cpslout << e.second << ":" << std::endl
-            << ".asciiz \"" << e.first << "\"" << std::endl;
+            << ".asciiz " << e.first << std::endl;
   }
 }

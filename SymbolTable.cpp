@@ -23,7 +23,7 @@ SymbolTable::SymbolTable()
   addType("string",m_string);
   addType("STRING",m_string);
   //TODO add constants TRUE,true,FALSE,false
-  m_tables.emplace_back(false);
+  m_tables.emplace_back(true);
 }
 
 std::shared_ptr<Type> SymbolTable::getBoolType()

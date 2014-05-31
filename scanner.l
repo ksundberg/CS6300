@@ -71,7 +71,7 @@ write|WRITE         {return WRITESY;}
 [0-9]+[0-9]*       {yylval.int_val = strtol(yytext,nullptr,0);return INTSY;}
 
 '\\?.'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
-\"[a-zA-Z0-9~`!@#$%^&*()_+=\-\[\]{}\\\/><,.:;| ]*\" {yylval.str_val = strndup(yytext+1,strlen(yytext)-2); return STRINGSY;}
+\"[a-zA-Z0-9~`!@#$%^&*()_+=\-\[\]{}\\\/><,.:;| ]*\" {yylval.str_val = strdup(yytext); return STRINGSY;}
 
 \$.*$ {ProcessLog::getInstance()->nextLine();}
 \n {ProcessLog::getInstance()->nextLine();}
