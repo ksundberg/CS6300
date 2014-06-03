@@ -140,6 +140,7 @@ Expr * pred(Expr * a)
   {
     ProcessLog::getInstance()->logError("pred() not defined for this expression");
   }
+  return nullptr;
 }
 Expr * succ(Expr * a)
 {
@@ -162,6 +163,7 @@ Expr * succ(Expr * a)
   {
     ProcessLog::getInstance()->logError("succ() not defined for this expression");
   }
+  return nullptr;
 }
 Expr * load(MemoryLocation * a)
 {

@@ -4,8 +4,8 @@
 std::shared_ptr<RegisterPool> RegisterPool::m_instance;
 
 RegisterPool::RegisterPool()
-  :m_gp(new Register("$gp"))
-  ,m_fp(new Register("$fp"))
+  :m_gp(new SpecialRegister("$gp"))
+  ,m_fp(new SpecialRegister("$fp"))
 {
 	avail.push_back("$s0");
 	avail.push_back("$s1");
@@ -35,7 +35,7 @@ std::shared_ptr<Register> RegisterPool::allocate()
 	}
 	auto reg = avail.back();
 	avail.pop_back();
-	return std::shared_ptr<Register> (new Register(reg));
+	return std::shared_ptr<Register> (new AllocatedRegister(reg));
 }
 
 void RegisterPool::release(std::string reg)

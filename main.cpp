@@ -2,13 +2,14 @@
 #include <iostream>
 #include <fstream>
 #include "StringTable.hpp"
+#include "RegisterPool.hpp"
 
 extern FILE* yyin;
 extern int yyparse();
 
 std::ofstream cpslout;
 
-int main(int argc, char * argv[])
+int main(int/* argc*/, char * argv[])
 {
   FILE * iFile;
 

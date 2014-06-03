@@ -30,15 +30,36 @@ private:
 class Register
 {
   public:
-  ~Register()
-		{
-			RegisterPool::getInstance()->release(m_name);
-		}
-	private:
+    virtual ~Register(){}
+  protected:
 		Register(std::string name):m_name(name){}
 
 		std::string m_name;
 		friend std::ostream& operator<<(std::ostream& out, std::shared_ptr<Register> r);
+		friend class RegisterPool;
+};
+
+
+class AllocatedRegister : public Register
+{
+  public:
+  virtual ~AllocatedRegister()
+		{
+			auto rp =RegisterPool::getInstance();
+      if(rp) rp->release(m_name);
+		}
+	private:
+		AllocatedRegister(std::string name):Register(name){}
+		friend class RegisterPool;
+};
+class SpecialRegister : public Register
+{
+  public:
+  virtual ~SpecialRegister()
+		{
+		}
+	private:
+		SpecialRegister(std::string name):Register(name){}
 		friend class RegisterPool;
 };
 
@@ -49,6 +70,6 @@ inline std::ostream& operator<<(std::ostream& out, std::shared_ptr<Register> r)
     out<<r->m_name;
   }
 	return out;
-}
+};
 
 #endif
