@@ -42,6 +42,7 @@ int main(int/* argc*/, char * argv[])
   yyparse();
   cpslout << ".data" << std::endl;
   StringTable::getInstance()->writeTable();
+  cpslout << ".align 2" << std::endl;
   cpslout << "GA:" << std::endl;
 
   return 0;

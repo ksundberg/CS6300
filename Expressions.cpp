@@ -92,7 +92,7 @@ Expr * emitSub(Expr * a, Expr * b){return binaryOp("sub",a,b);}
 Expr * emitMult(Expr * a, Expr * b){return binaryOpWithMove("mult","lo",a,b);}
 Expr * emitDiv(Expr * a, Expr * b){return binaryOpWithMove("div","lo",a,b);}
 Expr * emitMod(Expr * a, Expr * b){return binaryOpWithMove("div","hi",a,b);}
-Expr * emitNot(Expr * a){return unaryOp("not",a);}
+Expr * emitNot(Expr * a){return binaryOp("xor",a,load(1));}
 Expr * emitNeg(Expr * a){return unaryOp("neg",a);}
 
 Expr * chr(Expr * a)
