@@ -5,11 +5,13 @@
 
 class Register;
 class Type;
+class StatementBlock;
 
 struct Expr
 {
   std::shared_ptr<Type> type;
   std::shared_ptr<Register> reg;
+  std::shared_ptr<StatementBlock> code;
 };
 
 struct MemoryLocation
