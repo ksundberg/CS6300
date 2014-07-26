@@ -1,49 +1,38 @@
-#include <cstdio>
+#include "FrontEnd/FrontEnd.hpp"
+#include "Optimizations/Optimizer.hpp"
+#include "BackEnd/BackEnd.hpp"
+#include <string>
 #include <iostream>
-#include <fstream>
-#include "StringTable.hpp"
-#include "RegisterPool.hpp"
-
-extern FILE* yyin;
-extern int yyparse();
-
-std::ofstream cpslout;
 
 int main(int/* argc*/, char * argv[])
 {
-  FILE * iFile;
+  try
+  {
+  std::string outFile = "out.asm";
+  std::string inFile = "in.cpsl";
 
   if(argv[1] == std::string("-o"))
   {
-    cpslout.open(argv[2]);
-    iFile = fopen(argv[3], "r");
+    outFile = argv[2];
+    inFile = argv[3];
   }
   else
   {
-    cpslout.open("out.asm");
-    iFile = fopen(argv[1], "r");
+    inFile = argv[1];
   }
 
-  if(iFile == NULL)
+  auto program = cs6300::parseCPSL(inFile);
+  auto optimized = cs6300::optimizer(program);
+  cs6300::writeMIPS(optimized, outFile);
+  }
+  catch(std::exception &e)
   {
-     std::cout << "Could not open input file " << argv[1] << std::endl;
-     return 1;
+    std::cout << "Error: " << e.what();
+    return EXIT_FAILURE;
   }
-
-  yyin = iFile;
-
-  cpslout << ".text" << std::endl
-    << ".globl main" << std::endl
-    << "main:"
-    << "\tla $gp, GA" << std::endl
-    << "\tori $fp, $sp, 0" << std::endl
-    << "\tj program" << std::endl;
-
-  yyparse();
-  cpslout << ".data" << std::endl;
-  StringTable::getInstance()->writeTable();
-  cpslout << ".align 2" << std::endl;
-  cpslout << "GA:" << std::endl;
-
-  return 0;
+  catch(...)
+  {
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
 }

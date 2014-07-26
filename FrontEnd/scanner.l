@@ -1,10 +1,8 @@
 %{
 #include <cstring>
 #include <cstdlib>
-#include "Expressions.hpp"
-#include "SymbolTable.hpp"
 #include "parser.hpp"
-#include "ProcessLog.hpp"
+#include "FrontEnd/ProcessLog.hpp"
 %}
 
 %%
