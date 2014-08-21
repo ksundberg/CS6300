@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "FrontEnd/ProcessLog.hpp"
+#include "FrontEnd/FrontEnd.hpp"
 
 extern int yylex();
 extern std::ofstream cpslout;
@@ -16,16 +17,60 @@ void yyerror(const char*);
 }
 
 %error-verbose
-%token ARRAYSY ELSESY IFSY RECORDSY TOSY BEGINSY ELSEIFSY OFSY
-%token REPEATSY TYPESY CHRSY ENDSY ORDSY RETURNSY UNTILSY CONSTSY 
-%token FORSY PREDSY STOPSY VARSY DOSY FORWARDSY PROCEDURESY SUCCSY
-%token WHILESY DOWNTOSY FUNCTIONSY READSY THENSY WRITESY
-%token LPARENSY RPARENSY SCOLONSY COLONSY LBRACKETSY RBRACKETSY
-%token COMMASY ASSIGNSY 
-%token INTSY CHARCONSTSY STRINGSY IDENTSY
-
-%token EQSY LTESY GTESY LTSY GTSY PLUSSY MINUSSY MULTSY
-%token DIVSY MODSY NOTSY DOTSY 
+%token ARRAYSY 
+%token ASSIGNSY 
+%token BEGINSY 
+%token CHARCONSTSY 
+%token CHRSY 
+%token COLONSY 
+%token COMMASY 
+%token CONSTSY 
+%token DIVSY 
+%token DOSY 
+%token DOTSY 
+%token DOWNTOSY 
+%token ELSEIFSY 
+%token ELSESY 
+%token ENDSY 
+%token EQSY 
+%token FORSY 
+%token FORWARDSY 
+%token FUNCTIONSY 
+%token GTESY 
+%token GTSY 
+%token IDENTSY
+%token IFSY 
+%token INTSY 
+%token LBRACKETSY 
+%token LPARENSY 
+%token LTESY 
+%token LTSY 
+%token MINUSSY 
+%token MODSY 
+%token MULTSY
+%token NOTSY 
+%token OFSY
+%token ORDSY 
+%token PLUSSY 
+%token PREDSY 
+%token PROCEDURESY 
+%token RBRACKETSY
+%token READSY 
+%token RECORDSY 
+%token REPEATSY 
+%token RETURNSY 
+%token RPARENSY 
+%token SCOLONSY 
+%token STOPSY 
+%token STRINGSY 
+%token SUCCSY
+%token THENSY 
+%token TOSY 
+%token TYPESY 
+%token UNTILSY 
+%token VARSY 
+%token WHILESY 
+%token WRITESY
 
 %left ANDSY ORSY
 %right NOTSY
@@ -34,10 +79,51 @@ void yyerror(const char*);
 %left DIVSY MODSY MULTSY
 %right UMINUSSY 
 
-
-%type <int_val> INTSY
 %type <char_val> CHARCONSTSY
-%type <str_val>  STRINGSY IDENTSY Type SimpleType
+%type <int_val> Arguments 
+%type <int_val> ArrayType 
+%type <int_val> Assignment
+%type <int_val> Block 
+%type <int_val> Body  
+%type <int_val> ElseClause 
+%type <int_val> ElseIfHead 
+%type <int_val> ElseIfList 
+%type <int_val> Expression 
+%type <int_val> FSignature 
+%type <int_val> FieldDecl 
+%type <int_val> FieldDecls
+%type <int_val> ForHead 
+%type <int_val> ForStatement 
+%type <int_val> FormalParameter
+%type <int_val> FormalParameters  
+%type <int_val> FunctionCall 
+%type <int_val> INTSY 
+%type <int_val> IdentList 
+%type <int_val> IfHead 
+%type <int_val> IfStatement 
+%type <int_val> LValue 
+%type <int_val> OptArguments 
+%type <int_val> OptFormalParameters  
+%type <int_val> PSignature 
+%type <int_val> ProcedureCall
+%type <int_val> ReadArgs
+%type <int_val> ReadStatement 
+%type <int_val> RecordType 
+%type <int_val> RepeatStatement 
+%type <int_val> ReturnStatement 
+%type <int_val> SimpleType 
+%type <int_val> Statement 
+%type <int_val> StatementList 
+%type <int_val> StopStatement 
+%type <int_val> ThenPart 
+%type <int_val> ToHead 
+%type <int_val> Type 
+%type <int_val> WhileHead 
+%type <int_val> WhileStatement 
+%type <int_val> WriteArgs 
+%type <int_val> WriteStatement  
+%type <str_val> IDENTSY 
+%type <str_val> STRINGSY 
 
 %%
 Program : ProgramHead Block DOTSY
@@ -53,7 +139,7 @@ ConstDecls : ConstDecls ConstDecl
 					 | ConstDecl
 					 ;
 
-ConstDecl : IDENTSY EQSY Expression SCOLONSY
+ConstDecl : IDENTSY EQSY Expression SCOLONSY {cs6300::AddConstant($1,$3);}
 					;
 
 PFDecls : PFDecls ProcedureDecl
@@ -61,29 +147,29 @@ PFDecls : PFDecls ProcedureDecl
         |
         ;
 
-ProcedureDecl : PSignature SCOLONSY FORWARDSY SCOLONSY
-              | PSignature SCOLONSY Body SCOLONSY
+ProcedureDecl : PSignature SCOLONSY FORWARDSY SCOLONSY {cs6300::AddProcedure($1);}
+              | PSignature SCOLONSY Body SCOLONSY {cs6300::AddProcedure($1,$3);}
 				    	;
 
-PSignature : PROCEDURESY IDENTSY LPARENSY OptFormalParameters RPARENSY
+PSignature : PROCEDURESY IDENTSY LPARENSY OptFormalParameters RPARENSY {$$ = cs6300::Signature($2,$4);}
            ;
 
-FunctionDecl : FSignature SCOLONSY FORWARDSY SCOLONSY
-						 | FSignature SCOLONSY Body SCOLONSY
+FunctionDecl : FSignature SCOLONSY FORWARDSY SCOLONSY {cs6300::AddFunction($1);}
+						 | FSignature SCOLONSY Body SCOLONSY {cs6300::AddFunction($1,$3);}
 						 ;
 
-FSignature : FUNCTIONSY IDENTSY LPARENSY OptFormalParameters RPARENSY COLONSY Type
+FSignature : FUNCTIONSY IDENTSY LPARENSY OptFormalParameters RPARENSY COLONSY Type {$$ = cs6300::Signature($2,$4,$7);}
            ;
 
-OptFormalParameters : FormalParameters
-                    |
+OptFormalParameters : FormalParameters {$$ = $1}
+                    | {$$ = 0;}
                     ;
 
-FormalParameters : FormalParameters SCOLONSY FormalParameter
-                 | FormalParameter
+FormalParameters : FormalParameters SCOLONSY FormalParameter {$$ = cs6300::ParameterList($1,$3);}
+                 | FormalParameter {$$ = $1;}
                  ;
 
-FormalParameter : OptVar IdentList COLONSY Type
+FormalParameter : OptVar IdentList COLONSY Type {$$ = cs6300::Parameter($2,$4);}
                 ;
 
 OptVar : VARSY
@@ -91,14 +177,14 @@ OptVar : VARSY
        ;
 
 
-Body : OptConstDecls OptTypeDecls OptVarDecls Block
+Body : OptConstDecls OptTypeDecls OptVarDecls Block {$$ = $4;}
      ;
 
-Block : BEGINSY StatementList ENDSY
+Block : BEGINSY StatementList ENDSY {$$ = $2}
       ;
 
-StatementList : StatementList SCOLONSY Statement
-              | Statement
+StatementList : StatementList SCOLONSY Statement {$$ = cs6300::StatementList($1,$3);}
+              | Statement {$$ = cs6300::StatementList(0,$1);}
               ;
 
 OptTypeDecls : TYPESY TypeDecls
@@ -109,32 +195,32 @@ TypeDecls    : TypeDecls TypeDecl
              | TypeDecl
              ;
 
-TypeDecl : IDENTSY EQSY Type SCOLONSY;
+TypeDecl : IDENTSY EQSY Type SCOLONSY {cs6300::AddType($1,$3);}
          ;
 
-Type : SimpleType 
-     | RecordType 
-     | ArrayType 
+Type : SimpleType {$$ = $1;}
+     | RecordType {$$ = $1;}
+     | ArrayType {$$ = $1;}
      ;
 
-SimpleType : IDENTSY 
+SimpleType : IDENTSY {$$ = cs6300::LookupType($1);}
            ;
 
-RecordType : RECORDSY FieldDecls ENDSY
+RecordType : RECORDSY FieldDecls ENDSY {$$ = cs6300::RecordType($2);}
            ;
 
-FieldDecls : FieldDecls FieldDecl
-           |
+FieldDecls : FieldDecls FieldDecl {$$ = cs6300::FieldList($1, $2);}
+           | {$$ = 0;}
            ;
 
-FieldDecl : IdentList COLONSY Type SCOLONSY
+FieldDecl : IdentList COLONSY Type SCOLONSY {$$ = cs6300::AddField($1,$3);}
           ;
 
-IdentList : IdentList COMMASY IDENTSY
-          | IDENTSY 
+IdentList : IdentList COMMASY IDENTSY {$$ = cs6300::IdentList($1,$3);}
+          | IDENTSY {$$ = cs6300::IdentList(0,$1);}
           ;
 
-ArrayType : ARRAYSY LBRACKETSY Expression COLONSY Expression RBRACKETSY OFSY Type
+ArrayType : ARRAYSY LBRACKETSY Expression COLONSY Expression RBRACKETSY OFSY Type {$$ = cs6300::ArrayType($3,$5,$8);}
           ;
 
 OptVarDecls : VARSY VarDecls
@@ -145,127 +231,127 @@ VarDecls    : VarDecls VarDecl
             | VarDecl
             ;
 
-VarDecl : IdentList COLONSY Type SCOLONSY 
+VarDecl : IdentList COLONSY Type SCOLONSY {cs6300::AddVariables($1,$3);}
         ;
 
-Statement : Assignment
-          | IfStatement
-          | WhileStatement
-          | RepeatStatement
-          | ForStatement
-          | StopStatement
-          | ReturnStatement
-          | ReadStatement
-          | WriteStatement
-          | ProcedureCall
-          | 
+Statement : Assignment {$$ = $1;}
+          | IfStatement {$$ = $1;}
+          | WhileStatement {$$ = $1;}
+          | RepeatStatement {$$ = $1;}
+          | ForStatement {$$ = $1;}
+          | StopStatement {$$ = $1;}
+          | ReturnStatement {$$ = $1;}
+          | ReadStatement {$$ = $1;}
+          | WriteStatement {$$ = $1;}
+          | ProcedureCall {$$ = $1;}
+          | {$$ = 0;}
           ;
 
-Assignment : LValue ASSIGNSY Expression 
+Assignment : LValue ASSIGNSY Expression {$$ = cs6300::Assign($1,$3);}
            ;
 
-IfStatement : IfHead ThenPart ElseIfList ElseClause ENDSY
+IfStatement : IfHead ThenPart ElseIfList ElseClause ENDSY {$$ = cs6300::If($1,$2,$3,$4);}
             ;
 
-IfHead : IFSY Expression 
+IfHead : IFSY Expression {$$ = $2;}
        ;
 
-ThenPart : THENSY StatementList
+ThenPart : THENSY StatementList {$$ = $2;}
          ;
 
-ElseIfList : ElseIfList ElseIfHead ThenPart
-           |
+ElseIfList : ElseIfList ElseIfHead ThenPart {$$ =cs6300::AppendElseList($1,$2,$3);}
+           |{$$ =0;}
            ;
 
-ElseIfHead : ELSEIFSY Expression 
+ElseIfHead : ELSEIFSY Expression {$$ = $2;}
            ;
 
-ElseClause : ELSESY StatementList
-           |
+ElseClause : ELSESY StatementList {$$ = $2;}
+           | {$$ = 0;}
            ;
 
-WhileStatement : WhileHead DOSY StatementList ENDSY
+WhileStatement : WhileHead DOSY StatementList ENDSY {$$ = cs6300::While($1,$3);}
                ;
 
-WhileHead : WHILESY Expression 
+WhileHead : WHILESY Expression {$$ = $2;}
           ;
 
-RepeatStatement : REPEATSY StatementList UNTILSY Expression 
+RepeatStatement : REPEATSY StatementList UNTILSY Expression {$$=cs6300::Repeat($2,$4);}
 
-ForStatement : ForHead ToHead DOSY StatementList ENDSY
+ForStatement : ForHead ToHead DOSY StatementList ENDSY{$$ = cs6300::For($1,$2,$4);}
              ;
 
-ForHead : FORSY IDENTSY ASSIGNSY Expression 
+ForHead : FORSY IDENTSY ASSIGNSY Expression {$$ = cs6300::ForHead($2,$4);}
         ;
 
-ToHead : TOSY Expression 
-       | DOWNTOSY Expression
+ToHead : TOSY Expression {$$ = cs6300::To($2);}
+       | DOWNTOSY Expression {$$ = cs6300::DownTo($2);}
        ;
 
-StopStatement : STOPSY
+StopStatement : STOPSY {$$ = cs6300::Stop();}
               ;
 
-ReturnStatement : RETURNSY Expression
-                | RETURNSY
+ReturnStatement : RETURNSY Expression {$$ = cs6300::Return($2);}
+                | RETURNSY {$$ = cs6300::Return();}
                 ;
 
 
-ReadStatement : READSY LPARENSY ReadArgs RPARENSY
+ReadStatement : READSY LPARENSY ReadArgs RPARENSY {$$ = $3;}
               ;
 
-ReadArgs : ReadArgs COMMASY LValue
-         | LValue 
+ReadArgs : ReadArgs COMMASY LValue {$$ = cs6300::ReadValue($1,$3);}
+         | LValue                  {$$ = cs6300::ReadValue($1);}
          ;
 
-WriteStatement : WRITESY LPARENSY WriteArgs RPARENSY
+WriteStatement : WRITESY LPARENSY WriteArgs RPARENSY {$$ = $3;}
                ;
 
-WriteArgs : WriteArgs COMMASY Expression 
-          | Expression 
+WriteArgs : WriteArgs COMMASY Expression {$$ = cs6300::WriteExpr($1,$3);}
+          | Expression                   {$$ = cs6300::WriteExpr($1);}
           ;
 
-ProcedureCall : IDENTSY LPARENSY OptArguments RPARENSY
+ProcedureCall : IDENTSY LPARENSY OptArguments RPARENSY {$$ = cs6300::CallProc($1,$3);}
               ;
-OptArguments : Arguments
-             |
+OptArguments : Arguments {$$ = $1;}
+             |           {$$ = cs6300::EmptyArgs();}
              ;
-Arguments : Arguments COMMASY Expression 
-          | Expression 
+Arguments : Arguments COMMASY Expression {$$ = cs6300::AppendArgs($1,$3);}
+          | Expression                   {$$ = cs6300::NewArgs($1);}
           ;
 
-Expression : Expression ORSY Expression          
-           | Expression ANDSY Expression         
-           | Expression EQSY Expression          
-           | Expression NEQSY Expression         
-           | Expression LTESY Expression         
-           | Expression GTESY Expression         
-           | Expression LTSY Expression          
-           | Expression GTSY Expression          
-           | Expression PLUSSY Expression        
-           | Expression MINUSSY Expression       
-           | Expression MULTSY Expression        
-           | Expression DIVSY Expression         
-           | Expression MODSY Expression         
-           | NOTSY Expression                    
-           | MINUSSY Expression %prec UMINUSSY   
-           | LPARENSY Expression RPARENSY        
-           | FunctionCall                        
-           | CHRSY LPARENSY Expression RPARENSY  
-           | ORDSY LPARENSY Expression RPARENSY  
-           | PREDSY LPARENSY Expression RPARENSY 
-           | SUCCSY LPARENSY Expression RPARENSY 
-           | LValue                              
-           | INTSY                               
-           | CHARCONSTSY                         
-           | STRINGSY                            
+Expression : Expression ORSY Expression          {$$ = cs6300::OrExpr($1,$3);}
+           | Expression ANDSY Expression         {$$ = cs6300::AndExpr($1,$3);}
+           | Expression EQSY Expression          {$$ = cs6300::EqExpr($1,$3);}
+           | Expression NEQSY Expression         {$$ = cs6300::NeqExpr($1,$3);}
+           | Expression LTESY Expression         {$$ = cs6300::LteExpr($1,$3);}
+           | Expression GTESY Expression         {$$ = cs6300::GteExpr($1,$3);}
+           | Expression LTSY Expression          {$$ = cs6300::LtExpr($1,$3);}
+           | Expression GTSY Expression          {$$ = cs6300::GtExpr($1,$3);}
+           | Expression PLUSSY Expression        {$$ = cs6300::AddExpr($1,$3);}
+           | Expression MINUSSY Expression       {$$ = cs6300::SubExpr($1,$3);}
+           | Expression MULTSY Expression        {$$ = cs6300::MultExpr($1,$3);}
+           | Expression DIVSY Expression         {$$ = cs6300::DivExpr($1,$3);}
+           | Expression MODSY Expression         {$$ = cs6300::ModExpr($1,$3);}
+           | NOTSY Expression                    {$$ = cs6300::NotExpr($2);}
+           | MINUSSY Expression %prec UMINUSSY   {$$ = cs6300::UnMinusExpr($2);}
+           | LPARENSY Expression RPARENSY        {$$ = $2;}
+           | FunctionCall                        {$$ = $1;}
+           | CHRSY LPARENSY Expression RPARENSY  {$$ = cs6300::ChrExpr($3);}
+           | ORDSY LPARENSY Expression RPARENSY  {$$ = cs6300::OrdExpr($3);}
+           | PREDSY LPARENSY Expression RPARENSY {$$ = cs6300::PredExpr($3);}
+           | SUCCSY LPARENSY Expression RPARENSY {$$ = cs6300::SuccExpr($3);}
+           | LValue                              {$$ = $1;}
+           | INTSY                               {$$ = cs6300::IntExpr($1);}
+           | CHARCONSTSY                         {$$ = cs6300::CharExpr($1);}
+           | STRINGSY                            {$$ = cs6300::StrExpr($1);}
            ;
 
-FunctionCall : IDENTSY LPARENSY Arguments RPARENSY
+FunctionCall : IDENTSY LPARENSY Arguments RPARENSY {$$ = cs6300::CallExpr($1,$3);}
              ;
 
-LValue : LValue DOTSY IDENTSY 
-       | LValue LBRACKETSY Expression RBRACKETSY 
-       | IDENTSY 
+LValue : LValue DOTSY IDENTSY {$$ = cs6300::LoadMember($1,$3);}
+       | LValue LBRACKETSY Expression RBRACKETSY {$$ = cs6300::LoadArray($1,$3);}
+       | IDENTSY {$$ = cs6300::LoadId($1);}
        ;
 %%
 

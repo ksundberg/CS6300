@@ -8,5 +8,9 @@ namespace cs6300
 class ThreeAddressInstruction
 {
 };
+class OrInstruction:ThreeAddressInstruction
+{
+  OrInstruction();
+};
 }
 #endif

@@ -9,6 +9,7 @@ namespace cs6300
 {
 class BasicBlock
 {
+  public:
   std::vector<ThreeAddressInstruction> instructions;
 };
 }
