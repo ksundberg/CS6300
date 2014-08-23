@@ -1,6 +1,11 @@
 #ifndef TYPE_HPP
 #define TYPE_HPP
 
+#include <map>
+#include <memory>
+
+namespace cs6300
+{
 class Type
 {
   public:
@@ -25,5 +30,35 @@ class ArrayType : public Type
   int lowerbound;
 };
 
+class BuiltInType
+{
+public:
+  static std::shared_ptr<Type> getChar()
+  {
+    if (!m_char) m_char = std::make_shared<CharType>();
+    return m_char;
+  }
+  static std::shared_ptr<Type> getInt()
+  {
+    if (!m_int) m_int = std::make_shared<IntType>();
+    return m_int;
+  }
+  static std::shared_ptr<Type> getBool()
+  {
+    if (!m_bool) m_bool = std::make_shared<BoolType>();
+    return m_bool;
+  }
+  static std::shared_ptr<Type> getStr()
+  {
+    if (!m_str) m_str = std::make_shared<StringType>();
+    return m_str;
+  }
+private:
+  static std::shared_ptr<Type> m_char;
+  static std::shared_ptr<Type> m_int;
+  static std::shared_ptr<Type> m_bool;
+  static std::shared_ptr<Type> m_str;
+};
+}
 #endif
 
