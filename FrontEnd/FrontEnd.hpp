@@ -54,7 +54,6 @@ int ReadValue(int statement,int lval);
 int Repeat(int statement,int expr);
 int Return();
 int Return(int expr);
-int Signature(char*, int params );
 int Signature(char*, int params, int type);
 int StatementList(int list, int statement);
 int Stop();

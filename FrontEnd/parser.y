@@ -151,7 +151,7 @@ ProcedureDecl : PSignature SCOLONSY FORWARDSY SCOLONSY {cs6300::AddProcedure($1)
               | PSignature SCOLONSY Body SCOLONSY {cs6300::AddProcedure($1,$3);}
 				    	;
 
-PSignature : PROCEDURESY IDENTSY LPARENSY OptFormalParameters RPARENSY {$$ = cs6300::Signature($2,$4);}
+PSignature : PROCEDURESY IDENTSY LPARENSY OptFormalParameters RPARENSY {$$ = cs6300::Signature($2,$4,-1);}
            ;
 
 FunctionDecl : FSignature SCOLONSY FORWARDSY SCOLONSY {cs6300::AddFunction($1);}

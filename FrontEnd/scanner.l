@@ -5,6 +5,8 @@
 #include "FrontEnd/ProcessLog.hpp"
 %}
 
+%option nounput
+
 %%
 
 array|ARRAY         {return ARRAYSY;}

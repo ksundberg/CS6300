@@ -32,12 +32,13 @@
 #include "AST/Statements/Call.hpp"
 #include "AST/Statements/For.hpp"
 #include "AST/Statements/If.hpp"
-#include "AST/Statements/Repeat.hpp"
 #include "AST/Statements/Read.hpp"
-#include "AST/Statements/Write.hpp"
+#include "AST/Statements/Repeat.hpp"
 #include "AST/Statements/Return.hpp"
 #include "AST/Statements/Statement.hpp"
+#include "AST/Statements/Stop.hpp"
 #include "AST/Statements/While.hpp"
+#include "AST/Statements/Write.hpp"
 #include "AST/Type.hpp"
 
 extern FILE* yyin;
@@ -166,7 +167,7 @@ int cs6300::AddField(int listIndex, int typeIndex) {
   auto state = FrontEndState::instance();
   auto type = state->types.get(typeIndex);
   if (!type)
-    return 0;
+    return -1;
   auto list = state->idLists.get(listIndex);
   auto newType = std::make_shared<cs6300::RecordType>();
   for (auto &&id : *list) {
@@ -263,11 +264,11 @@ int cs6300::FieldList(int typeIndex, int field)
     auto type = std::dynamic_pointer_cast<cs6300::RecordType>(
         state->types.get(typeIndex));
     if (!type)
-      return 0;
+      return -1;
     auto fields =
         std::dynamic_pointer_cast<cs6300::RecordType>(state->types.get(field));
     if (!fields)
-      return 0;
+      return -1;
     for (auto &&f : fields->fields)
     {
       type->fields.insert(f);
@@ -430,14 +431,17 @@ int cs6300::Return(int expr)
   return state->statements.add(std::make_shared<cs6300::ReturnStatement>(e));
 }
 
-int cs6300::Signature(char*, int /*params */){return 0;}
 int cs6300::Signature(char*, int /*params*/, int /*type*/){return 0;}
 int cs6300::StatementList(int listIndex, int statementIndex)
 {
   auto state = FrontEndState::instance();
   return appendList(state->statementLists,listIndex,state->statements,statementIndex);
 }
-int cs6300::Stop(){return 0;}
+int cs6300::Stop()
+{
+  return FrontEndState::instance()->statements.add(
+      std::make_shared<cs6300::StopStatement>());
+}
 int cs6300::StrExpr(char *a)
 {
   auto state = FrontEndState::instance();

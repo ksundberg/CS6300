@@ -50,6 +50,7 @@ set(statement_srcs
   AST_INC/AST/Statements/Repeat.hpp
   AST_INC/AST/Statements/Return.hpp
   AST_INC/AST/Statements/Statement.hpp
+  AST_INC/AST/Statements/Stop.hpp
   AST_INC/AST/Statements/While.hpp
   AST_INC/AST/Statements/Write.hpp
   )
