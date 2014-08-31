@@ -33,6 +33,8 @@
 #include "AST/Statements/For.hpp"
 #include "AST/Statements/If.hpp"
 #include "AST/Statements/Repeat.hpp"
+#include "AST/Statements/Read.hpp"
+#include "AST/Statements/Write.hpp"
 #include "AST/Statements/Return.hpp"
 #include "AST/Statements/Statement.hpp"
 #include "AST/Statements/While.hpp"
@@ -89,6 +91,8 @@ public:
   FEC<std::vector<std::string>> idLists;
   FEC<slist_t> statementLists;
   FEC<std::vector<std::shared_ptr<cs6300::Expression>>> actualArguments;
+  FEC<std::vector<std::pair<std::string, std::shared_ptr<cs6300::Type>>>>
+  formalArguments;
   FEC<cs6300::Statement> statements;
   FEC<cs6300::LValue> lvals;
   FEC<std::vector<std::pair<std::shared_ptr<cs6300::Expression>, std::shared_ptr<slist_t>>>>
@@ -369,11 +373,44 @@ int cs6300::NeqExpr(int a, int b) {return binaryOp<NeqExpression>(a,b);}
 int cs6300::NotExpr(int a) {return unaryOp<NotExpression>(a);}
 int cs6300::OrExpr(int a, int b) {return binaryOp<OrExpression>(a,b);}
 int cs6300::OrdExpr(int a) {return unaryOp<OrdExpression>(a);}
-int cs6300::Parameter(int /*list*/,int /*type*/){return 0;}
-int cs6300::ParameterList(int /*list*/,int /*parameter*/){return 0;}
+int cs6300::Parameter(int list, int type)
+{
+  auto state = FrontEndState::instance();
+  auto ids = state->idLists.get(list);
+  auto t = state->types.get(type);
+  auto p = std::make_shared<std::vector<std::pair<std::string,std::shared_ptr<cs6300::Type>>>>();
+  for(auto&& id:*ids)
+  {
+    p->push_back(std::make_pair(id,t));
+  }
+  return state->formalArguments.add(p);
+}
+int cs6300::ParameterList(int list, int parameter)
+{
+  auto state = FrontEndState::instance();
+  auto first = state->formalArguments.get(list);
+  auto second = state->formalArguments.get(parameter);
+  for(auto&& e:*second)
+  {
+    first->push_back(e);
+  }
+  return list;
+}
 int cs6300::PredExpr(int a) {return unaryOp<PredecessorExpression>(a);}
-int cs6300::ReadValue(int /*lval*/){return 0;}
-int cs6300::ReadValue(int /*statement*/,int /*lval*/){return 0;}
+int cs6300::ReadValue(int lval)
+{
+  auto state = FrontEndState::instance();
+  auto l = state->lvals.get(lval);
+  return state->statements.add(std::make_shared<cs6300::Read>(l));
+}
+int cs6300::ReadValue(int statement, int lval)
+{
+  auto state = FrontEndState::instance();
+  auto s = std::dynamic_pointer_cast<cs6300::Read>(state->statements.get(statement));
+  auto l = state->lvals.get(lval);
+  s->append(l);
+  return statement;
+}
 int cs6300::Repeat(int statement,int expr)
 {
   auto state = FrontEndState::instance();
@@ -431,8 +468,22 @@ int cs6300::While(int expr, int statement)
   return state->statements.add(std::make_shared<cs6300::WhileStatement>(e, *s));
 }
 
-int cs6300::WriteExpr(int /*expr*/){return 0;}
-int cs6300::WriteExpr(int /*statment*/,int /*expr*/){return 0;}
+int cs6300::WriteExpr(int expr)
+{
+  auto state = FrontEndState::instance();
+  auto e = state->expressions.get(expr);
+  return state->statements.add(std::make_shared<cs6300::Write>(e));
+}
+
+int cs6300::WriteExpr(int statement,int expr)
+{
+  auto state = FrontEndState::instance();
+  auto s = std::dynamic_pointer_cast<cs6300::Write>(state->statements.get(statement));
+  auto e = state->expressions.get(expr);
+  s->append(e);
+  return statement;
+}
+
 void cs6300::AddConstant(char *, int) {}
 void cs6300::AddFunction(int /*signature*/){}
 void cs6300::AddFunction(int /*signature*/,int /*body*/){}
