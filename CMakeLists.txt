@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(cpsl)
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -std=c++11")
-endif()
 find_package(BISON)
 find_package(FLEX)
 
@@ -31,65 +28,76 @@ source_group("FrontEnd" FILES ${frontend_srcs})
 list(APPEND cpsl_srcs ${frontend_srcs})
 
 set(ast_srcs
-AST_INC/AST/BasicBlock.hpp
-AST_INC/AST/Function.hpp
-AST_INC/AST/Program.hpp
-AST_INC/AST/SymbolTable.hpp
-AST_INC/AST/ThreeAddressInstruction.hpp
-AST_INC/AST/Type.cpp
-AST_INC/AST/Type.hpp
+  AST_INC/AST/BasicBlock.hpp
+  AST_INC/AST/Function.hpp
+  AST_INC/AST/Program.hpp
+  AST_INC/AST/SymbolTable.hpp
+  AST_INC/AST/ThreeAddressInstruction.hpp
+  AST_INC/AST/Type.cpp
+  AST_INC/AST/Type.hpp
+  AST_INC/AST/LValue.hpp
 )
+
 source_group("FrontEnd" FILES ${ast_srcs})
 list(APPEND cpsl_srcs ${ast_srcs})
 
+set(statement_srcs
+  AST_INC/AST/Statements/Assignment.hpp
+  AST_INC/AST/Statements/Statement.hpp
+  )
+source_group("FrontEnd/Statements" FILES ${statement_srcs})
+list(APPEND cpsl_srcs ${statement_srcs})
+
 set(expr_srcs
-AST_INC/AST/AdditionExpression.cpp
-AST_INC/AST/AdditionExpression.hpp
-AST_INC/AST/AndExpression.cpp
-AST_INC/AST/AndExpression.hpp
-AST_INC/AST/CallExpression.cpp
-AST_INC/AST/CallExpression.hpp
-AST_INC/AST/ChrExpression.cpp
-AST_INC/AST/ChrExpression.hpp
-AST_INC/AST/DivExpression.cpp
-AST_INC/AST/DivExpression.hpp
-AST_INC/AST/EqExpression.cpp
-AST_INC/AST/EqExpression.hpp
-AST_INC/AST/Expression.hpp
-AST_INC/AST/GtExpression.cpp
-AST_INC/AST/GtExpression.hpp
-AST_INC/AST/GteExpression.cpp
-AST_INC/AST/GteExpression.hpp
-AST_INC/AST/LiteralExpression.cpp
-AST_INC/AST/LiteralExpression.hpp
-AST_INC/AST/LtExpression.cpp
-AST_INC/AST/LtExpression.hpp
-AST_INC/AST/LteExpression.cpp
-AST_INC/AST/LteExpression.hpp
-AST_INC/AST/ModExpression.cpp
-AST_INC/AST/ModExpression.hpp
-AST_INC/AST/MultExpression.cpp
-AST_INC/AST/MultExpression.hpp
-AST_INC/AST/NeqExpression.cpp
-AST_INC/AST/NeqExpression.hpp
-AST_INC/AST/NotExpression.cpp
-AST_INC/AST/NotExpression.hpp
-AST_INC/AST/OrExpression.cpp
-AST_INC/AST/OrExpression.hpp
-AST_INC/AST/OrdExpression.cpp
-AST_INC/AST/OrdExpression.hpp
-AST_INC/AST/PredecessorExpression.cpp
-AST_INC/AST/PredecessorExpression.hpp
-AST_INC/AST/StringExpression.cpp
-AST_INC/AST/StringExpression.hpp
-AST_INC/AST/StringTable.cpp
-AST_INC/AST/StringTable.hpp
-AST_INC/AST/SubtractExpression.cpp
-AST_INC/AST/SubtractExpression.hpp
-AST_INC/AST/SuccessorExpression.cpp
-AST_INC/AST/SuccessorExpression.hpp
-AST_INC/AST/UnaryMinusExpression.cpp
-AST_INC/AST/UnaryMinusExpression.hpp
+  AST_INC/AST/Expressions/AdditionExpression.cpp
+  AST_INC/AST/Expressions/AdditionExpression.hpp
+  AST_INC/AST/Expressions/AndExpression.cpp
+  AST_INC/AST/Expressions/AndExpression.hpp
+  AST_INC/AST/Expressions/CallExpression.cpp
+  AST_INC/AST/Expressions/CallExpression.hpp
+  AST_INC/AST/Expressions/ChrExpression.cpp
+  AST_INC/AST/Expressions/ChrExpression.hpp
+  AST_INC/AST/Expressions/DivExpression.cpp
+  AST_INC/AST/Expressions/DivExpression.hpp
+  AST_INC/AST/Expressions/EqExpression.cpp
+  AST_INC/AST/Expressions/EqExpression.hpp
+  AST_INC/AST/Expressions/Expression.hpp
+  AST_INC/AST/Expressions/GtExpression.cpp
+  AST_INC/AST/Expressions/GtExpression.hpp
+  AST_INC/AST/Expressions/GteExpression.cpp
+  AST_INC/AST/Expressions/GteExpression.hpp
+  AST_INC/AST/Expressions/LiteralExpression.cpp
+  AST_INC/AST/Expressions/LiteralExpression.hpp
+  AST_INC/AST/Expressions/LoadExpression.cpp
+  AST_INC/AST/Expressions/LoadExpression.hpp
+  AST_INC/AST/Expressions/LtExpression.cpp
+  AST_INC/AST/Expressions/LtExpression.hpp
+  AST_INC/AST/Expressions/LteExpression.cpp
+  AST_INC/AST/Expressions/LteExpression.hpp
+  AST_INC/AST/Expressions/ModExpression.cpp
+  AST_INC/AST/Expressions/ModExpression.hpp
+  AST_INC/AST/Expressions/MultExpression.cpp
+  AST_INC/AST/Expressions/MultExpression.hpp
+  AST_INC/AST/Expressions/NeqExpression.cpp
+  AST_INC/AST/Expressions/NeqExpression.hpp
+  AST_INC/AST/Expressions/NotExpression.cpp
+  AST_INC/AST/Expressions/NotExpression.hpp
+  AST_INC/AST/Expressions/OrExpression.cpp
+  AST_INC/AST/Expressions/OrExpression.hpp
+  AST_INC/AST/Expressions/OrdExpression.cpp
+  AST_INC/AST/Expressions/OrdExpression.hpp
+  AST_INC/AST/Expressions/PredecessorExpression.cpp
+  AST_INC/AST/Expressions/PredecessorExpression.hpp
+  AST_INC/AST/Expressions/StringExpression.cpp
+  AST_INC/AST/Expressions/StringExpression.hpp
+  AST_INC/AST/Expressions/SubtractExpression.cpp
+  AST_INC/AST/Expressions/SubtractExpression.hpp
+  AST_INC/AST/Expressions/SuccessorExpression.cpp
+  AST_INC/AST/Expressions/SuccessorExpression.hpp
+  AST_INC/AST/Expressions/UnaryMinusExpression.cpp
+  AST_INC/AST/Expressions/UnaryMinusExpression.hpp
+  AST_INC/AST/StringTable.cpp
+  AST_INC/AST/StringTable.hpp
 )
 source_group("FrontEnd/Expressions" FILES ${expr_srcs})
 list(APPEND cpsl_srcs ${expr_srcs})

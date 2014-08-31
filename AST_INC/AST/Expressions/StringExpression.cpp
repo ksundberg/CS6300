@@ -1,5 +1,5 @@
 #include "StringExpression.hpp"
-#include "StringTable.hpp"
+#include "AST/StringTable.hpp"
 
 cs6300::StringExpression::StringExpression(char *a)
   : m_label(StringTable::instance()->add(std::string(a)))

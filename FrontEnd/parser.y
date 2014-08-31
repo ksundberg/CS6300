@@ -161,7 +161,7 @@ FunctionDecl : FSignature SCOLONSY FORWARDSY SCOLONSY {cs6300::AddFunction($1);}
 FSignature : FUNCTIONSY IDENTSY LPARENSY OptFormalParameters RPARENSY COLONSY Type {$$ = cs6300::Signature($2,$4,$7);}
            ;
 
-OptFormalParameters : FormalParameters {$$ = $1}
+OptFormalParameters : FormalParameters {$$ = $1;}
                     | {$$ = 0;}
                     ;
 
@@ -180,11 +180,11 @@ OptVar : VARSY
 Body : OptConstDecls OptTypeDecls OptVarDecls Block {$$ = $4;}
      ;
 
-Block : BEGINSY StatementList ENDSY {$$ = $2}
+Block : BEGINSY StatementList ENDSY {$$ = $2;}
       ;
 
 StatementList : StatementList SCOLONSY Statement {$$ = cs6300::StatementList($1,$3);}
-              | Statement {$$ = cs6300::StatementList(0,$1);}
+              | Statement {$$ = cs6300::StatementList(-1,$1);}
               ;
 
 OptTypeDecls : TYPESY TypeDecls
@@ -206,11 +206,11 @@ Type : SimpleType {$$ = $1;}
 SimpleType : IDENTSY {$$ = cs6300::LookupType($1);}
            ;
 
-RecordType : RECORDSY FieldDecls ENDSY {$$ = cs6300::RecordType($2);}
+RecordType : RECORDSY FieldDecls ENDSY {$$ = $2;}
            ;
 
 FieldDecls : FieldDecls FieldDecl {$$ = cs6300::FieldList($1, $2);}
-           | {$$ = 0;}
+           | {$$ = -0;}
            ;
 
 FieldDecl : IdentList COLONSY Type SCOLONSY {$$ = cs6300::AddField($1,$3);}
@@ -220,7 +220,7 @@ IdentList : IdentList COMMASY IDENTSY {$$ = cs6300::IdentList($1,$3);}
           | IDENTSY {$$ = cs6300::IdentList(0,$1);}
           ;
 
-ArrayType : ARRAYSY LBRACKETSY Expression COLONSY Expression RBRACKETSY OFSY Type {$$ = cs6300::ArrayType($3,$5,$8);}
+ArrayType : ARRAYSY LBRACKETSY Expression COLONSY Expression RBRACKETSY OFSY Type {$$ = cs6300::BuildArrayType($3,$5,$8);}
           ;
 
 OptVarDecls : VARSY VarDecls
@@ -244,7 +244,7 @@ Statement : Assignment {$$ = $1;}
           | ReadStatement {$$ = $1;}
           | WriteStatement {$$ = $1;}
           | ProcedureCall {$$ = $1;}
-          | {$$ = 0;}
+          | {$$ = -1;}
           ;
 
 Assignment : LValue ASSIGNSY Expression {$$ = cs6300::Assign($1,$3);}
@@ -337,7 +337,7 @@ Expression : CHARCONSTSY                         {$$ = cs6300::CharExpr($1);}
            | FunctionCall                        {$$ = $1;}
            | INTSY                               {$$ = cs6300::IntExpr($1);}
            | LPARENSY Expression RPARENSY        {$$ = $2;}
-           | LValue                              {$$ = $1;}
+           | LValue                              {$$ = cs6300::LoadExpr($1);}
            | MINUSSY Expression %prec UMINUSSY   {$$ = cs6300::UnMinusExpr($2);}
            | NOTSY Expression                    {$$ = cs6300::NotExpr($2);}
            | ORDSY LPARENSY Expression RPARENSY  {$$ = cs6300::OrdExpr($3);}

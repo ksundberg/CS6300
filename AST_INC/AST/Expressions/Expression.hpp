@@ -3,8 +3,8 @@
 
 #include <memory>
 #include <vector>
-#include "BasicBlock.hpp"
-#include "Type.hpp"
+#include "AST/BasicBlock.hpp"
+#include "AST/Type.hpp"
 
 namespace cs6300
 
