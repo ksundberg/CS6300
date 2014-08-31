@@ -11,6 +11,9 @@ public:
   std::shared_ptr<Type> type() const;
   int value() const;
   bool isConst() const;
+private:
+  std::string name;
+  std::vector<std::shared_ptr<Expression>> actualArguments;
 };
 }
 #endif

@@ -260,7 +260,7 @@ ThenPart : THENSY StatementList {$$ = $2;}
          ;
 
 ElseIfList : ElseIfList ElseIfHead ThenPart {$$ =cs6300::AppendElseList($1,$2,$3);}
-           |{$$ =0;}
+           |{$$ =-1;}
            ;
 
 ElseIfHead : ELSEIFSY Expression {$$ = $2;}
@@ -313,10 +313,10 @@ WriteArgs : WriteArgs COMMASY Expression {$$ = cs6300::WriteExpr($1,$3);}
 ProcedureCall : IDENTSY LPARENSY OptArguments RPARENSY {$$ = cs6300::CallProc($1,$3);}
               ;
 OptArguments : Arguments {$$ = $1;}
-             |           {$$ = cs6300::EmptyArgs();}
+             |           {$$ = -1;}
              ;
-Arguments : Arguments COMMASY Expression {$$ = cs6300::AppendArgs($1,$3);}
-          | Expression                   {$$ = cs6300::NewArgs($1);}
+Arguments : Arguments COMMASY Expression {$$ = cs6300::ArgumentList($1,$3);}
+          | Expression                   {$$ = cs6300::ArgumentList(-1,$1);}
           ;
 
 Expression : CHARCONSTSY                         {$$ = cs6300::CharExpr($1);}

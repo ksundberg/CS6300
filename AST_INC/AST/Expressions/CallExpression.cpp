@@ -1,7 +1,10 @@
 #include "CallExpression.hpp"
 
 cs6300::CallExpression::CallExpression(
-  std::string, std::vector<std::shared_ptr<Expression> >)
+    std::string n, std::vector<std::shared_ptr<Expression>> args)
+    : Expression()
+    , name(n)
+    , actualArguments(args)
 {
 }
 

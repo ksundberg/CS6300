@@ -43,7 +43,13 @@ list(APPEND cpsl_srcs ${ast_srcs})
 
 set(statement_srcs
   AST_INC/AST/Statements/Assignment.hpp
+  AST_INC/AST/Statements/Call.hpp
+  AST_INC/AST/Statements/For.hpp
+  AST_INC/AST/Statements/If.hpp
   AST_INC/AST/Statements/Statement.hpp
+  AST_INC/AST/Statements/While.hpp
+  AST_INC/AST/Statements/Repeat.hpp
+  AST_INC/AST/Statements/Return.hpp
   )
 source_group("FrontEnd/Statements" FILES ${statement_srcs})
 list(APPEND cpsl_srcs ${statement_srcs})
