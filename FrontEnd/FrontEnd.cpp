@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cassert>
 #include <memory>
 #include <algorithm>
 #include "FrontEnd.hpp"
@@ -55,7 +56,8 @@ public:
   }
   std::shared_ptr<T> get(int index)
   {
-    if (index < static_cast<int>(src.size()))
+    if(index < 0) return nullptr;
+    if (index < static_cast<int>(src.size())+1)
     {
       return src[index];
     }
@@ -115,6 +117,7 @@ public:
 
   std::shared_ptr<cs6300::SymbolTable> getSymTable()
   {
+    assert(curSymTable);
     return curSymTable;
   }
   void pushSymTable()

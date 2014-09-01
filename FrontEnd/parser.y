@@ -162,7 +162,7 @@ FSignature : FUNCTIONSY IDENTSY LPARENSY OptFormalParameters RPARENSY COLONSY Ty
            ;
 
 OptFormalParameters : FormalParameters {$$ = $1;}
-                    | {$$ = 0;}
+                    | {$$ = -1;}
                     ;
 
 FormalParameters : FormalParameters SCOLONSY FormalParameter {$$ = cs6300::ParameterList($1,$3);}
@@ -210,14 +210,14 @@ RecordType : RECORDSY FieldDecls ENDSY {$$ = $2;}
            ;
 
 FieldDecls : FieldDecls FieldDecl {$$ = cs6300::FieldList($1, $2);}
-           | {$$ = -0;}
+           | {$$ = -1;}
            ;
 
 FieldDecl : IdentList COLONSY Type SCOLONSY {$$ = cs6300::AddField($1,$3);}
           ;
 
 IdentList : IdentList COMMASY IDENTSY {$$ = cs6300::IdentList($1,$3);}
-          | IDENTSY {$$ = cs6300::IdentList(0,$1);}
+          | IDENTSY {$$ = cs6300::IdentList(-1,$1);}
           ;
 
 ArrayType : ARRAYSY LBRACKETSY Expression COLONSY Expression RBRACKETSY OFSY Type {$$ = cs6300::BuildArrayType($3,$5,$8);}
@@ -267,7 +267,7 @@ ElseIfHead : ELSEIFSY Expression {$$ = $2;}
            ;
 
 ElseClause : ELSESY StatementList {$$ = $2;}
-           | {$$ = 0;}
+           | {$$ = -1;}
            ;
 
 WhileStatement : WhileHead DOSY StatementList ENDSY {$$ = cs6300::While($1,$3);}
