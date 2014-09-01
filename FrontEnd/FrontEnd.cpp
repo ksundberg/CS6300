@@ -40,6 +40,7 @@
 #include "AST/Statements/While.hpp"
 #include "AST/Statements/Write.hpp"
 #include "AST/Type.hpp"
+#include "AST/Function.hpp"
 
 extern FILE* yyin;
 extern int yyparse();
@@ -88,6 +89,7 @@ public:
   }
   typedef std::vector<std::shared_ptr<cs6300::Statement>> slist_t;
   FEC<cs6300::Expression> expressions;
+  FEC<cs6300::FunctionSignature> signatures;
   FEC<cs6300::Type> types;
   FEC<std::vector<std::string>> idLists;
   FEC<slist_t> statementLists;
@@ -101,8 +103,32 @@ public:
   FEC<std::pair<std::shared_ptr<cs6300::Expression>,cs6300::ForStatement::Direction>> toExprs;
   FEC<std::pair<std::string,std::shared_ptr<cs6300::Expression>>> forHeads;
 
+  void initParse()
+  {
+    program = std::make_shared<cs6300::Program>();
+    curSymTable = program->symbols;
+  }
+  std::shared_ptr<cs6300::Program> getProgram()
+  {
+    return program;
+  }
+
+  std::shared_ptr<cs6300::SymbolTable> getSymTable()
+  {
+    return curSymTable;
+  }
+  void pushSymTable()
+  {
+    curSymTable = std::make_shared<cs6300::SymbolTable>(curSymTable);
+  }
+  void popSymTable()
+  {
+    curSymTable = curSymTable->getParent();
+  }
 private:
   static std::shared_ptr<FrontEndState> msInstance;
+  std::shared_ptr<cs6300::Program> program;
+  std::shared_ptr<cs6300::SymbolTable> curSymTable;
 };
 
 std::shared_ptr<FrontEndState> FrontEndState::msInstance;
@@ -154,8 +180,9 @@ std::shared_ptr<cs6300::Program> cs6300::parseCPSL(std::string filename)
     throw std::runtime_error("Could not open " + filename);
   }
   yyin = inFile;
+  FrontEndState::instance()->initParse();
   yyparse();
-  return std::shared_ptr<cs6300::Program>();
+  return FrontEndState::instance()->getProgram();
 }
 
 int cs6300::AddExpr(int a, int b)
@@ -365,7 +392,13 @@ int cs6300::LoadMember(int lvalIndex, char *ident)
   delete (ident);
   return FrontEndState::instance()->lvals.add(lval);
 }
-int cs6300::LookupType(char *) {return 0;}
+int cs6300::LookupType(char *ident)
+{
+  auto state = FrontEndState::instance();
+  auto type = state->getSymTable()->lookupType(ident);
+  delete(ident);
+  return state->types.add(type);
+}
 int cs6300::LtExpr(int a, int b) {return binaryOp<LtExpression>(a,b);}
 int cs6300::LteExpr(int a, int b) {return binaryOp<LteExpression>(a,b);}
 int cs6300::ModExpr(int a, int b) {return binaryOp<ModExpression>(a,b);}
@@ -431,7 +464,16 @@ int cs6300::Return(int expr)
   return state->statements.add(std::make_shared<cs6300::ReturnStatement>(e));
 }
 
-int cs6300::Signature(char*, int /*params*/, int /*type*/){return 0;}
+int cs6300::Signature(char * ident, int params, int type)
+{
+  auto state = FrontEndState::instance();
+  auto returnType = state->types.get(type); //May be nullptr
+  auto parameters = state->formalArguments.get(params);
+  auto sig = std::make_shared<cs6300::FunctionSignature>(ident,*parameters,returnType);
+  delete(ident);
+  state->pushSymTable();
+  return state->signatures.add(sig);
+}
 int cs6300::StatementList(int listIndex, int statementIndex)
 {
   auto state = FrontEndState::instance();
@@ -488,10 +530,50 @@ int cs6300::WriteExpr(int statement,int expr)
   return statement;
 }
 
-void cs6300::AddConstant(char *, int) {}
-void cs6300::AddFunction(int /*signature*/){}
-void cs6300::AddFunction(int /*signature*/,int /*body*/){}
-void cs6300::AddProcedure(int /*signature*/){}
-void cs6300::AddProcedure(int /*signature*/,int /*body*/){}
-void cs6300::AddType(char *, int) {}
-void cs6300::AddVariables(int /*list*/,int /*type*/){}
+void cs6300::AddConstant(char *ident, int expr)
+{
+  auto state = FrontEndState::instance();
+  auto e = state->expressions.get(expr);
+  state->getSymTable()->addConstant(ident, e);
+  delete (ident);
+}
+void cs6300::AddFunction(int signature)
+{
+  auto state = FrontEndState::instance();
+  auto sig = state->signatures.get(signature);
+  auto program = state->getProgram();
+  auto iter = program->functions.find(*sig);
+  if(iter==program->functions.end())
+  {
+    program->functions[*sig] = nullptr; //add forward declaration
+  }
+  state->popSymTable();
+}
+void cs6300::AddFunction(int signature,int body)
+{
+  auto state = FrontEndState::instance();
+  auto sig = state->signatures.get(signature);
+  auto b = state->statementLists.get(body);
+  auto program = state->getProgram();
+  program->functions[*sig] =
+      std::make_shared<cs6300::Function>(sig, *b, state->getSymTable());
+  state->popSymTable();
+}
+
+void cs6300::AddType(char *ident, int typeIndex)
+{
+  auto state = FrontEndState::instance();
+  auto type = state->types.get(typeIndex);
+  state->getSymTable()->addType(ident,type);
+  delete(ident);
+}
+void cs6300::AddVariables(int list, int typeIndex)
+{
+  auto state = FrontEndState::instance();
+  auto type = state->types.get(typeIndex);
+  auto idList = state->idLists.get(list);
+  for (auto &&id : *idList)
+  {
+    state->getSymTable()->addVariable(id, type);
+  }
+}

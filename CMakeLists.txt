@@ -30,8 +30,10 @@ list(APPEND cpsl_srcs ${frontend_srcs})
 set(ast_srcs
   AST_INC/AST/BasicBlock.hpp
   AST_INC/AST/Function.hpp
+  AST_INC/AST/Function.cpp
   AST_INC/AST/Program.hpp
   AST_INC/AST/SymbolTable.hpp
+  AST_INC/AST/SymbolTable.cpp
   AST_INC/AST/ThreeAddressInstruction.hpp
   AST_INC/AST/Type.cpp
   AST_INC/AST/Type.hpp
