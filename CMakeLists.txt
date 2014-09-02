@@ -29,16 +29,18 @@ list(APPEND cpsl_srcs ${frontend_srcs})
 
 set(ast_srcs
   AST_INC/AST/BasicBlock.hpp
-  AST_INC/AST/Function.hpp
   AST_INC/AST/Function.cpp
+  AST_INC/AST/Function.hpp
+  AST_INC/AST/LValue.hpp
   AST_INC/AST/Program.hpp
-  AST_INC/AST/SymbolTable.hpp
+  AST_INC/AST/StringTable.cpp
+  AST_INC/AST/StringTable.hpp
   AST_INC/AST/SymbolTable.cpp
-  AST_INC/AST/ThreeAddressInstruction.hpp
+  AST_INC/AST/SymbolTable.hpp
   AST_INC/AST/ThreeAddressInstruction.cpp
+  AST_INC/AST/ThreeAddressInstruction.hpp
   AST_INC/AST/Type.cpp
   AST_INC/AST/Type.hpp
-  AST_INC/AST/LValue.hpp
 )
 
 source_group("FrontEnd" FILES ${ast_srcs})
@@ -84,8 +86,8 @@ set(expr_srcs
   AST_INC/AST/Expressions/DivExpression.hpp
   AST_INC/AST/Expressions/EqExpression.cpp
   AST_INC/AST/Expressions/EqExpression.hpp
-  AST_INC/AST/Expressions/Expression.hpp
   AST_INC/AST/Expressions/Expression.cpp
+  AST_INC/AST/Expressions/Expression.hpp
   AST_INC/AST/Expressions/GtExpression.cpp
   AST_INC/AST/Expressions/GtExpression.hpp
   AST_INC/AST/Expressions/GteExpression.cpp
@@ -120,8 +122,6 @@ set(expr_srcs
   AST_INC/AST/Expressions/SuccessorExpression.hpp
   AST_INC/AST/Expressions/UnaryMinusExpression.cpp
   AST_INC/AST/Expressions/UnaryMinusExpression.hpp
-  AST_INC/AST/StringTable.cpp
-  AST_INC/AST/StringTable.hpp
 )
 source_group("FrontEnd/Expressions" FILES ${expr_srcs})
 list(APPEND cpsl_srcs ${expr_srcs})
