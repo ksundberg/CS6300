@@ -21,6 +21,7 @@ class IfStatement : public Statement
           , elseClause(e)
       {
       }
+    std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
 
     private:
       std::vector<clause_t> clauses;

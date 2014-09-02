@@ -68,6 +68,7 @@ int WriteExpr(int statment,int expr);
 void AddConstant(char *, int);
 void AddFunction(int signature);
 void AddFunction(int signature,int body);
+void AddMain(int);
 void AddType(char *, int);
 void AddVariables(int list,int type);
 }

@@ -255,15 +255,26 @@ int cs6300::Assign(int lval,int expr)
 
 int cs6300::CallExpr(char *a, int b) {
   auto state = FrontEndState::instance();
+  auto pArgs = state->actualArguments.get(b);
+  std::vector<std::shared_ptr<cs6300::Expression>> args;
+  if(pArgs)
+  {
+    std::copy(pArgs->begin(),pArgs->end(),std::back_inserter(args));
+  }
   return state->expressions.add(
-      std::make_shared<cs6300::CallExpression>(a, *(state->actualArguments.get(b))));
+      std::make_shared<cs6300::CallExpression>(a, args));
 }
 
-int cs6300::CallProc(char *name, int args)
+int cs6300::CallProc(char *name, int argsIndex)
 {
   auto state = FrontEndState::instance();
-  auto a = *(state->actualArguments.get(args));
-  return state->statements.add(std::make_shared<cs6300::Call>(name, a));
+  auto a = state->actualArguments.get(argsIndex);
+  std::vector<std::shared_ptr<cs6300::Expression>> args;
+  if(a)
+  {
+    std::copy(a->begin(),a->end(),std::back_inserter(args));
+  }
+  return state->statements.add(std::make_shared<cs6300::Call>(name, args));
 }
 
 int cs6300::CharExpr(char a)
@@ -341,12 +352,17 @@ int cs6300::If(int expr, int statement, int list, int elseStatement)
   auto ifClause = std::make_pair(state->expressions.get(expr),
                                  *(state->statementLists.get(statement)));
   auto otherClauses = state->clauses.get(list);
-  std::vector<cs6300::IfStatement::clause_t> allClauses(otherClauses->size() +
-                                                        1);
+  std::vector<cs6300::IfStatement::clause_t> allClauses;
   allClauses.push_back(ifClause);
-  for(auto && c: *otherClauses)
+  if(otherClauses)
   {
-    allClauses.push_back(std::make_pair(c.first,*(c.second)));
+    for (auto &&c : *otherClauses)
+    {
+      if(c.second)
+      {
+        allClauses.push_back(std::make_pair(c.first, *(c.second)));
+      }
+    }
   }
   auto elseClause = state->statementLists.get(elseStatement);
   if (elseClause)
@@ -472,7 +488,12 @@ int cs6300::Signature(char * ident, int params, int type)
   auto state = FrontEndState::instance();
   auto returnType = state->types.get(type); //May be nullptr
   auto parameters = state->formalArguments.get(params);
-  auto sig = std::make_shared<cs6300::FunctionSignature>(ident,*parameters,returnType);
+  std::vector<std::pair<std::string, std::shared_ptr<Type>>> a;
+  if(parameters)
+  {
+    std::copy(parameters->begin(),parameters->end(),std::back_inserter(a));
+  }
+  auto sig = std::make_shared<cs6300::FunctionSignature>(ident,a,returnType);
   delete(ident);
   state->pushSymTable();
   return state->signatures.add(sig);
@@ -563,6 +584,13 @@ void cs6300::AddFunction(int signature,int body)
   state->popSymTable();
 }
 
+void cs6300::AddMain(int body)
+{
+  auto state = FrontEndState::instance();
+  auto b = state->statementLists.get(body);
+  auto program = state->getProgram();
+  std::copy(b->begin(),b->end(),std::back_inserter(program->main));
+}
 void cs6300::AddType(char *ident, int typeIndex)
 {
   auto state = FrontEndState::instance();

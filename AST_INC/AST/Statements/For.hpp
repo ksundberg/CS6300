@@ -30,6 +30,7 @@ class ForStatement : public Statement
           , body(statements)
       {
       }
+    std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
 
     private:
       std::string loopVariable;

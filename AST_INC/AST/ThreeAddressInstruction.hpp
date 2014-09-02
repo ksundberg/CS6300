@@ -7,10 +7,23 @@ namespace cs6300
 {
 class ThreeAddressInstruction
 {
-};
-class OrInstruction:ThreeAddressInstruction
-{
-  OrInstruction();
+  public:
+    enum Type
+    {
+      ReadChar,
+      ReadInt,
+      Stop,
+      WriteBool,
+      WriteChar,
+      WriteInt,
+      WriteStr
+    };
+    ThreeAddressInstruction(Type op,int dest,int src1,int src2);
+  private:
+    Type op;
+    int dest;
+    int src1;
+    int src2;
 };
 }
 #endif

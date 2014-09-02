@@ -11,6 +11,9 @@ class BasicBlock
 {
   public:
   std::vector<ThreeAddressInstruction> instructions;
+  std::shared_ptr<BasicBlock> jumpTo;
+  std::shared_ptr<BasicBlock> branchTo;
+  int branchOn;
 };
 }
 #endif

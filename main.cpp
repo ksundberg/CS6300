@@ -4,13 +4,15 @@
 #include <string>
 #include <iostream>
 
-int main(int/* argc*/, char * argv[])
+int main(int argc, char * argv[])
 {
   try
   {
   std::string outFile = "out.asm";
   std::string inFile = "in.cpsl";
 
+  if (argc < 2)
+    return EXIT_FAILURE;
   if(argv[1] == std::string("-o"))
   {
     outFile = argv[2];

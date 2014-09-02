@@ -18,6 +18,7 @@ namespace cs6300
           , arguments(args)
       {
       }
+    std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
 
     private:
       std::string name;

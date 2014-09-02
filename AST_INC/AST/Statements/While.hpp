@@ -19,6 +19,8 @@ class WhileStatement : public Statement
           , body(statements)
       {
       }
+      std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>
+      emit();
 
     private:
       std::shared_ptr<Expression> condition;

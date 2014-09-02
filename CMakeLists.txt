@@ -35,6 +35,7 @@ set(ast_srcs
   AST_INC/AST/SymbolTable.hpp
   AST_INC/AST/SymbolTable.cpp
   AST_INC/AST/ThreeAddressInstruction.hpp
+  AST_INC/AST/ThreeAddressInstruction.cpp
   AST_INC/AST/Type.cpp
   AST_INC/AST/Type.hpp
   AST_INC/AST/LValue.hpp
@@ -44,16 +45,27 @@ source_group("FrontEnd" FILES ${ast_srcs})
 list(APPEND cpsl_srcs ${ast_srcs})
 
 set(statement_srcs
+  AST_INC/AST/Statements/Assignment.cpp
   AST_INC/AST/Statements/Assignment.hpp
+  AST_INC/AST/Statements/Call.cpp
   AST_INC/AST/Statements/Call.hpp
+  AST_INC/AST/Statements/For.cpp
   AST_INC/AST/Statements/For.hpp
+  AST_INC/AST/Statements/If.cpp
   AST_INC/AST/Statements/If.hpp
+  AST_INC/AST/Statements/Read.cpp
   AST_INC/AST/Statements/Read.hpp
+  AST_INC/AST/Statements/Repeat.cpp
   AST_INC/AST/Statements/Repeat.hpp
+  AST_INC/AST/Statements/Return.cpp
   AST_INC/AST/Statements/Return.hpp
+  AST_INC/AST/Statements/Statement.cpp
   AST_INC/AST/Statements/Statement.hpp
+  AST_INC/AST/Statements/Stop.cpp
   AST_INC/AST/Statements/Stop.hpp
+  AST_INC/AST/Statements/While.cpp
   AST_INC/AST/Statements/While.hpp
+  AST_INC/AST/Statements/Write.cpp
   AST_INC/AST/Statements/Write.hpp
   )
 source_group("FrontEnd/Statements" FILES ${statement_srcs})
@@ -73,6 +85,7 @@ set(expr_srcs
   AST_INC/AST/Expressions/EqExpression.cpp
   AST_INC/AST/Expressions/EqExpression.hpp
   AST_INC/AST/Expressions/Expression.hpp
+  AST_INC/AST/Expressions/Expression.cpp
   AST_INC/AST/Expressions/GtExpression.cpp
   AST_INC/AST/Expressions/GtExpression.hpp
   AST_INC/AST/Expressions/GteExpression.cpp

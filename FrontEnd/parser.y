@@ -5,7 +5,6 @@
 #include "FrontEnd/FrontEnd.hpp"
 
 extern int yylex();
-extern std::ofstream cpslout;
 void yyerror(const char*);
 %}
 
@@ -126,7 +125,7 @@ void yyerror(const char*);
 %type <str_val> STRINGSY 
 
 %%
-Program : ProgramHead Block DOTSY
+Program : ProgramHead Block DOTSY {cs6300::AddMain($2);}
 				;
 
 ProgramHead : OptConstDecls OptTypeDecls OptVarDecls PFDecls

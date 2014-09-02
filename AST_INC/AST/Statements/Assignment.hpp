@@ -17,6 +17,7 @@ namespace cs6300
       {
       }
 
+    std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
     private:
       std::shared_ptr<LValue> lval;
       std::shared_ptr<Expression> expr;
