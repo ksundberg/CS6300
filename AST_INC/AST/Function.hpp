@@ -2,6 +2,7 @@
 #define CS6300_FUNCTION_HPP
 
 #include <memory>
+#include <string>
 #include "SymbolTable.hpp"
 #include "BasicBlock.hpp"
 

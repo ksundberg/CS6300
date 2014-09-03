@@ -3,6 +3,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 
 namespace cs6300
 {

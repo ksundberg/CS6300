@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cassert>
 #include <memory>
+#include <stdexcept>
 #include <algorithm>
 #include "FrontEnd.hpp"
 
