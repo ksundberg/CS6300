@@ -22,12 +22,12 @@ std::shared_ptr<cs6300::Type> cs6300::MultExpression::type() const
 int cs6300::MultExpression::value() const
 {
   if (!isConst()) return 0;
-  return m_lhs->value() / m_rhs->value();
+  return m_lhs->value() * m_rhs->value();
 }
 bool cs6300::MultExpression ::isConst() const
 {
   if (!m_lhs) return false;
   if (!m_rhs) return false;
-  return m_lhs->isConst() * m_rhs->isConst();
+  return m_lhs->isConst() && m_rhs->isConst();
 }
 

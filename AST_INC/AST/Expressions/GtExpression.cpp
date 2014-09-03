@@ -22,7 +22,7 @@ std::shared_ptr<cs6300::Type> cs6300::GtExpression::type() const
 int cs6300::GtExpression::value() const
 {
   if (!isConst()) return 0;
-  return m_lhs->value() / m_rhs->value();
+  return m_lhs->value() > m_rhs->value();
 }
 bool cs6300::GtExpression ::isConst() const
 {
