@@ -1,14 +1,15 @@
 #include "AdditionExpression.hpp"
+
 cs6300::AdditionExpression::AdditionExpression(std::shared_ptr<Expression> lhs,
                                                std::shared_ptr<Expression> rhs)
-  : m_lhs(lhs)
-  , m_rhs(rhs)
+    : m_lhs(lhs)
+    , m_rhs(rhs)
 {
 }
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::AdditionExpression::emit() const
 {
-  return nullptr;
+  return emitBinaryOp(ThreeAddressInstruction::Add, getLabel(), m_lhs, m_rhs);
 }
 
 std::shared_ptr<cs6300::Type> cs6300::AdditionExpression::type() const

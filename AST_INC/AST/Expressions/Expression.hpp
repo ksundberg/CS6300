@@ -1,10 +1,11 @@
 #ifndef CS6300_AST_EXPRESSION_HPP
 #define CS6300_AST_EXPRESSION_HPP
 
+#include "AST/BasicBlock.hpp"
+#include "AST/ThreeAddressInstruction.hpp"
+#include "AST/Type.hpp"
 #include <memory>
 #include <vector>
-#include "AST/BasicBlock.hpp"
-#include "AST/Type.hpp"
 
 namespace cs6300
 {
@@ -19,10 +20,15 @@ public:
   virtual std::shared_ptr<Type> type() const = 0;
   virtual int value() const = 0;
   virtual bool isConst() const = 0;
-  int getLabel();
+  int getLabel()const;
 private:
-  int label;
+  mutable int label;
   static int getNextLabel();
 };
+
+std::shared_ptr<BasicBlock> emitBinaryOp(ThreeAddressInstruction::Type,
+                                         int,
+                                         std::shared_ptr<Expression>,
+                                         std::shared_ptr<Expression>);
 }
 #endif

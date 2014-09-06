@@ -8,7 +8,7 @@ cs6300::DivExpression::DivExpression (std::shared_ptr<Expression> lhs,
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::DivExpression::emit() const
 {
-  return nullptr;
+  return emitBinaryOp(ThreeAddressInstruction::Divide,getLabel(),m_lhs,m_rhs);
 }
 
 std::shared_ptr<cs6300::Type> cs6300::DivExpression::type() const

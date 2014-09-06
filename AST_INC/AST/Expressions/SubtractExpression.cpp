@@ -8,7 +8,8 @@ cs6300::SubtractExpression::SubtractExpression (std::shared_ptr<Expression> lhs,
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::SubtractExpression::emit() const
 {
-  return nullptr;
+  return emitBinaryOp(
+      ThreeAddressInstruction::Subtract, getLabel(), m_lhs, m_rhs);
 }
 
 std::shared_ptr<cs6300::Type> cs6300::SubtractExpression::type() const

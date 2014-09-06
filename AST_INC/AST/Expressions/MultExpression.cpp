@@ -8,7 +8,8 @@ cs6300::MultExpression::MultExpression (std::shared_ptr<Expression> lhs,
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::MultExpression::emit() const
 {
-  return nullptr;
+  return emitBinaryOp(
+      ThreeAddressInstruction::Multiply, getLabel(), m_lhs, m_rhs);
 }
 
 std::shared_ptr<cs6300::Type> cs6300::MultExpression::type() const

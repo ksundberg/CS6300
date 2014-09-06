@@ -10,6 +10,19 @@ class ThreeAddressInstruction
   public:
     enum Type
     {
+      Add,
+      Multiply,
+      Or,
+      Subtract,
+      And,
+      Divide,
+      IsEqual,
+      IsGreater,
+      IsGreaterEqual,
+      IsLess,
+      IsLessEqual,
+      IsNotEqual,
+      Modulo,
       ReadChar,
       ReadInt,
       Stop,

@@ -1,4 +1,7 @@
 #include "AndExpression.hpp"
+#include "AST/BasicBlock.hpp"
+#include "AST/ThreeAddressInstruction.hpp"
+
 cs6300::AndExpression::AndExpression (std::shared_ptr<Expression> lhs,
                                                std::shared_ptr<Expression> rhs)
   : m_lhs(lhs)
@@ -8,7 +11,7 @@ cs6300::AndExpression::AndExpression (std::shared_ptr<Expression> lhs,
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::AndExpression::emit() const
 {
-  return nullptr;
+  return emitBinaryOp(ThreeAddressInstruction::And,getLabel(),m_lhs,m_rhs);
 }
 
 std::shared_ptr<cs6300::Type> cs6300::AndExpression::type() const
