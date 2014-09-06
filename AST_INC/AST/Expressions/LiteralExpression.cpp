@@ -14,7 +14,10 @@ cs6300::LiteralExpression::LiteralExpression(int a)
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::LiteralExpression::emit() const
 {
-  return nullptr;
+  auto result = std::make_shared<BasicBlock>();
+  result->instructions.emplace_back(
+      ThreeAddressInstruction::LoadValue, getLabel(), m_value, 0);
+  return result;
 }
 
 std::shared_ptr<cs6300::Type> cs6300::LiteralExpression::type() const

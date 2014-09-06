@@ -1,19 +1,27 @@
-#include "UnaryMinusExpression.hpp"
+#include "PredecessorExpression.hpp"
 
-cs6300::UnaryMinusExpression::UnaryMinusExpression(
+cs6300::PredecessorExpression::PredecessorExpression(
   std::shared_ptr<Expression> expr)
   : m_expr(expr)
 {
 }
 
-std::shared_ptr<cs6300::BasicBlock> cs6300::UnaryMinusExpression::emit() const
+std::shared_ptr<cs6300::BasicBlock> cs6300::PredecessorExpression::emit() const
+{
+  auto result = m_expr->emit();
+  result->instructions.emplace_back(ThreeAddressInstruction::AddValue,getLabel(),m_expr->getLabel(),1);
+  return result;
+}
+std::shared_ptr<cs6300::Type> cs6300::PredecessorExpression::type() const
 {
   return nullptr;
 }
-std::shared_ptr<cs6300::Type> cs6300::UnaryMinusExpression::type() const
+int cs6300::PredecessorExpression::value() const
 {
-  return nullptr;
+  return m_expr->value() + 1;
 }
-int cs6300::UnaryMinusExpression::value() const { return 0; }
-bool cs6300::UnaryMinusExpression::isConst() const { return false; }
+bool cs6300::PredecessorExpression::isConst() const
+{
+  return m_expr->isConst();
+}
 

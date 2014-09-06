@@ -8,7 +8,10 @@ cs6300::NotExpression::NotExpression(
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::NotExpression::emit() const
 {
-  return nullptr;
+  auto result = m_expr->emit();
+  result->instructions.emplace_back(
+      ThreeAddressInstruction::Not, getLabel(), m_expr->getLabel(), 0);
+  return result;
 }
 std::shared_ptr<cs6300::Type> cs6300::NotExpression::type() const
 {

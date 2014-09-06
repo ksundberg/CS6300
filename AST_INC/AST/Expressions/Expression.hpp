@@ -22,8 +22,8 @@ public:
   virtual bool isConst() const = 0;
   int getLabel()const;
 private:
-  mutable int label;
   static int getNextLabel();
+  mutable int label;
 };
 
 std::shared_ptr<BasicBlock> emitBinaryOp(ThreeAddressInstruction::Type,
