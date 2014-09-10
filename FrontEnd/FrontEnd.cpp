@@ -326,6 +326,7 @@ int cs6300::For(int head,int to,int statement)
   auto s = state->statementLists.get(statement);
   auto f = std::make_shared<cs6300::ForStatement>(
       h->first, h->second, t->first, t->second, *s);
+  state->getSymTable()->addVariable(h->first, t->first->type());
   return state->statements.add(f);
 }
 
