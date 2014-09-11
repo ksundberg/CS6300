@@ -32,7 +32,7 @@ cs6300::emitBinaryOp(cs6300::ThreeAddressInstruction::Type op,
   std::copy(rhsCode->instructions.begin(),
             rhsCode->instructions.end(),
             std::back_inserter(resultCode->instructions));
-  resultCode->instructions.emplace_back(cs6300::ThreeAddressInstruction::Add,
+  resultCode->instructions.emplace_back(op,
                                         result,
                                         lhs->getLabel(),
                                         rhs->getLabel());
