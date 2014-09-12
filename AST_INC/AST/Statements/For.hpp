@@ -3,6 +3,7 @@
 
 #include "Statement.hpp"
 #include "AST/Expressions/Expression.hpp"
+#include "AST/SymbolTable.hpp"
 
 #include <string>
 #include <vector>
@@ -21,13 +22,15 @@ class ForStatement : public Statement
                    std::shared_ptr<Expression> b,
                    std::shared_ptr<Expression> e,
                    Direction d,
-                   std::vector<std::shared_ptr<Statement>> statements)
+                   std::vector<std::shared_ptr<Statement>> statements,
+                   std::shared_ptr<SymbolTable> t)
           : Statement()
           , loopVariable(var)
           , begin(b)
           , end(e)
           , direction(d)
           , body(statements)
+          , table(t)
       {
       }
     std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
@@ -38,6 +41,7 @@ class ForStatement : public Statement
       std::shared_ptr<Expression> end;
       Direction direction;
       std::vector<std::shared_ptr<Statement>> body;
+      std::shared_ptr<SymbolTable> table;
   };
 }
 #endif

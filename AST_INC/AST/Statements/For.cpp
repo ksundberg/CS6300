@@ -10,11 +10,11 @@ std::pair<std::shared_ptr<cs6300::BasicBlock>,
           std::shared_ptr<cs6300::BasicBlock>>
 cs6300::ForStatement::emit()
 {
-  Assignment assign(std::make_shared<IdAccess>(loopVariable), begin);
+  Assignment assign(std::make_shared<IdAccess>(loopVariable,table), begin);
   auto init = assign.emit();
   auto compareExpr = std::make_shared<LtExpression>(
       std::make_shared<LoadExpression>(
-          std::make_shared<IdAccess>(loopVariable)),
+          std::make_shared<IdAccess>(loopVariable,table)),
       end);
   auto compare = compareExpr->emit();
   auto b = emitList(body);

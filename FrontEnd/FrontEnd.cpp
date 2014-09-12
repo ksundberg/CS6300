@@ -325,7 +325,7 @@ int cs6300::For(int head,int to,int statement)
   auto t = state->toExprs.get(to);
   auto s = state->statementLists.get(statement);
   auto f = std::make_shared<cs6300::ForStatement>(
-      h->first, h->second, t->first, t->second, *s);
+      h->first, h->second, t->first, t->second, *s,state->getSymTable());
   state->getSymTable()->addVariable(h->first, t->first->type());
   return state->statements.add(f);
 }
@@ -389,7 +389,7 @@ int cs6300::LoadArray(int lval, int exprIndex)
   auto state = FrontEndState::instance();
   auto base = state->lvals.get(lval);
   auto expr = state->expressions.get(exprIndex);
-  return state->lvals.add(std::make_shared<cs6300::ArrayAccess>(base, expr));
+  return state->lvals.add(std::make_shared<cs6300::ArrayAccess>(base, expr,FrontEndState::instance()->getSymTable()));
 }
 int cs6300::LoadExpr(int lvalIndex)
 {
@@ -400,7 +400,7 @@ int cs6300::LoadExpr(int lvalIndex)
 }
 int cs6300::LoadId(char *ident)
 {
-  auto lval = std::make_shared<cs6300::IdAccess>(ident);
+  auto lval = std::make_shared<cs6300::IdAccess>(ident,FrontEndState::instance()->getSymTable());
   delete (ident);
   return FrontEndState::instance()->lvals.add(lval);
 }
@@ -409,7 +409,7 @@ int cs6300::LoadMember(int lvalIndex, char *ident)
   auto state = FrontEndState::instance();
   auto base = state->lvals.get(lvalIndex);
 
-  auto lval = std::make_shared<cs6300::MemberAccess>(base, ident);
+  auto lval = std::make_shared<cs6300::MemberAccess>(base, ident,FrontEndState::instance()->getSymTable());
   delete (ident);
   return FrontEndState::instance()->lvals.add(lval);
 }
