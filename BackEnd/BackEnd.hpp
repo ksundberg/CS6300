@@ -4,7 +4,7 @@
 #include <memory>
 namespace cs6300
 {
-  class Program;
-  void writeMIPS(std::shared_ptr<Program>,std::string filename);
+  class IntermediateRepresentationProgram;
+  void writeMIPS(std::shared_ptr<IntermediateRepresentationProgram>,std::string filename);
 }
 #endif

@@ -15,19 +15,17 @@ class FunctionSignature
 {
 public:
   FunctionSignature(
-      std::string n,
-      std::vector<std::pair<std::string, std::shared_ptr<Type>>> a,
-      std::shared_ptr<Type> t)
-      : name(n)
-      , args(a)
-      , returnType(t)
+    std::string n,
+    std::vector<std::pair<std::string, std::shared_ptr<Type>>> a,
+    std::shared_ptr<Type> t)
+    : name(n), args(a), returnType(t)
   {
   }
   std::string name;
   std::vector<std::pair<std::string, std::shared_ptr<Type>>> args;
   std::shared_ptr<Type> returnType;
-  bool operator==(const FunctionSignature &) const;
-  bool operator<(const FunctionSignature &) const;
+  bool operator==(const FunctionSignature&) const;
+  bool operator<(const FunctionSignature&) const;
 };
 
 class Function
@@ -36,9 +34,7 @@ public:
   Function(std::shared_ptr<FunctionSignature> s,
            std::vector<std::shared_ptr<cs6300::Statement>> b,
            std::shared_ptr<SymbolTable> sym)
-      : signature(s)
-      , body(b)
-      , symbols(sym)
+    : signature(s), body(b), symbols(sym)
   {
   }
   std::shared_ptr<FunctionSignature> signature;
