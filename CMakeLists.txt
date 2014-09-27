@@ -29,6 +29,7 @@ source_group("FrontEnd" FILES ${frontend_srcs})
 list(APPEND cpsl_srcs ${frontend_srcs})
 
 set(ast_srcs
+  AST_INC/AST/BasicBlock.cpp
   AST_INC/AST/BasicBlock.hpp
   AST_INC/AST/Function.cpp
   AST_INC/AST/Function.hpp

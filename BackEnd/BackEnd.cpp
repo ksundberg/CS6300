@@ -1,13 +1,37 @@
 #include "BackEnd.hpp"
 #include "AST/Program.hpp"
+#include "AST/ThreeAddressInstruction.hpp"
 #include <fstream>
 
 namespace{
 
+void emitMIPS(std::shared_ptr<cs6300::BasicBlock> block, std::ofstream &fout)
+{
+  if (!block)
+    return;
+  fout << block->getLabel() << ":\t";
+  for (auto &&i : block->instructions)
+  {
+    fout << i;
+  }
+  if (block->branchTo)
+  {
+    fout << "\tbeq $" << block->branchOn << ", " << block->branchTo->getLabel()
+         << std::endl;
+  }
+  if (block->jumpTo)
+  {
+    fout << "\tj " << block->jumpTo->getLabel() << std::endl;
+  }
+
+  emitMIPS(block->branchTo,fout);
+  emitMIPS(block->jumpTo,fout);
+}
 void emitMIPS(std::pair<std::shared_ptr<cs6300::BasicBlock>,
                          std::shared_ptr<cs6300::BasicBlock>> cfg,
                std::ofstream& fout)
   {
+    emitMIPS(cfg.first,fout);
   }
 }
 void cs6300::writeMIPS(std::shared_ptr<IntermediateRepresentationProgram> program, std::string filename)

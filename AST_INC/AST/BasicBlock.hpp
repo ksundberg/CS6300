@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 #include "ThreeAddressInstruction.hpp"
 
 namespace cs6300
@@ -14,6 +15,9 @@ class BasicBlock
   std::shared_ptr<BasicBlock> jumpTo;
   std::shared_ptr<BasicBlock> branchTo;
   int branchOn;
+  std::string getLabel();
+  private:
+  std::string label;
 };
 }
 #endif

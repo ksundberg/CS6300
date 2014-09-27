@@ -8,9 +8,12 @@ cs6300::emitList(std::vector<std::shared_ptr<Statement>> statements)
   auto current = entry;
   for (auto &&s : statements)
   {
-    auto subgraph = s->emit();
-    current->jumpTo = subgraph.first;
-    current = subgraph.second;
+    if(s)
+    {
+      auto subgraph = s->emit();
+      current->jumpTo = subgraph.first;
+      current = subgraph.second;
+    }
   }
   return std::make_pair(entry, current);
 }
