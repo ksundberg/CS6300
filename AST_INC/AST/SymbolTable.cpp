@@ -1,7 +1,7 @@
+#include <string>
 #include "SymbolTable.hpp"
 #include "Expressions/Expression.hpp"
 #include "Type.hpp"
-#include <string>
 
 std::shared_ptr<cs6300::Type> cs6300::SymbolTable::lookupType(std::string id)
 {
