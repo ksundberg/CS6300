@@ -16,6 +16,6 @@ std::shared_ptr<cs6300::Type> cs6300::StringExpression::type() const
   return cs6300::BuiltInType::getStr();
 }
 
-int cs6300::StringExpression::value() const { return 0; }
+int cs6300::StringExpression::value() const { return m_label; }
 
 bool cs6300::StringExpression::isConst() const { return true; }

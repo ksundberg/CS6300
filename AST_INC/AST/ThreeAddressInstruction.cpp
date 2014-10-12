@@ -71,7 +71,7 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     out << "\tmfhi $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::Multiply:
-    out << "mult $" << i.src1 << ", " << i.src2 << std::endl;
+    out << "mult $" << i.src1 << ", $" << i.src2 << std::endl;
     out << "\tmflo $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::Not:
@@ -83,12 +83,12 @@ std::ostream &cs6300::operator<<(std::ostream &out,
   case cs6300::ThreeAddressInstruction::ReadChar:
     out << "li $v0, 12" << std::endl;
     out << "\tsyscall" << std::endl;
-    out << "\tmv $v0, $" << i.dest;
+    out << "\tmove $" << i.dest << ", $v0" << std::endl;
     break;
   case cs6300::ThreeAddressInstruction::ReadInt:
     out << "li $v0, 5" << std::endl;
     out << "\tsyscall" << std::endl;
-    out << "\tmv $v0, $" << i.dest;
+    out << "\tmove $" << i.dest << ", $v0" << std::endl;
     break;
   case cs6300::ThreeAddressInstruction::Stop:
     out << "li $v0, 10" << std::endl;
@@ -121,7 +121,7 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     break;
   case cs6300::ThreeAddressInstruction::WriteStr:
     out << "li $v0, 4" << std::endl;
-    out << "\tmove $a0, $" << i.src1 << std::endl;
+    out << "\tla $a0, SL" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   }

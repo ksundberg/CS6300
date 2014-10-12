@@ -27,11 +27,7 @@ cs6300::Write::emit()
     }
     if (val->type() == BuiltInType::getStr())
     {
-    block->instructions.push_back(ThreeAddressInstruction(ThreeAddressInstruction::WriteStr,0,val->getLabel(),0));
-    }
-    if (val->type() == nullptr)
-    {
-      block->instructions.push_back(ThreeAddressInstruction(ThreeAddressInstruction::WriteStr,0,val->getLabel(),0)); /*TODO:Placeholder for LValues*/
+      block->instructions.push_back(ThreeAddressInstruction(ThreeAddressInstruction::WriteStr,0,val->value(),0));
     }
   }
   return std::make_pair(block, block);

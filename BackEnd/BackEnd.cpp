@@ -2,6 +2,7 @@
 #include "BackEnd.hpp"
 #include "AST/Program.hpp"
 #include "AST/ThreeAddressInstruction.hpp"
+#include "AST/StringTable.hpp"
 #include <set>
 
 namespace{
@@ -40,6 +41,15 @@ namespace{
     emitMIPS(cfg.first,fout);
   }
 }
+
+void writeStringTable(std::ofstream &fout){
+  auto string_table = cs6300::StringTable::instance()->getTable();
+  for (auto s : string_table){
+    fout << "SL" << s.second << ": \t.asciiz " << s.first << std::endl;
+  }
+
+}
+
 void cs6300::writeMIPS(std::shared_ptr<IntermediateRepresentationProgram> program, std::string filename)
 {
   std::ofstream fout(filename);
@@ -54,7 +64,8 @@ void cs6300::writeMIPS(std::shared_ptr<IntermediateRepresentationProgram> progra
   }
 
   fout << ".data" << std::endl;
-  //StringTable::getInstance()->writeTable();
+  writeStringTable(fout);
+
   fout << ".align 2" << std::endl;
   fout << "GA:" << std::endl;
 }
