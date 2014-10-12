@@ -33,7 +33,7 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     out << "#TODO copy arguments";
     break;
   case cs6300::ThreeAddressInstruction::Divide:
-    out << "div $" << i.src1 << ", " << i.src2 << std::endl;
+    out << "div $" << i.src1 << ", $" << i.src2 << std::endl;
     out << "\tmflo $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::IsEqual:
@@ -60,11 +60,14 @@ std::ostream &cs6300::operator<<(std::ostream &out,
   case cs6300::ThreeAddressInstruction::LoadMemory:
     out << "lw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
     break;
+  case cs6300::ThreeAddressInstruction::LoadOffset:
+    out << "add $" << i.dest << ", $" << i.src1 << ", " << i.src2;
+    break;
   case cs6300::ThreeAddressInstruction::LoadValue:
     out << "li $" << i.dest << ", " << i.src1;
     break;
   case cs6300::ThreeAddressInstruction::Modulo:
-    out << "div $" << i.src1 << ", " << i.src2 << std::endl;
+    out << "div $" << i.src1 << ", $" << i.src2 << std::endl;
     out << "\tmfhi $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::Multiply:
@@ -103,22 +106,22 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     break;
   case cs6300::ThreeAddressInstruction::WriteBool:
     out << "li $v0, 1" << std::endl;
-    out << "\tmv $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteChar:
     out << "li $v0, 11" << std::endl;
-    out << "\tmv $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteInt:
     out << "li $v0, 1" << std::endl;
-    out << "\tmv $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteStr:
     out << "li $v0, 4" << std::endl;
-    out << "\tmv $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   }

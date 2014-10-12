@@ -25,6 +25,7 @@ class ThreeAddressInstruction
       IsNotEqual,
       LoadLabel,
       LoadMemory,
+      LoadOffset,
       LoadValue,
       Modulo,
       Multiply,

@@ -3,11 +3,13 @@
 
 #include <string>
 #include <memory>
+#include <AST_INC/AST/Expressions/MemoryExpression.hpp>
 
 #include "AST/Expressions/Expression.hpp"
 #include "AST/Expressions/AdditionExpression.hpp"
 #include "AST/Expressions/LiteralExpression.hpp"
 #include "AST/Expressions/MultExpression.hpp"
+#include "AST/Expressions/MemoryExpression.hpp"
 #include "AST/SymbolTable.hpp"
 namespace cs6300
 {
@@ -32,7 +34,8 @@ public:
   }
   std::shared_ptr<Expression> address() const
   {
-    return std::make_shared<LiteralExpression>(0);
+    return std::make_shared<AdditionExpression>(std::make_shared<LiteralExpression>(m_table->lookupVariable(name)->memory_offset),
+        std::make_shared<MemoryExpression>(m_table->getMemoryLocation()));
   }
   std::shared_ptr<Type> type() const {return nullptr;}
   std::string name;

@@ -123,7 +123,7 @@ public:
   }
   void pushSymTable()
   {
-    curSymTable = std::make_shared<cs6300::SymbolTable>(curSymTable);
+    curSymTable = std::make_shared<cs6300::SymbolTable>(curSymTable, cs6300::STACK);
   }
   void popSymTable()
   {
