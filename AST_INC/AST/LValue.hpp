@@ -37,7 +37,7 @@ public:
     return std::make_shared<AdditionExpression>(std::make_shared<LiteralExpression>(m_table->lookupVariable(name)->memory_offset),
         std::make_shared<MemoryExpression>(m_table->getMemoryLocation()));
   }
-  std::shared_ptr<Type> type() const {return nullptr;}
+  std::shared_ptr<Type> type() const {return m_table->lookupVariable(name)->type;}
   std::string name;
 };
 class MemberAccess : public LValue

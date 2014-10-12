@@ -15,7 +15,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::LoadExpression::emit() const
 }
 std::shared_ptr<cs6300::Type> cs6300::LoadExpression::type() const
 {
-  return nullptr;
+  return lval->type();
 }
 int cs6300::LoadExpression::value() const
 {
