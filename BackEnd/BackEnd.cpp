@@ -1,14 +1,19 @@
+#include <fstream>
 #include "BackEnd.hpp"
 #include "AST/Program.hpp"
 #include "AST/ThreeAddressInstruction.hpp"
-#include <fstream>
+#include <set>
 
 namespace{
+    
+std::set<std::shared_ptr<cs6300::BasicBlock>> seenBlocks ;
 
 void emitMIPS(std::shared_ptr<cs6300::BasicBlock> block, std::ofstream &fout)
 {
-  if (!block)
+    
+  if (!block || (seenBlocks.find(block) != seenBlocks.end()))
     return;
+  seenBlocks.insert(block);
   fout << block->getLabel() << ":\t";
   for (auto &&i : block->instructions)
   {
@@ -31,6 +36,7 @@ void emitMIPS(std::pair<std::shared_ptr<cs6300::BasicBlock>,
                          std::shared_ptr<cs6300::BasicBlock>> cfg,
                std::ofstream& fout)
   {
+    seenBlocks.clear();
     emitMIPS(cfg.first,fout);
   }
 }

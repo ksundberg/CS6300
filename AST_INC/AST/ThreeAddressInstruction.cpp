@@ -33,7 +33,7 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     out << "#TODO copy arguments";
     break;
   case cs6300::ThreeAddressInstruction::Divide:
-    out << "div $" << i.src1 << ", " << i.src2 << std::endl;
+    out << "div $" << i.src1 << ", $" << i.src2 << std::endl;
     out << "\tmflo $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::IsEqual:
@@ -64,11 +64,11 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     out << "li $" << i.dest << ", " << i.src1;
     break;
   case cs6300::ThreeAddressInstruction::Modulo:
-    out << "div $" << i.src1 << ", " << i.src2 << std::endl;
+    out << "div $" << i.src1 << ", $" << i.src2 << std::endl;
     out << "\tmfhi $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::Multiply:
-    out << "mult $" << i.src1 << ", " << i.src2 << std::endl;
+    out << "mult $" << i.src1 << ", $" << i.src2 << std::endl;
     out << "\tmflo $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::Not:
