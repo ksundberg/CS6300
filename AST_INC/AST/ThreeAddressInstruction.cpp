@@ -1,4 +1,5 @@
 #include "ThreeAddressInstruction.hpp"
+#include "SymbolTable.hpp"
 
 cs6300::ThreeAddressInstruction::ThreeAddressInstruction(Type t,
                                                          int d,
@@ -60,9 +61,13 @@ std::ostream &cs6300::operator<<(std::ostream &out,
   case cs6300::ThreeAddressInstruction::LoadMemory:
     out << "lw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
     break;
-  case cs6300::ThreeAddressInstruction::LoadOffset:
-    out << "add $" << i.dest << ", $" << i.src1 << ", " << i.src2;
+  case cs6300::ThreeAddressInstruction::LoadMemoryOffset:
+    if (i.src1 == cs6300::GLOBAL)
+      out << "addi $" << i.dest << ", $gp, " << i.src2;
+    if (i.src1 == cs6300::STACK)
+      out << "addi $" << i.dest << ", $sp, -" << i.src1;
     break;
+
   case cs6300::ThreeAddressInstruction::LoadValue:
     out << "li $" << i.dest << ", " << i.src1;
     break;
@@ -83,12 +88,12 @@ std::ostream &cs6300::operator<<(std::ostream &out,
   case cs6300::ThreeAddressInstruction::ReadChar:
     out << "li $v0, 12" << std::endl;
     out << "\tsyscall" << std::endl;
-    out << "\tmove $" << i.dest << ", $v0" << std::endl;
+    out << "\tmove $" << i.dest << ", $v0";
     break;
   case cs6300::ThreeAddressInstruction::ReadInt:
     out << "li $v0, 5" << std::endl;
     out << "\tsyscall" << std::endl;
-    out << "\tmove $" << i.dest << ", $v0" << std::endl;
+    out << "\tmove $" << i.dest << ", $v0";
     break;
   case cs6300::ThreeAddressInstruction::Stop:
     out << "li $v0, 10" << std::endl;
@@ -106,12 +111,12 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     break;
   case cs6300::ThreeAddressInstruction::WriteBool:
     out << "li $v0, 1" << std::endl;
-    out << "\tmove $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteChar:
     out << "li $v0, 11" << std::endl;
-    out << "\tmove $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteInt:

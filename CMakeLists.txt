@@ -104,8 +104,8 @@ set(expr_srcs
   AST_INC/AST/Expressions/LtExpression.hpp
   AST_INC/AST/Expressions/LteExpression.cpp
   AST_INC/AST/Expressions/LteExpression.hpp
-  AST_INC/AST/Expressions/MemoryExpression.cpp
-  AST_INC/AST/Expressions/MemoryExpression.hpp
+  AST_INC/AST/Expressions/MemoryAccessExpression.cpp
+  AST_INC/AST/Expressions/MemoryAccessExpression.hpp
   AST_INC/AST/Expressions/ModExpression.cpp
   AST_INC/AST/Expressions/ModExpression.hpp
   AST_INC/AST/Expressions/MultExpression.cpp
