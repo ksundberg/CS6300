@@ -111,12 +111,12 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     break;
   case cs6300::ThreeAddressInstruction::WriteBool:
     out << "li $v0, 1" << std::endl;
-    out << "\tmove $a0, $" << i.src1;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteChar:
     out << "li $v0, 11" << std::endl;
-    out << "\tmove $a0, $" << i.src1;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteInt:

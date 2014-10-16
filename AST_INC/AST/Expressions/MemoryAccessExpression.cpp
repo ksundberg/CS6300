@@ -1,7 +1,7 @@
 #include "MemoryAccessExpression.hpp"
 
 cs6300::MemoryAccessExpression::MemoryAccessExpression(int memory_value, int offset)
-    : m_type(BuiltInType::getInt())
+    : m_type(nullptr)
     , m_value(memory_value)
     , m_offset(offset)
 {
