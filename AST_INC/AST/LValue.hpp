@@ -3,11 +3,11 @@
 
 #include <string>
 #include <memory>
-
 #include "AST/Expressions/Expression.hpp"
 #include "AST/Expressions/AdditionExpression.hpp"
 #include "AST/Expressions/LiteralExpression.hpp"
 #include "AST/Expressions/MultExpression.hpp"
+#include "AST/Expressions/MemoryAccessExpression.hpp"
 #include "AST/SymbolTable.hpp"
 namespace cs6300
 {
@@ -32,9 +32,9 @@ public:
   }
   std::shared_ptr<Expression> address() const
   {
-    return std::make_shared<LiteralExpression>(0);
+    return std::make_shared<MemoryAccessExpression>(m_table->getMemoryLocation(), m_table->lookupVariable(name)->memory_offset);
   }
-  std::shared_ptr<Type> type() const {return nullptr;}
+  std::shared_ptr<Type> type() const {return m_table->lookupVariable(name)->type;}
   std::string name;
 };
 class MemberAccess : public LValue
@@ -49,10 +49,25 @@ public:
   std::shared_ptr<Expression> address() const
   {
     auto baseAddr = base->address();
-    auto fieldOffset = std::make_shared<LiteralExpression>(0);
+    auto r = std::dynamic_pointer_cast<RecordType>(base->type());
+    auto members = r->fields;
+
+    int offset = 0;
+    for (auto f : members){
+      if (f.first == field){
+        break;
+      }
+      offset+=f.second->size();
+    }
+
+    auto fieldOffset = std::make_shared<LiteralExpression>(offset);
     return std::make_shared<AdditionExpression>(baseAddr,fieldOffset);
   }
-  std::shared_ptr<Type> type() const {return nullptr;}
+  std::shared_ptr<Type> type() const {
+    auto r = std::dynamic_pointer_cast<RecordType>(base->type());
+    auto members = r->fields;
+    return members[field];
+  }
   std::shared_ptr<LValue> base;
   std::string field;
 };
@@ -68,11 +83,16 @@ public:
   std::shared_ptr<Expression> address() const
   {
     auto baseAddr = base->address();
-    auto size = std::make_shared<LiteralExpression>(base->type()->size());
+
+    auto t =  std::dynamic_pointer_cast<ArrayType>(base->type());
+    auto size = std::make_shared<LiteralExpression>(t->baseType->size());
     auto offset = std::make_shared<MultExpression>(size,expr);
     return std::make_shared<AdditionExpression>(baseAddr,offset);
   }
-  std::shared_ptr<Type> type() const {return nullptr;}
+  std::shared_ptr<Type> type() const {
+    auto t =  std::dynamic_pointer_cast<ArrayType>(base->type());
+    return t->baseType;
+  }
   std::shared_ptr<LValue> base;
   std::shared_ptr<Expression> expr;
 };

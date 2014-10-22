@@ -16,7 +16,7 @@ std::shared_ptr<cs6300::Type> cs6300::AdditionExpression::type() const
 {
   if (!m_lhs) return nullptr;
   if (!m_rhs) return nullptr;
-  if (m_lhs->type() != m_rhs->type()) return nullptr;
+  //if (m_lhs->type() != m_rhs->type()) return nullptr;
   return m_lhs->type();
 }
 

@@ -13,7 +13,7 @@ public:
   int value() const;
   bool isConst() const;
 private:
-  std::string m_label;
+  int m_label;
 };
 }
 #endif
