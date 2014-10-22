@@ -1,8 +1,8 @@
+#include <string>
+#include <iostream>
 #include "FrontEnd/FrontEnd.hpp"
 #include "Optimizations/Optimizer.hpp"
 #include "BackEnd/BackEnd.hpp"
-#include <string>
-#include <iostream>
 
 int main(int argc, char* argv[])
 {

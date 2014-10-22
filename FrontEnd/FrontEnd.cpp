@@ -3,6 +3,7 @@
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
+#include <string>
 #include "FrontEnd.hpp"
 
 #include "AST/Expressions/AdditionExpression.hpp"
