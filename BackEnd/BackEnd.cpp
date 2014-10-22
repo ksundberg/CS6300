@@ -1,9 +1,9 @@
-#include <fstream>
 #include "BackEnd.hpp"
 #include "AST/Program.hpp"
 #include "AST/ThreeAddressInstruction.hpp"
 #include "AST/StringTable.hpp"
 #include <set>
+#include <fstream>
 
 namespace{
 

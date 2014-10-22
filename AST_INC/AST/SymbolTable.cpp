@@ -1,3 +1,4 @@
+#include <string>
 #include "SymbolTable.hpp"
 #include "Expressions/Expression.hpp"
 #include "Type.hpp"
