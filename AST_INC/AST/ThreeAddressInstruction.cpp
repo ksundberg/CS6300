@@ -5,14 +5,11 @@ cs6300::ThreeAddressInstruction::ThreeAddressInstruction(Type t,
                                                          int d,
                                                          int s1,
                                                          int s2)
-    : op(t)
-    , dest(d)
-    , src1(s1)
-    , src2(s2)
+  : op(t), dest(d), src1(s1), src2(s2)
 {
 }
 
-std::ostream &cs6300::operator<<(std::ostream &out,
+std::ostream& cs6300::operator<<(std::ostream& out,
                                  cs6300::ThreeAddressInstruction i)
 {
   out << "\t";
@@ -130,7 +127,8 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     out << "\tsyscall";
     break;
   default:
-    std::cerr << "Unknown TAL address" << i.op << " " << i.src1 << " " << i.src2 << std::endl;
+    std::cerr << "Unknown TAL address" << i.op << " " << i.src1 << " " << i.src2
+              << std::endl;
   }
   out << std::endl;
   return out;

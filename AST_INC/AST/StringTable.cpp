@@ -24,6 +24,7 @@ int cs6300::StringTable::add(std::string val)
   return label;
 }
 
-std::map<std::string, int> cs6300::StringTable::getTable(){
+std::map<std::string, int> cs6300::StringTable::getTable()
+{
   return m_table;
 }

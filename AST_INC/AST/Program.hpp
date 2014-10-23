@@ -13,7 +13,8 @@ class Program
 {
 public:
   Program()
-    : symbols(std::make_shared<SymbolTable>(Program::getPredefinedTable(), cs6300::GLOBAL))
+    : symbols(std::make_shared<SymbolTable>(
+        Program::getPredefinedTable(), cs6300::GLOBAL))
     , functions()
   {
   }
