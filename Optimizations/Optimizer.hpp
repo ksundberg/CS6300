@@ -12,6 +12,9 @@ namespace cs6300
   /*Returns an improved control flow graph*/
   std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> optimizer(
       std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>);
+
+  /* Returns the memory address of a basic block as a string */
+  std::string getBlockSig(std::shared_ptr<BasicBlock> block);
 }
 
 

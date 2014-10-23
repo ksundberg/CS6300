@@ -138,6 +138,10 @@ list(APPEND cpsl_srcs ${backend_srcs})
 set(optimization_srcs
 Optimizations/Optimizer.hpp
 Optimizations/Optimizer.cpp
+Optimizations/VisitedBlocks.hpp
+Optimizations/VisitedBlocks.cpp
+Optimizations/NumParents.hpp
+Optimizations/NumParents.cpp
 Optimizations/MaximizeBlocks.hpp
 Optimizations/MaximizeBlocks.cpp
 )
