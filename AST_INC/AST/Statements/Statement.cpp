@@ -17,4 +17,3 @@ cs6300::emitList(std::vector<std::shared_ptr<Statement>> statements)
   }
   return std::make_pair(entry, current);
 }
-

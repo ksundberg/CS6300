@@ -64,8 +64,8 @@ std::ostream &cs6300::operator<<(std::ostream &out,
   case cs6300::ThreeAddressInstruction::LoadMemoryOffset:
     if (i.src1 == cs6300::GLOBAL)
       out << "addi $" << i.dest << ", $gp, " << i.src2;
-    if (i.src1 == cs6300::STACK)
-      out << "addi $" << i.dest << ", $sp, -" << i.src1;
+    else if (i.src1 == cs6300::STACK)
+      out << "addi $" << i.dest << ", $sp, -" << i.src2;
     break;
 
   case cs6300::ThreeAddressInstruction::LoadValue:
@@ -129,6 +129,8 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     out << "\tla $a0, SL" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
+  default:
+    std::cerr << "Unknown TAL address" << i.op << " " << i.src1 << " " << i.src2 << std::endl;
   }
   out << std::endl;
   return out;
