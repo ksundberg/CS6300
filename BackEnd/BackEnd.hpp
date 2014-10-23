@@ -14,5 +14,6 @@ namespace cs6300
   void locRegAlloc(std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>);
   bool pushUp(std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>);
   std::vector<std::set<int>> regDeps(std::shared_ptr<BasicBlock>);
+  std::set<int> allReg(std::shared_ptr<BasicBlock>);
 }
 #endif

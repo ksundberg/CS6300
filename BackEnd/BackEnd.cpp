@@ -30,7 +30,7 @@ namespace{
     }
     if (block->branchTo)
     {
-      fout << "\tbeq $" << block->branchOn << ", $zero, " << block->branchTo->getLabel()
+      fout << "\tbne $" << block->branchOn << ", $zero, " << block->branchTo->getLabel()
           << std::endl;
     }
     if (block->jumpTo)
@@ -66,7 +66,9 @@ set<sBBlock> allBlocks(blockPair b)
 
         while(at)
         {
-            all.insert(at);
+            if(!all.count(at))
+                all.insert(at);
+
             if(at->branchTo && !all.count(at->branchTo))
                 todo.emplace_back(at->branchTo);
 
@@ -87,25 +89,25 @@ void writeStringTable(std::ofstream &fout){
 
 void cs6300::writeMIPS(std::shared_ptr<IntermediateRepresentationProgram> program, std::string filename)
 {
-    for(auto&& b : allBlocks(program->main))
-        b->printInstructions();
-  locRegAlloc(program->main);
-  std::ofstream fout(filename);
-  fout << ".text" << std::endl << ".globl main" << std::endl << "main:"
-      << "\tla $gp, GA" << std::endl << "\tori $fp, $sp, 0" << std::endl;
+    //for(auto&& b : allBlocks(program->main))
+        //b->printInstructions();
+    locRegAlloc(program->main);
+    std::ofstream fout(filename);
+    fout << ".text" << std::endl << ".globl main" << std::endl << "main:"
+        << "\tla $gp, GA" << std::endl << "\tori $fp, $sp, 0" << std::endl;
 
-  emitMIPS(program->main,fout);
+    emitMIPS(program->main,fout);
 
-  for(auto&& f:program->functions)
-  {
-    emitMIPS(f.second,fout);
-  }
+    for(auto&& f:program->functions)
+    {
+        emitMIPS(f.second,fout);
+    }
 
-  fout << ".data" << std::endl;
-  writeStringTable(fout);
+    fout << ".data" << std::endl;
+    writeStringTable(fout);
 
-  fout << ".align 2" << std::endl;
-  fout << "GA:" << std::endl;
+    fout << ".align 2" << std::endl;
+    fout << "GA:" << std::endl;
 }
 
 struct RegColorNode
@@ -170,7 +172,7 @@ void cs6300::locRegAlloc(blockPair b)
             {
                 p.second->color = i;
                 regRemap[p.first] = i;
-                cout << "remapping " << p.first << " to " << i << endl;
+                //cout << "remapping " << p.first << " to " << i << endl;
                 for(auto& n : p.second->nodes)
                 {
                     n->cant.insert(i);
@@ -207,6 +209,21 @@ vector<set<int>> cs6300::regDeps(sBBlock b)
                 back_inserter(t));
         prop = set<int>(t.begin(), t.end());
         res.insert(res.begin(), prop);
+    }
+
+    return res;
+}
+
+set<int> cs6300::allReg(sBBlock b)
+{
+    set<int> res;
+
+    set<int> prop = b->m.alive;
+    for(auto i=b->instructions.rbegin(); i!=b->instructions.rend(); i++)
+    {
+        auto m = BasicBlock::meta(*i);
+        res.insert(m.used.begin(), m.used.end());
+        res.insert(m.dead.begin(), m.dead.end());
     }
 
     return res;

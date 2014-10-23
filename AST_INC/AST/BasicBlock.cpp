@@ -1,4 +1,5 @@
 #include "BasicBlock.hpp"
+#include "SymbolTable.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -60,7 +61,7 @@ void BasicBlock::initSets()
     }
 
     if(branchOn)
-        m.used.insert(branchOn);
+        m.dead.insert(branchOn);
 
     vector<int> t;
     set_difference(
@@ -75,12 +76,19 @@ RegMeta BasicBlock::meta(ThreeAddressInstruction tal)
     RegMeta m;
     switch(tal.op)
     {
-        case ThreeAddressInstruction::StoreMemory: //special case store memory dest is src1
-            m.used.insert(tal.src2);
-            m.used.insert(tal.dest);
-            m.dead.insert(tal.src1);
+        case ThreeAddressInstruction::LoadMemory:
+            m.dead.insert(tal.dest);
+            m.used.insert(tal.src1);
             break;
+        case ThreeAddressInstruction::LoadMemoryOffset:
         case ThreeAddressInstruction::LoadValue: //LoadValue has constants
+            m.dead.insert(tal.dest);
+            break;
+        case ThreeAddressInstruction::StoreMemory: //special case store memory dest is src1
+            m.used.insert(tal.dest);
+            m.used.insert(tal.src1);
+            break;
+        case ThreeAddressInstruction::AddValue:
             m.dead.insert(tal.dest);
             m.used.insert(tal.src1);
             break;
@@ -92,6 +100,7 @@ RegMeta BasicBlock::meta(ThreeAddressInstruction tal)
             if(tal.src2)
                 m.used.insert(tal.src2);
     }
+
     return m;
 }
 
@@ -101,9 +110,22 @@ void cs6300::BasicBlock::remap(std::map<int,int> m)
     {
         switch(i.op)
         {
+            case ThreeAddressInstruction::LoadMemoryOffset:
+                if(i.dest && m.count(i.dest))
+                    i.dest = m[i.dest];
+                break;
             case ThreeAddressInstruction::LoadValue: //LoadValue has constants
                 if(i.dest && m.count(i.dest))
                     i.dest = m[i.dest];
+                break;
+            case ThreeAddressInstruction::StoreMemory:
+            case ThreeAddressInstruction::AddValue:
+            case ThreeAddressInstruction::LoadMemory:
+                if(i.dest && m.count(i.dest))
+                    i.dest = m[i.dest];
+                if(i.src1 && m.count(i.src1))
+                    i.src1 = m[i.src1];
+                break;
             default:
                 if(i.dest && m.count(i.dest))
                     i.dest = m[i.dest];
