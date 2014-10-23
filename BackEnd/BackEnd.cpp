@@ -214,21 +214,6 @@ vector<set<int>> cs6300::regDeps(sBBlock b)
     return res;
 }
 
-set<int> cs6300::allReg(sBBlock b)
-{
-    set<int> res;
-
-    set<int> prop = b->m.alive;
-    for(auto i=b->instructions.rbegin(); i!=b->instructions.rend(); i++)
-    {
-        auto m = BasicBlock::meta(*i);
-        res.insert(m.used.begin(), m.used.end());
-        res.insert(m.dead.begin(), m.dead.end());
-    }
-
-    return res;
-}
-
 bool cs6300::pushUp(sBBlock parent, sBBlock child)
 {
     if(!child) return false;
