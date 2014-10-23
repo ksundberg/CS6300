@@ -31,6 +31,7 @@ list(APPEND cpsl_srcs ${frontend_srcs})
 set(ast_srcs
   AST_INC/AST/BasicBlock.cpp
   AST_INC/AST/BasicBlock.hpp
+  AST_INC/AST/RegisterScope.hpp
   AST_INC/AST/Function.cpp
   AST_INC/AST/Function.hpp
   AST_INC/AST/LValue.hpp
@@ -135,6 +136,8 @@ list(APPEND cpsl_srcs ${expr_srcs})
 set(backend_srcs
 BackEnd/BackEnd.hpp
 BackEnd/BackEnd.cpp
+BackEnd/Allocation.hpp
+BackEnd/Allocation.cpp
 )
 source_group("BackEnd" FILES ${backend_srcs})
 list(APPEND cpsl_srcs ${backend_srcs})

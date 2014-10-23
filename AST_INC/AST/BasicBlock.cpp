@@ -4,58 +4,21 @@
 #include <algorithm>
 #include <iterator>
 
-using std::cout;
-using std::endl;
-using std::set;
-using std::string;
-using std::vector;
-using std::to_string;
-using cs6300::RegMeta;
-using cs6300::BasicBlock;
-
-string BasicBlock::getLabel()
+std::string cs6300::BasicBlock::getLabel()
 {
 
   static size_t blockNumber = 0;
   if (label.empty())
-    label = string("BB") + to_string(++blockNumber);
+    label = std::string("BB") + std::to_string(++blockNumber);
   return label;
 }
 
-void printSet(string str, set<int> s)
-{
-    if(!s.size()) return;
-
-    cout << str << ":";
-
-    for(auto i : s)
-        cout << i << " ";
-}
-
-void BasicBlock::printInstructions(bool sets)
-{
-    for(auto i : instructions)
-        cout << i << endl;
-
-    if(branchOn)
-        cout << " branchOn: " << branchOn << endl;
-
-    if(sets)
-    {
-        printSet("dead", m.dead);
-        printSet("used", m.used);
-        printSet("alive", m.alive);
-        if(m.dead.size() || m.used.size() || m.alive.size())
-            cout << endl;
-    }
-}
-
-void BasicBlock::initSets()
+void cs6300::BasicBlock::initSets()
 {
     m.clear();
     for(auto i : instructions)
     {
-        auto t = meta(i);
+        auto t = scope(i);
         m.used.insert(t.used.begin(),t.used.end());
         m.dead.insert(t.dead.begin(),t.dead.end());
     }
@@ -63,17 +26,17 @@ void BasicBlock::initSets()
     if(branchOn)
         m.dead.insert(branchOn);
 
-    vector<int> t;
-    set_difference(
+    std::vector<int> t;
+    std::set_difference(
             m.used.begin(), m.used.end(),
             m.dead.begin(), m.dead.end(),
             std::back_inserter(t));
-    m.alive = set<int>(t.begin(), t.end());
+    m.alive = std::set<int>(t.begin(), t.end());
 }
 
-RegMeta BasicBlock::meta(ThreeAddressInstruction tal)
+cs6300::RegisterScope cs6300::BasicBlock::scope(cs6300::ThreeAddressInstruction tal)
 {
-    RegMeta m;
+    cs6300::RegisterScope m;
     switch(tal.op)
     {
         case ThreeAddressInstruction::LoadMemory:

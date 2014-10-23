@@ -130,7 +130,7 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     out << "\tsyscall";
     break;
   default:
-    out << "UNKNOWN! $" << i.dest << ", $" << i.src1 << ", " << i.src2;
+    std::cerr << "Unknown TAL address" << i.op << " " << i.src1 << " " << i.src2 << std::endl;
   }
   out << std::endl;
   return out;
