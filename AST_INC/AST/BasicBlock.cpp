@@ -92,6 +92,8 @@ RegMeta BasicBlock::meta(ThreeAddressInstruction tal)
             m.dead.insert(tal.dest);
             m.used.insert(tal.src1);
             break;
+        case ThreeAddressInstruction::WriteStr: //none
+            break;
         default:
             if(tal.dest)
                 m.dead.insert(tal.dest);
@@ -125,6 +127,8 @@ void cs6300::BasicBlock::remap(std::map<int,int> m)
                     i.dest = m[i.dest];
                 if(i.src1 && m.count(i.src1))
                     i.src1 = m[i.src1];
+                break;
+            case ThreeAddressInstruction::WriteStr: //none
                 break;
             default:
                 if(i.dest && m.count(i.dest))
