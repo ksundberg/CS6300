@@ -7,8 +7,8 @@
 #include <map>
 #include <vector>
 
-#include "../AST_INC/AST/BasicBlock.hpp"
-#include "../AST_INC/AST/ThreeAddressInstruction.hpp"
+#include "../../AST_INC/AST/BasicBlock.hpp"
+#include "../../AST_INC/AST/ThreeAddressInstruction.hpp"
 
 namespace cs6300
 {

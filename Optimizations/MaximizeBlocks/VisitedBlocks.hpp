@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../AST_INC/AST/BasicBlock.hpp"
+#include "../../AST_INC/AST/BasicBlock.hpp"
 
 namespace cs6300 {
   class VisitedBlocks {

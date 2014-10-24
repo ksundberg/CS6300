@@ -138,12 +138,12 @@ list(APPEND cpsl_srcs ${backend_srcs})
 set(optimization_srcs
 Optimizations/Optimizer.hpp
 Optimizations/Optimizer.cpp
-Optimizations/VisitedBlocks.hpp
-Optimizations/VisitedBlocks.cpp
-Optimizations/NumParents.hpp
-Optimizations/NumParents.cpp
-Optimizations/MaximizeBlocks.hpp
-Optimizations/MaximizeBlocks.cpp
+Optimizations/MaximizeBlocks/VisitedBlocks.hpp
+Optimizations/MaximizeBlocks/VisitedBlocks.cpp
+Optimizations/MaximizeBlocks/NumParents.hpp
+Optimizations/MaximizeBlocks/NumParents.cpp
+Optimizations/MaximizeBlocks/MaximizeBlocks.hpp
+Optimizations/MaximizeBlocks/MaximizeBlocks.cpp
 )
 source_group("Optimizations" FILES ${optimization_srcs})
 list(APPEND cpsl_srcs ${optimization_srcs})

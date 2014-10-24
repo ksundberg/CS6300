@@ -1,5 +1,5 @@
 #include "Optimizer.hpp"
-#include "MaximizeBlocks.hpp"
+#include "MaximizeBlocks/MaximizeBlocks.hpp"
 
 #include <sstream>
 
