@@ -23,6 +23,15 @@ std::shared_ptr<cs6300::Symbol> cs6300::SymbolTable::lookupVariable(
   return nullptr;
 }
 
+std::shared_ptr<cs6300::Expression> cs6300::SymbolTable::lookupConstant(
+  std::string id)
+{
+  auto found = m_consts.find(id);
+  if (found != m_consts.end()) return found->second;
+  if (m_parent) return m_parent->lookupConstant(id);
+  return nullptr;
+}
+
 void cs6300::SymbolTable::addConstant(std::string id,
                                       std::shared_ptr<Expression> val)
 {
