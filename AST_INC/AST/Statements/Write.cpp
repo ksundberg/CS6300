@@ -7,7 +7,7 @@ std::pair<std::shared_ptr<cs6300::BasicBlock>,
 cs6300::Write::emit()
 {
   auto block = std::make_shared<BasicBlock>();
-  for (auto &&val : values)
+  for (auto&& val : values)
   {
     auto b = val->emit();
     std::copy(b->instructions.begin(),
@@ -15,23 +15,23 @@ cs6300::Write::emit()
               std::back_inserter(block->instructions));
     if (val->type() == BuiltInType::getInt())
     {
-      block->instructions.push_back(ThreeAddressInstruction(ThreeAddressInstruction::WriteInt,0,val->getLabel(),0));
+      block->instructions.push_back(ThreeAddressInstruction(
+        ThreeAddressInstruction::WriteInt, 0, val->getLabel(), 0));
     }
     if (val->type() == BuiltInType::getChar())
     {
-    block->instructions.push_back(ThreeAddressInstruction(ThreeAddressInstruction::WriteChar,0,val->getLabel(),0));
+      block->instructions.push_back(ThreeAddressInstruction(
+        ThreeAddressInstruction::WriteChar, 0, val->getLabel(), 0));
     }
     if (val->type() == BuiltInType::getBool())
     {
-    block->instructions.push_back(ThreeAddressInstruction(ThreeAddressInstruction::WriteBool,0,val->getLabel(),0));
+      block->instructions.push_back(ThreeAddressInstruction(
+        ThreeAddressInstruction::WriteBool, 0, val->getLabel(), 0));
     }
     if (val->type() == BuiltInType::getStr())
     {
-    block->instructions.push_back(ThreeAddressInstruction(ThreeAddressInstruction::WriteStr,0,val->getLabel(),0));
-    }
-    if (val->type() == nullptr)
-    {
-      block->instructions.push_back(ThreeAddressInstruction(ThreeAddressInstruction::WriteStr,0,val->getLabel(),0)); /*TODO:Placeholder for LValues*/
+      block->instructions.push_back(ThreeAddressInstruction(
+        ThreeAddressInstruction::WriteStr, 0, val->value(), 0));
     }
   }
   return std::make_pair(block, block);

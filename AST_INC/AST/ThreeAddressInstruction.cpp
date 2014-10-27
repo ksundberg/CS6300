@@ -1,17 +1,15 @@
 #include "ThreeAddressInstruction.hpp"
+#include "SymbolTable.hpp"
 
 cs6300::ThreeAddressInstruction::ThreeAddressInstruction(Type t,
                                                          int d,
                                                          int s1,
                                                          int s2)
-    : op(t)
-    , dest(d)
-    , src1(s1)
-    , src2(s2)
+  : op(t), dest(d), src1(s1), src2(s2)
 {
 }
 
-std::ostream &cs6300::operator<<(std::ostream &out,
+std::ostream& cs6300::operator<<(std::ostream& out,
                                  cs6300::ThreeAddressInstruction i)
 {
   out << "\t";
@@ -60,6 +58,13 @@ std::ostream &cs6300::operator<<(std::ostream &out,
   case cs6300::ThreeAddressInstruction::LoadMemory:
     out << "lw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
     break;
+  case cs6300::ThreeAddressInstruction::LoadMemoryOffset:
+    if (i.src1 == cs6300::GLOBAL)
+      out << "addi $" << i.dest << ", $gp, " << i.src2;
+    else if (i.src1 == cs6300::STACK)
+      out << "addi $" << i.dest << ", $sp, -" << i.src2;
+    break;
+
   case cs6300::ThreeAddressInstruction::LoadValue:
     out << "li $" << i.dest << ", " << i.src1;
     break;
@@ -80,12 +85,12 @@ std::ostream &cs6300::operator<<(std::ostream &out,
   case cs6300::ThreeAddressInstruction::ReadChar:
     out << "li $v0, 12" << std::endl;
     out << "\tsyscall" << std::endl;
-    out << "\tmv $v0, $" << i.dest;
+    out << "\tmove $" << i.dest << ", $v0";
     break;
   case cs6300::ThreeAddressInstruction::ReadInt:
     out << "li $v0, 5" << std::endl;
     out << "\tsyscall" << std::endl;
-    out << "\tmv $v0, $" << i.dest;
+    out << "\tmove $" << i.dest << ", $v0";
     break;
   case cs6300::ThreeAddressInstruction::Stop:
     out << "li $v0, 10" << std::endl;
@@ -103,24 +108,27 @@ std::ostream &cs6300::operator<<(std::ostream &out,
     break;
   case cs6300::ThreeAddressInstruction::WriteBool:
     out << "li $v0, 1" << std::endl;
-    out << "\tmv $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteChar:
     out << "li $v0, 11" << std::endl;
-    out << "\tmv $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteInt:
     out << "li $v0, 1" << std::endl;
-    out << "\tmv $a0, $" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::WriteStr:
     out << "li $v0, 4" << std::endl;
-    out << "\tmv $a0, $" << i.src1 << std::endl;
+    out << "\tla $a0, SL" << i.src1 << std::endl;
     out << "\tsyscall";
     break;
+  default:
+    std::cerr << "Unknown TAL address" << i.op << " " << i.src1 << " " << i.src2
+              << std::endl;
   }
   out << std::endl;
   return out;

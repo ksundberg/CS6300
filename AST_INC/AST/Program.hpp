@@ -13,13 +13,14 @@ class Program
 {
 public:
   Program()
-    : symbols(std::make_shared<SymbolTable>(Program::getPredefinedTable()))
+    : symbols(std::make_shared<SymbolTable>(
+        Program::getPredefinedTable(), cs6300::GLOBAL))
     , functions()
   {
   }
   static std::shared_ptr<SymbolTable> getPredefinedTable()
   {
-    auto table = std::make_shared<SymbolTable>(nullptr);
+    auto table = std::make_shared<SymbolTable>(nullptr, cs6300::GLOBAL);
     table->addType(std::string("integer"), BuiltInType::getInt());
     table->addType(std::string("INTEGER"), BuiltInType::getInt());
     table->addType(std::string("boolean"), BuiltInType::getBool());

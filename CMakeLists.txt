@@ -31,12 +31,15 @@ list(APPEND cpsl_srcs ${frontend_srcs})
 set(ast_srcs
   AST_INC/AST/BasicBlock.cpp
   AST_INC/AST/BasicBlock.hpp
+  AST_INC/AST/RegisterScope.hpp
   AST_INC/AST/Function.cpp
   AST_INC/AST/Function.hpp
   AST_INC/AST/LValue.hpp
   AST_INC/AST/Program.hpp
   AST_INC/AST/StringTable.cpp
   AST_INC/AST/StringTable.hpp
+  AST_INC/AST/Symbol.cpp
+  AST_INC/AST/Symbol.hpp
   AST_INC/AST/SymbolTable.cpp
   AST_INC/AST/SymbolTable.hpp
   AST_INC/AST/ThreeAddressInstruction.cpp
@@ -102,6 +105,8 @@ set(expr_srcs
   AST_INC/AST/Expressions/LtExpression.hpp
   AST_INC/AST/Expressions/LteExpression.cpp
   AST_INC/AST/Expressions/LteExpression.hpp
+  AST_INC/AST/Expressions/MemoryAccessExpression.cpp
+  AST_INC/AST/Expressions/MemoryAccessExpression.hpp
   AST_INC/AST/Expressions/ModExpression.cpp
   AST_INC/AST/Expressions/ModExpression.hpp
   AST_INC/AST/Expressions/MultExpression.cpp
@@ -131,6 +136,8 @@ list(APPEND cpsl_srcs ${expr_srcs})
 set(backend_srcs
 BackEnd/BackEnd.hpp
 BackEnd/BackEnd.cpp
+BackEnd/Allocation.hpp
+BackEnd/Allocation.cpp
 )
 source_group("BackEnd" FILES ${backend_srcs})
 list(APPEND cpsl_srcs ${backend_srcs})

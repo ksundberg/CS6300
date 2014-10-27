@@ -1,5 +1,5 @@
-#ifndef CS6300_BACK_END_HPP
-#define CS6300_BACK_END_HPP
+#ifndef CS6300_ALLOCATION_HPP
+#define CS6300_ALLOCATION_HPP
 
 #include <memory>
 #include <vector>
@@ -7,11 +7,8 @@
 
 namespace cs6300
 {
-class IntermediateRepresentationProgram;
 class BasicBlock;
 
-void writeMIPS(std::shared_ptr<IntermediateRepresentationProgram>,
-               std::string filename);
 void locRegAlloc(
   std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>);
 bool pushUp(std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>);
