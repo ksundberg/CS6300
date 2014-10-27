@@ -18,6 +18,8 @@ public:
   ~LValue() = default;
   virtual std::shared_ptr<Expression> address() const = 0;
   virtual std::shared_ptr<Type> type() const = 0;
+  virtual bool isConst() const = 0;
+  virtual std::shared_ptr<Expression> value() const = 0;
 
 protected:
   std::shared_ptr<SymbolTable> m_table;
@@ -37,7 +39,17 @@ public:
   }
   std::shared_ptr<Type> type() const
   {
+    if (isConst())
+      return m_table->lookupConstant(name)->type();
     return m_table->lookupVariable(name)->type;
+  }
+  bool isConst() const
+  {
+    return (m_table->lookupConstant(name) != nullptr);
+  }
+  std::shared_ptr<Expression> value() const
+  {
+    return m_table->lookupConstant(name);
   }
   std::string name;
 };
@@ -75,6 +87,14 @@ public:
     auto members = r->fields;
     return members[field];
   }
+  bool isConst() const
+  {
+    return false;
+  }
+  std::shared_ptr<Expression> value() const
+  {
+    return 0;
+  }
   std::shared_ptr<LValue> base;
   std::string field;
 };
@@ -100,6 +120,14 @@ public:
   {
     auto t = std::dynamic_pointer_cast<ArrayType>(base->type());
     return t->baseType;
+  }
+  bool isConst() const
+  {
+    return expr->isConst();
+  }
+  std::shared_ptr<Expression> value() const
+  {
+    return expr;
   }
   std::shared_ptr<LValue> base;
   std::shared_ptr<Expression> expr;
