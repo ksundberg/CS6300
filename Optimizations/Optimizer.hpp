@@ -12,6 +12,7 @@ std::shared_ptr<Program> optimizer(std::shared_ptr<Program>);
 /*Returns an improved control flow graph*/
 std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> optimizer(
   std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>);
+std::string getBlockSig(std::shared_ptr<BasicBlock> block);
 }
 
 #endif
