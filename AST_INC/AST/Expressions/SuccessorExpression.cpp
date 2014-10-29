@@ -11,7 +11,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::SuccessorExpression::emit() const
 {
   auto result = m_expr->emit();
   result->instructions.emplace_back(
-      ThreeAddressInstruction::AddValue, getLabel(), m_expr->getLabel(), -1);
+    ThreeAddressInstruction::AddValue, getLabel(), m_expr->getLabel(), 1);
   return result;
 }
 
@@ -28,4 +28,3 @@ bool cs6300::SuccessorExpression::isConst() const
 {
   return m_expr->isConst();
 }
-

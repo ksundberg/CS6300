@@ -2,8 +2,7 @@
 
 cs6300::AdditionExpression::AdditionExpression(std::shared_ptr<Expression> lhs,
                                                std::shared_ptr<Expression> rhs)
-    : m_lhs(lhs)
-    , m_rhs(rhs)
+  : m_lhs(lhs), m_rhs(rhs)
 {
 }
 
@@ -16,7 +15,7 @@ std::shared_ptr<cs6300::Type> cs6300::AdditionExpression::type() const
 {
   if (!m_lhs) return nullptr;
   if (!m_rhs) return nullptr;
-  if (m_lhs->type() != m_rhs->type()) return nullptr;
+  // if (m_lhs->type() != m_rhs->type()) return nullptr;
   return m_lhs->type();
 }
 
@@ -31,4 +30,3 @@ bool cs6300::AdditionExpression::isConst() const
   if (!m_rhs) return false;
   return m_lhs->isConst() && m_rhs->isConst();
 }
-

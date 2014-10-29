@@ -16,11 +16,12 @@ public:
       m_instance = std::shared_ptr<StringTable>(new StringTable());
     return m_instance;
   }
-  std::string add(std::string);
+  int add(std::string);
+  std::map<std::string, int> getTable();
 
 private:
   static std::shared_ptr<StringTable> m_instance;
-  std::map<std::string, std::string> m_table;
+  std::map<std::string, int> m_table;
 };
 }
 #endif
