@@ -22,7 +22,7 @@ void cs6300::BasicBlock::initSets()
     m.dead.insert(t.dead.begin(), t.dead.end());
   }
 
-  if (branchOn) m.dead.insert(branchOn);
+  if (branchTo) { m.used.insert(branchOn); }
 
   std::vector<int> t;
   std::set_difference(m.used.begin(),
@@ -94,5 +94,9 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
 
       if (i.src2 && m.count(i.src2)) i.src2 = m[i.src2];
     }
+  }
+  if(branchTo)
+  {
+      branchOn = m[branchOn];
   }
 }
