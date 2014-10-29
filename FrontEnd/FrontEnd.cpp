@@ -640,6 +640,7 @@ void cs6300::AddMain(int body)
 {
   auto state = FrontEndState::instance();
   auto b = state->statementLists.get(body);
+  b->push_back(std::make_shared<cs6300::StopStatement>());
   auto program = state->getProgram();
   std::copy(b->begin(), b->end(), std::back_inserter(program->main));
 }
