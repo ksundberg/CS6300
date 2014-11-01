@@ -161,18 +161,14 @@ source_group("Optimizations" FILES ${optimization_srcs})
 list(APPEND cpsl_srcs ${optimization_srcs})
 
 set(unittests
-
 unittests/sanityCheck.cpp
-
+unittests/MaximizingBlocksTest.cpp
 )
 source_group("unittests" FILES ${unittests})
+list(APPEND cpsl_srcs ${unittests})
 
-add_executable(runUnitTests ${unittests})
-target_link_libraries(runUnitTests gtest gtest_main)
-add_test(runUnitTests runUnitTests)
 
 add_executable(cpsl ${cpsl_srcs})
 
-target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES})
-
- 
+target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES} gtest gtest_main)
+add_test(runUnitTests cpsl -test)
