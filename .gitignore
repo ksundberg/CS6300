@@ -1,2 +1,13 @@
 *.swp
 .idea/*
+CMakeCache.txt
+CMakeFiles
+Makefile
+TestFiles
+cmake_install.cmake
+cpsl
+expressions.cpsl
+out.asm
+parser.cpp
+parser.hpp
+scanner.cpp
