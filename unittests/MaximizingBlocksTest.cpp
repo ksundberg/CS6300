@@ -1,8 +1,18 @@
-#include "gtest/gtest.h"
+﻿#include "gtest/gtest.h"
 #include "../Optimizations/MaximizeBlocks/MaximizeBlocks.hpp"
-#include "../AST_INC/AST/ThreeAddressInstruction.hpp"
+#include "../Optimizations/MaximizeBlocks/VisitedBlocks.hpp"
+#include "../Optimizations/MaximizeBlocks/NumParents.hpp"
 
-TEST(complex_merge, maximizing_blocks_test)
+void singletonCleanUp()
+{
+    //Clean up after singleton
+    auto vb = cs6300::VisitedBlocks::instance();
+    auto np = cs6300::NumParents::instance();
+    np->reset();
+    vb->reset();
+}
+
+TEST(maximizingBlocksTest, complexMerge)
 {
     auto emptyBlock = std::make_shared<cs6300::BasicBlock>();
     auto b0 = std::make_shared<cs6300::BasicBlock>();
@@ -52,9 +62,11 @@ TEST(complex_merge, maximizing_blocks_test)
 
     EXPECT_EQ(4, b2->instructions.size());
     EXPECT_EQ(b4, b2->jumpTo);
+
+    singletonCleanUp();
 }
 
-TEST(simple_merge, maximizing_blocks_test)
+TEST(maximizingBlocksTest, simpleMerge)
 {
     auto emptyBlock = std::make_shared<cs6300::BasicBlock>();
     auto b0 = std::make_shared<cs6300::BasicBlock>();
@@ -82,11 +94,14 @@ TEST(simple_merge, maximizing_blocks_test)
 
     EXPECT_EQ(7, b0->instructions.size());
     EXPECT_EQ(nullptr, b0->jumpTo);
+
+    singletonCleanUp();
 }
 
 
-TEST(simple_merge_check_order, maximizing_blocks_test)
+TEST(maximizingBlocksTest, simpleMergeCheckOrder)
 {
+
     auto emptyBlock = std::make_shared<cs6300::BasicBlock>();
     auto b0 = std::make_shared<cs6300::BasicBlock>();
     auto b1 = std::make_shared<cs6300::BasicBlock>();
@@ -107,7 +122,7 @@ TEST(simple_merge_check_order, maximizing_blocks_test)
     b2->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::StoreMemory, 7, 2, 0));
 
     auto blocks = std::pair<std::shared_ptr<cs6300::BasicBlock>,
-            std::shared_ptr<cs6300::BasicBlock>>(b0, b1);
+            std::shared_ptr<cs6300::BasicBlock>>(b0, b2);
 
     EXPECT_EQ(1, b0->instructions.size());
     EXPECT_NE(nullptr, b0->jumpTo);
@@ -125,4 +140,5 @@ TEST(simple_merge_check_order, maximizing_blocks_test)
     EXPECT_EQ(cs6300::ThreeAddressInstruction::Modulo, b0->instructions[5].op);
     EXPECT_EQ(cs6300::ThreeAddressInstruction::StoreMemory, b0->instructions[6].op);
 
+    singletonCleanUp();
 }
