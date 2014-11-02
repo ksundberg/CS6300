@@ -1,7 +1,6 @@
 #ifndef CS6300_LVALUE_HPP
 #define CS6300_LVALUE_HPP
 
-#include <iostream>
 #include <string>
 #include <memory>
 #include "AST/Expressions/Expression.hpp"
