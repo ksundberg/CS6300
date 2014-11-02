@@ -63,6 +63,16 @@ TEST(maximizingBlocksTest, complexMerge)
     EXPECT_EQ(4, b2->instructions.size());
     EXPECT_EQ(b4, b2->jumpTo);
 
+    //Check order, jumpTos, and branches
+    EXPECT_EQ(b1, b0->jumpTo);
+    EXPECT_EQ(b2, b1->jumpTo);
+    EXPECT_EQ(b6, b1->branchTo);
+    EXPECT_EQ(b4, b2->jumpTo);
+    EXPECT_EQ(b5, b2->branchTo);
+    EXPECT_EQ(b5, b4->jumpTo);
+    EXPECT_EQ(b6, b5->jumpTo);
+    EXPECT_EQ(b1, b5->branchTo);
+
     singletonCleanUp();
 }
 
@@ -99,7 +109,7 @@ TEST(maximizingBlocksTest, simpleMerge)
 }
 
 
-TEST(maximizingBlocksTest, simpleMergeCheckOrder)
+TEST(maximizingBlocksTest, threeBlockeMergeCheckOrder)
 {
 
     auto emptyBlock = std::make_shared<cs6300::BasicBlock>();
