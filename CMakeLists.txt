@@ -8,7 +8,6 @@ BISON_TARGET(CpslParser FrontEnd/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp
 FLEX_TARGET(CpslScanner FrontEnd/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(CpslScanner CpslParser)
 
-ADD_SUBDIRECTORY(Testing/gtest-1.7.0)
 enable_testing()
 
 include_directories(
