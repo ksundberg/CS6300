@@ -18,9 +18,10 @@ public:
     std::string n,
     std::vector<std::pair<std::string, std::shared_ptr<Type>>> a,
     std::shared_ptr<Type> t)
-    : name(n), args(a), returnType(t)
+    : name(n), args(a), returnType(t), label(-1)
   {
   }
+
   std::string name;
   std::vector<std::pair<std::string, std::shared_ptr<Type>>> args;
   std::shared_ptr<Type> returnType;
