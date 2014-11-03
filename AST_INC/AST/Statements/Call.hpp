@@ -12,16 +12,16 @@ namespace cs6300
   class Call : public Statement
   {
     public:
-      Call(std::string n, std::vector<std::shared_ptr<Expression>> args)
+      Call(int l, std::vector<std::shared_ptr<Expression>> args)
           : Statement()
-          , name(n)
+          , label(l)
           , arguments(args)
       {
       }
     std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
 
     private:
-      std::string name;
+      int label;
       std::vector<std::shared_ptr<Expression>> arguments;
   };
 }

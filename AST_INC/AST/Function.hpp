@@ -26,6 +26,10 @@ public:
   std::shared_ptr<Type> returnType;
   bool operator==(const FunctionSignature&) const;
   bool operator<(const FunctionSignature&) const;
+  int getLabel()const;
+private:
+  static int getNextLabel();
+  mutable int label;
 };
 
 class Function
