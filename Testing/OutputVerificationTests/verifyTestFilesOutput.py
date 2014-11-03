@@ -54,7 +54,7 @@ def generateCorrectOutputList(correctOutputFName):
 
 def start():
     passFailLst = []
-    for subdir, dirs, files in os.walk('TestFiles'):
+    for subdir, dirs, files in os.walk('CpslFiles'):
         for f in files:
             path = os.path.join(subdir, f)
             print "---------------------------------------------------------------------------"
