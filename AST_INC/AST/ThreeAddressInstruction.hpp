@@ -33,7 +33,9 @@ public:
     Or,
     ReadChar,
     ReadInt,
+    RestoreFrame,
     Stop,
+    StoreFrame,
     StoreMemory,
     Subtract,
     UnaryMinus,
@@ -50,4 +52,5 @@ public:
 };
 std::ostream& operator<<(std::ostream&, ThreeAddressInstruction);
 }
+
 #endif

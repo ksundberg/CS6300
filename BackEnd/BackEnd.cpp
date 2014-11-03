@@ -64,7 +64,9 @@ void cs6300::writeMIPS(
 
   for (auto&& f : program->functions)
   {
+    fout << "F" << f.first.getLabel() << ":" << std::endl;
     emitMIPS(f.second, fout);
+    fout << "\tjr $ra" << std::endl;
   }
 
   fout << ".data" << std::endl;
