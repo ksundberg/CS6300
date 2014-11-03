@@ -1,3 +1,18 @@
+"""
+To use this script make sure that the cpsl compiler has been built.
+Once built simply run the following from the OutputVerificationTests directory.
+python verifyTestFilesOutput PATH_TO_MARS
+
+The script currently does not support files that request input from the console.
+
+Features:
+    - Verifies that the output of a .cpsl file matches the expected output defined in a file with the name cpslFileNameResults.txt
+    - Provides a print out of the first line which does not match
+    - Gives a print out at the end indicating which files have passed/failed
+    - If either the cpsl file or the output file contain more lines than the other, then the script will output those lines which
+      are missing from the appropriate file.
+
+"""
 import argparse
 import os
 import subprocess
@@ -53,7 +68,8 @@ def generateCorrectOutputList(correctOutputFName):
 
 
 def start():
-    passFailLst = []
+    passLst = []
+    failLst = []
     for subdir, dirs, files in os.walk('CpslFiles'):
         for f in files:
             path = os.path.join(subdir, f)
@@ -61,10 +77,12 @@ def start():
             print "Attempting to compile " + path
             compilerOutput = subprocess.check_output(["../.././cpsl", path])
             if not compilerOutput:
-                print "Successfully compiled " + path
+                print "Successfully compiled " + path + "\n"
                 env = dict(os.environ)
                 env['JAVA_OPTS'] = 'cpslmars'
+                print "Attempting to execute asm file in mars"
                 s = subprocess.check_output(["java", "-jar", args.marspath, "out.asm"], env=env)
+                print "Finished executing asm file in mars\n"
 
                 correctOutputFName = "TestFilesCorrectOutput/" + f[0:-5] + "Results.txt"
 
@@ -74,18 +92,25 @@ def start():
                 print "Beginning comparison of " + path + " with " + correctOutputFName
                 if doMatching(sourceOutput, correctOutput, correctOutputFName, path):
                     print "The source program's output is as expected"
-                    passFailLst.append("The output of " + f + " is correct")
+                    passLst.append(f)
                 else:
                     print "The source program's output does not match the expected output"
-                    passFailLst.append("The output of " + f + " is not correct")
+                    failLst.append(f)
 
-                print "Finished comparison of " + path
+                print "Finished comparison of " + path + "\n"
             else:
-                print "Failed to compile " + path + " with error " + compilerOutput
+                print "Failed to compile " + path + " with error " + compilerOutput + "\n"
             print "---------------------------------------------------------------------------\n"
 
-    for ele in passFailLst:
-        print ele
+    if passLst:
+        print "Files that passed"
+        for ele in passLst:
+            print "\t" +  ele
+
+    if failLst:
+        print "Files that did not pass"
+        for ele in failLst:
+            print "\t" + ele
 
 if __name__ == "__main__":
     start()
