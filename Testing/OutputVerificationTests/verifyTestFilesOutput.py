@@ -172,7 +172,7 @@ def start():
             print "---------------------------------------------------------------------------"
 
             if attemptCompiling(path):
-                expectedOutputPath = "TestFilesCorrectOutput/" + f[0:-5] + "Results.txt"
+                expectedOutputPath = "TestFilesCorrectOutput/" + f[0:-5] + "_ExpectedOutput.txt"
 
                 sourceOutput = executeMars().split("\n")[2:-1]
                 expectedOutput = generateExpectedOutputList(expectedOutputPath)
