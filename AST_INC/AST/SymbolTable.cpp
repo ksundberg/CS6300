@@ -58,7 +58,7 @@ void cs6300::SymbolTable::addVariable(std::string id,
   auto found = m_variables.find(id);
   if (found == m_variables.end())
   {
-      m_variables[id] = std::make_shared<Symbol>(id, type, (m_memorylocation == GLOBAL) ? memory_offset : -memory_offset);
+      m_variables[id] = std::make_shared<Symbol>(id, type,  memory_offset , m_memorylocation);
   }
   memory_offset += type->size();
 }
