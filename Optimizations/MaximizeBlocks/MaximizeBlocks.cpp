@@ -39,6 +39,7 @@ void cs6300::traverse(std::shared_ptr<BasicBlock> block){
       block->instructions.push_back(inst);
     }
     block->branchTo = block->jumpTo->branchTo;
+    block->branchOn = block->jumpTo->branchOn;
     block->jumpTo = block->jumpTo->jumpTo;
   }
 

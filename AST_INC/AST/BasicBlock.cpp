@@ -22,7 +22,6 @@ void cs6300::BasicBlock::initSets()
     m.dead.insert(t.dead.begin(), t.dead.end());
   }
 
-  if (branchOn) m.dead.insert(branchOn);
 
   std::vector<int> t;
   std::set_difference(m.used.begin(),
@@ -39,6 +38,8 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
   cs6300::RegisterScope m;
   switch (tal.op)
   {
+  case ThreeAddressInstruction::CallFunction: // CallFunction should have no allocation
+    break;
   case ThreeAddressInstruction::LoadMemory:
     m.dead.insert(tal.dest);
     m.used.insert(tal.src1);
@@ -73,6 +74,8 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
   {
     switch (i.op)
     {
+    case ThreeAddressInstruction::CallFunction: // CallFunction should have no allocation
+      break;
     case ThreeAddressInstruction::LoadMemoryOffset:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       break;
@@ -94,5 +97,9 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
 
       if (i.src2 && m.count(i.src2)) i.src2 = m[i.src2];
     }
+  }
+  if(branchTo && m.count(branchOn))
+  {
+      branchOn = m[branchOn];
   }
 }

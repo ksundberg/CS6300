@@ -64,28 +64,18 @@ public:
   }
   std::shared_ptr<Expression> address() const
   {
-    auto baseAddr = base->address();
-    auto r = std::dynamic_pointer_cast<RecordType>(base->type());
-    auto members = r->fields;
-
     int offset = 0;
-    for (auto f : members)
-    {
-      if (f.first == field)
-      {
-        break;
-      }
-      offset += f.second->size();
-    }
+    auto pSymbol = m_table->lookupVariable(field);
+    if(pSymbol)
+      offset = pSymbol->memory_offset;
 
-    auto fieldOffset = std::make_shared<LiteralExpression>(offset);
-    return std::make_shared<AdditionExpression>(baseAddr, fieldOffset);
+    return std::make_shared<MemoryAccessExpression>(
+      m_table->getMemoryLocation(),
+      offset);
   }
   std::shared_ptr<Type> type() const
   {
-    auto r = std::dynamic_pointer_cast<RecordType>(base->type());
-    auto members = r->fields;
-    return members[field];
+    return m_table->lookupType(field);
   }
   bool isConst() const
   {
@@ -135,3 +125,4 @@ public:
 }
 
 #endif
+
