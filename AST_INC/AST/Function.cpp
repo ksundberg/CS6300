@@ -3,7 +3,6 @@
 bool cs6300::FunctionSignature::operator==(const FunctionSignature& other)const
 {
   if(name!=other.name) return false;
-  if(returnType!=other.returnType) return false;
   if(args.size() != other.args.size()) return false;
   for(size_t i = 0;i<args.size();++i)
   {

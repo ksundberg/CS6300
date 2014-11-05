@@ -98,6 +98,16 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tlw $ra, -8($sp)" << std::endl;
     out << "\tlw $fp, -4($sp)";
     break;
+  case cs6300::ThreeAddressInstruction::Return:
+    if (i.src1) {
+      out << "move $v1, $" << i.src1 << std::endl;
+      out << "\tjr $ra";
+    }
+    else if (i.dest)
+      out << "move $" << i.dest << ", $v1";
+    else
+      out << "jr $ra";
+    break;
   case cs6300::ThreeAddressInstruction::Stop:
     out << "li $v0, 10" << std::endl;
     out << "\tsyscall";
