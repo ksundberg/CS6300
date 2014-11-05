@@ -199,6 +199,7 @@ int cs6300::AddField(int listIndex, int typeIndex)
   for (auto&& id : *list)
   {
     newType->fields[id] = type;
+    state->getSymTable()->addVariable(id, type);
   }
   return state->types.add(newType);
 }
