@@ -38,6 +38,8 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
   cs6300::RegisterScope m;
   switch (tal.op)
   {
+  case ThreeAddressInstruction::CallFunction: // CallFunction should have no allocation
+    break;
   case ThreeAddressInstruction::LoadMemory:
     m.dead.insert(tal.dest);
     m.used.insert(tal.src1);
@@ -72,6 +74,8 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
   {
     switch (i.op)
     {
+    case ThreeAddressInstruction::CallFunction: // CallFunction should have no allocation
+      break;
     case ThreeAddressInstruction::LoadMemoryOffset:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       break;
