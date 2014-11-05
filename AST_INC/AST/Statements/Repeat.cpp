@@ -8,8 +8,8 @@ cs6300::RepeatStatement::emit()
   auto expr = condition->emit();
   b.second->jumpTo = expr;
   auto exitBlock = std::make_shared<BasicBlock>();
-  expr->jumpTo = exitBlock;
-  expr->branchTo = b.first;
+  expr->jumpTo = b.first;
+  expr->branchTo = exitBlock;
   expr->branchOn = condition->getLabel();
   return std::make_pair(b.first, exitBlock);
 }
