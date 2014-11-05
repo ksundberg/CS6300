@@ -7,7 +7,6 @@ bool cs6300::FunctionSignature::operator==(const FunctionSignature& other)const
   if(args.size() != other.args.size()) return false;
   for(size_t i = 0;i<args.size();++i)
   {
-    if(args[i].first != other.args[i].first) return false;
     if(args[i].second != other.args[i].second) return false;
   }
 
@@ -35,4 +34,19 @@ bool cs6300::FunctionSignature::operator<(const FunctionSignature& other)const
   }
 
   return false;
+}
+
+int cs6300::FunctionSignature::getLabel() const
+{
+  if (label == -1)
+  {
+    label = getNextLabel();
+  }
+  return label;
+}
+
+int cs6300::FunctionSignature::getNextLabel()
+{
+  static int curLabel = 0;
+  return ++curLabel;
 }

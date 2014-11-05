@@ -25,7 +25,8 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "and $" << i.dest << ", $" << i.src1 << ", $" << i.src2;
     break;
   case cs6300::ThreeAddressInstruction::CallFunction:
-    out << "#TODO function call";
+    out << "move $fp, $sp" << std::endl;
+    out << "\tjal F" << i.src1;
     break;
   case cs6300::ThreeAddressInstruction::CopyArgument:
     out << "#TODO copy arguments";
@@ -92,9 +93,19 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tsyscall" << std::endl;
     out << "\tmove $" << i.dest << ", $v0";
     break;
+  case cs6300::ThreeAddressInstruction::RestoreFrame:
+    out << "addi $sp, $sp, 8" << std::endl;
+    out << "\tlw $ra, -8($sp)" << std::endl;
+    out << "\tlw $fp, -4($sp)";
+    break;
   case cs6300::ThreeAddressInstruction::Stop:
     out << "li $v0, 10" << std::endl;
     out << "\tsyscall";
+    break;
+  case cs6300::ThreeAddressInstruction::StoreFrame:
+    out << "sw $fp, -4($sp)" << std::endl;
+    out << "\tsw $ra, -8($sp)" << std::endl;
+    out << "\taddi $sp, $sp, -8";
     break;
   case cs6300::ThreeAddressInstruction::StoreMemory:
     out << "sw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";

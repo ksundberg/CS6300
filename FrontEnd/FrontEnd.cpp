@@ -271,7 +271,25 @@ int cs6300::CallProc(char* name, int argsIndex)
   {
     std::copy(a->begin(), a->end(), std::back_inserter(args));
   }
-  return state->statements.add(std::make_shared<cs6300::Call>(name, args));
+
+  // build signature to get function label
+  auto program = state->getProgram();
+  auto sigArgs = std::vector<std::pair<std::string, std::shared_ptr<Type>>>();
+  if (a)
+    for (int i = 0; i < a->size(); i++)
+      sigArgs.push_back(std::make_pair<std::string, std::shared_ptr<Type>>("", (*a)[i]->type()));
+  auto functionSig = FunctionSignature(name, sigArgs, nullptr);
+  int label = -1;
+  for (auto iter : program->functions)
+    if (iter.first == functionSig) { // find matching signature and get label
+      label = iter.first.getLabel();
+      auto val = iter.second;
+      program->functions.erase(iter.first); // we need label on function sig to be updated, so reinsert
+      program->functions[iter.first] = val;
+      break;
+    }
+
+  return state->statements.add(std::make_shared<cs6300::Call>(label, args));
 }
 
 int cs6300::CharExpr(char a)
