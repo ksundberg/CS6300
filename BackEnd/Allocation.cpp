@@ -28,7 +28,14 @@ std::set<std::shared_ptr<cs6300::BasicBlock>> allBlocks(
 
     while (at)
     {
-      if (!all.count(at)) all.insert(at);
+      if (!all.count(at))
+      {
+          all.insert(at);
+      }
+      else
+      {
+          break;
+      }
 
       if (at->branchTo && !all.count(at->branchTo))
         todo.emplace_back(at->branchTo);
