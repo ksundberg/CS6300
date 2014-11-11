@@ -66,6 +66,7 @@ int While(int expr, int statement);
 int WriteExpr(int expr);
 int WriteExpr(int statment,int expr);
 void AddConstant(char *, int);
+void AddLiteral(std::string, int);
 void AddFunction(int signature);
 void AddFunction(int signature,int body);
 void AddMain(int);

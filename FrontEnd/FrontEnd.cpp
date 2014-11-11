@@ -653,6 +653,12 @@ void cs6300::AddConstant(char* ident, int expr)
   state->getSymTable()->addConstant(ident, e);
   delete (ident);
 }
+void cs6300::AddLiteral(std::string ident, int expr)
+{
+    auto state = FrontEndState::instance();
+    auto e = state->expressions.get(expr);
+    state->getSymTable()->addConstant(ident, e);
+}
 void cs6300::AddFunction(int signature)
 {
   auto state = FrontEndState::instance();
@@ -683,6 +689,13 @@ void cs6300::AddMain(int body)
   b->push_back(std::make_shared<cs6300::StopStatement>());
   auto program = state->getProgram();
   std::copy(b->begin(), b->end(), std::back_inserter(program->main));
+
+  int t = state->expressions.add(std::make_shared<cs6300::LiteralExpression>(1));
+  int f = state->expressions.add(std::make_shared<cs6300::LiteralExpression>(0));
+  AddLiteral("true",t);
+  AddLiteral("TRUE",t);
+  AddLiteral("false",f);
+  AddLiteral("FALSE",f);
 }
 void cs6300::AddType(char* ident, int typeIndex)
 {
