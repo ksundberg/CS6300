@@ -1,0 +1,21 @@
+VAR a,b:integer;
+
+BEGIN
+  write("2+2=",2+2,'\n');
+  write("2*2=",2*2,'\n');
+  write("2/2=",2/2,'\n');
+  write("2-2=",2-2,'\n');
+  a:=5;
+  b:=2;
+  write("a+b=",a+b,'\n');
+  write("a-b=",a-b,'\n');
+  write("a*b=",a*b,'\n');
+  write("a/b=",a/b,'\n');
+  write("a%b=",a%b,'\n');
+  write("a=b=",a=b,'\n');
+  write("a<b=",a<b,'\n');
+  write("a>b=",a>b,'\n');
+  write("a<>b=",a<>b,'\n');
+  write("a<=b=",a<=b,'\n');
+  write("a>=b=",a>=b,'\n');
+END.
