@@ -34,7 +34,7 @@ public:
   std::shared_ptr<Expression> address() const
   {
     return std::make_shared<MemoryAccessExpression>(
-      m_table->getMemoryLocation(),
+      m_table->lookupVariable(name)->m_memorylocation,
       m_table->lookupVariable(name)->memory_offset);
   }
   std::shared_ptr<Type> type() const
@@ -70,7 +70,7 @@ public:
       offset = pSymbol->memory_offset;
 
     return std::make_shared<MemoryAccessExpression>(
-      m_table->getMemoryLocation(),
+      pSymbol->m_memorylocation,
       offset);
   }
   std::shared_ptr<Type> type() const

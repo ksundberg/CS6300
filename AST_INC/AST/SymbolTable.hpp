@@ -11,7 +11,8 @@ enum MemoryLocation
 {
   GLOBAL = 28,
   STACK = 29,
-  DYNAMIC = 30
+  DYNAMIC = 30,
+  PARAMS = 31
 }; // TODO These memory location labels should be moved to Backend Mips
    // generation
 
@@ -23,7 +24,7 @@ class SymbolTable
 public:
   SymbolTable(std::shared_ptr<SymbolTable> parent,
               cs6300::MemoryLocation memory_location)
-    : m_parent(parent), m_memorylocation(memory_location)
+    : m_memorylocation(memory_location), m_parent(parent), m_memory_offset(0)
   {
   }
 
@@ -41,6 +42,7 @@ public:
 private:
   cs6300::MemoryLocation m_memorylocation;
   std::shared_ptr<SymbolTable> m_parent;
+  int  m_memory_offset;
   std::map<std::string, std::shared_ptr<Type>> m_types;
   std::map<std::string, std::shared_ptr<Symbol>> m_variables;
   std::map<std::string, std::shared_ptr<Expression>> m_consts;

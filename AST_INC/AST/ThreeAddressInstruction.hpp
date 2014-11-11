@@ -52,6 +52,17 @@ public:
   int src2;
 };
 std::ostream& operator<<(std::ostream&, ThreeAddressInstruction);
+
+inline bool operator<(const ThreeAddressInstruction &lhs, const ThreeAddressInstruction &rhs)
+    {
+        int result1 = lhs.op;
+        result1 = (result1 << 3) ^ lhs.src1;
+        result1 = (result1 << 3) ^ lhs.src2;
+        int result2 = rhs.op;
+        result2 = (result2 << 3) ^ rhs.src1;
+        result2 = (result2 << 3) ^ rhs.src2;
+        return result1 < result2;
+    }
 }
 
 #endif

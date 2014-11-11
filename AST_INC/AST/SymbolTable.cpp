@@ -54,11 +54,10 @@ void cs6300::SymbolTable::addType(std::string id, std::shared_ptr<Type> type)
 void cs6300::SymbolTable::addVariable(std::string id,
                                       std::shared_ptr<Type> type)
 {
-  static int memory_offset = 0;
   auto found = m_variables.find(id);
   if (found == m_variables.end())
   {
-    m_variables[id] = std::make_shared<Symbol>(id, type, memory_offset);
+      m_variables[id] = std::make_shared<Symbol>(id, type,  m_memory_offset , m_memorylocation);
   }
-  memory_offset += type->size();
+ m_memory_offset += type->size();
 }
