@@ -34,6 +34,7 @@ public:
     ReadChar,
     ReadInt,
     RestoreFrame,
+    Return,
     Stop,
     StoreFrame,
     StoreMemory,

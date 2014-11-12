@@ -345,7 +345,7 @@ Expression : CHARCONSTSY                         {$$ = cs6300::CharExpr($1);}
            | SUCCSY LPARENSY Expression RPARENSY {$$ = cs6300::SuccExpr($3);}
            ;
 
-FunctionCall : IDENTSY LPARENSY Arguments RPARENSY {$$ = cs6300::CallExpr($1,$3);}
+FunctionCall : IDENTSY LPARENSY OptArguments RPARENSY {$$ = cs6300::CallExpr($1,$3);}
              ;
 
 LValue : LValue DOTSY IDENTSY {$$ = cs6300::LoadMember($1,$3);}

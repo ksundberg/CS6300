@@ -8,10 +8,14 @@ BISON_TARGET(CpslParser FrontEnd/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp
 FLEX_TARGET(CpslScanner FrontEnd/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(CpslScanner CpslParser)
 
+enable_testing()
+
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR} 
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/AST_INC)
+    ${CMAKE_CURRENT_SOURCE_DIR}/AST_INC
+    ${gtest_SOURCE_DIR}/include
+    ${gtest_SOURCE_DIR})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x")
 set(cpsl_srcs main.cpp)
@@ -155,8 +159,11 @@ Optimizations/MaximizeBlocks/MaximizeBlocks.cpp
 source_group("Optimizations" FILES ${optimization_srcs})
 list(APPEND cpsl_srcs ${optimization_srcs})
 
+file(GLOB unittests Testing/UnitTests/*.cpp)
+list(APPEND cpsl_srcs ${unittests})
+
 add_executable(cpsl ${cpsl_srcs})
 
-target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES})
+target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES} gtest)
 
-
+add_test(NAME runUnitTests COMMAND cpsl -test)

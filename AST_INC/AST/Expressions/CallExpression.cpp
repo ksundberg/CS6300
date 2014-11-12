@@ -1,16 +1,21 @@
 #include "CallExpression.hpp"
 
 cs6300::CallExpression::CallExpression(
-    std::string n, std::vector<std::shared_ptr<Expression>> args)
+    int l, std::vector<std::shared_ptr<Expression>> args, std::shared_ptr<Type> t)
     : Expression()
-    , name(n)
+    , funcLabel(l)
     , actualArguments(args)
+    , returnType(t)
 {
 }
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::CallExpression::emit() const
 {
   auto result = std::make_shared<BasicBlock>();
+
+  result->instructions.push_back(ThreeAddressInstruction(
+    ThreeAddressInstruction::StoreFrame, 0, 0, 0));
+
   for(auto&& arg:actualArguments)
   {
     auto code = arg->emit();
@@ -22,16 +27,23 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::CallExpression::emit() const
                                       arg->getLabel(),
                                       0);
   }
-  result->instructions.emplace_back(ThreeAddressInstruction::CallFunction,
-                                    getLabel(),
-                                    0 /*TODO:Placeholder for function*/,
-                                    0);
+
+  result->instructions.push_back(ThreeAddressInstruction(
+    ThreeAddressInstruction::CallFunction, 0, funcLabel, 0)); // set fp and jump
+  result->instructions.push_back(ThreeAddressInstruction(
+    ThreeAddressInstruction::Return, getLabel(), 0, 0)); // get return value into register
+
+  // TODO: move sp back according to arguments size
+
+  result->instructions.push_back(ThreeAddressInstruction(
+    ThreeAddressInstruction::RestoreFrame, 0, 0, 0));
+
   return result;
 }
 
 std::shared_ptr<cs6300::Type> cs6300::CallExpression::type() const
 {
-  return nullptr;
+  return returnType;
 }
 
 int cs6300::CallExpression::value() const { return 0; }

@@ -258,8 +258,29 @@ int cs6300::CallExpr(char* a, int b)
   {
     std::copy(pArgs->begin(), pArgs->end(), std::back_inserter(args));
   }
+
+
+  // build signature to get function label
+  auto program = state->getProgram();
+  auto sigArgs = std::vector<std::pair<std::string, std::shared_ptr<Type>>>();
+  if (pArgs)
+    for (int i = 0; i < pArgs->size(); i++)
+      sigArgs.push_back(std::make_pair<std::string, std::shared_ptr<Type>>("", (*pArgs)[i]->type()));
+  auto functionSig = FunctionSignature(a, sigArgs, nullptr);
+  int label = -1;
+  std::shared_ptr<Type> type = nullptr;
+  for (auto iter : program->functions)
+    if (iter.first == functionSig) { // find matching signature and get label
+      label = iter.first.getLabel();
+      type = iter.first.returnType;
+      auto val = iter.second;
+      program->functions.erase(iter.first); // we need label on function sig to be updated, so reinsert
+      program->functions[iter.first] = val;
+      break;
+    }
+
   return state->expressions.add(
-    std::make_shared<cs6300::CallExpression>(a, args));
+    std::make_shared<cs6300::CallExpression>(label, args, type));
 }
 
 int cs6300::CallProc(char* name, int argsIndex)
@@ -632,6 +653,12 @@ void cs6300::AddConstant(char* ident, int expr)
   state->getSymTable()->addConstant(ident, e);
   delete (ident);
 }
+void cs6300::AddLiteral(std::string ident, int expr)
+{
+    auto state = FrontEndState::instance();
+    auto e = state->expressions.get(expr);
+    state->getSymTable()->addConstant(ident, e);
+}
 void cs6300::AddFunction(int signature)
 {
   auto state = FrontEndState::instance();
@@ -662,6 +689,13 @@ void cs6300::AddMain(int body)
   b->push_back(std::make_shared<cs6300::StopStatement>());
   auto program = state->getProgram();
   std::copy(b->begin(), b->end(), std::back_inserter(program->main));
+
+  int t = state->expressions.add(std::make_shared<cs6300::LiteralExpression>(1));
+  int f = state->expressions.add(std::make_shared<cs6300::LiteralExpression>(0));
+  AddLiteral("true",t);
+  AddLiteral("TRUE",t);
+  AddLiteral("false",f);
+  AddLiteral("FALSE",f);
 }
 void cs6300::AddType(char* ident, int typeIndex)
 {
