@@ -65,7 +65,7 @@ public:
   std::shared_ptr<Expression> address() const
   {
     int offset = 0;
-    auto pSymbol = m_table->lookupVariable(field);
+    auto pSymbol = m_table->lookupRecordVariable(field, base->type());
     if(pSymbol)
       offset = pSymbol->memory_offset;
 

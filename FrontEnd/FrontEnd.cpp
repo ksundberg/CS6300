@@ -189,6 +189,11 @@ int cs6300::AddExpr(int a, int b)
   return binaryOp<AdditionExpression>(a, b);
 }
 
+namespace
+{
+  std::map<std::string, std::shared_ptr<cs6300::Type> > currentRecordFields;
+}
+
 int cs6300::AddField(int listIndex, int typeIndex)
 {
   auto state = FrontEndState::instance();
@@ -199,7 +204,7 @@ int cs6300::AddField(int listIndex, int typeIndex)
   for (auto&& id : *list)
   {
     newType->fields[id] = type;
-    state->getSymTable()->addVariable(id, type);
+    currentRecordFields[id] = type;
   }
   return state->types.add(newType);
 }
@@ -344,7 +349,14 @@ int cs6300::FieldList(int typeIndex, int field)
   auto state = FrontEndState::instance();
   if (typeIndex == -1)
   {
-    return state->types.add(std::make_shared<cs6300::RecordType>());
+    auto pRecord = std::make_shared<cs6300::RecordType>();
+    std::for_each(currentRecordFields.begin(), currentRecordFields.end(),
+      [&](std::pair<std::string, std::shared_ptr<cs6300::Type>> recFieldPair)
+      {
+        pRecord->fields[recFieldPair.first] = recFieldPair.second;        
+        state->getSymTable()->addRecordVariable(recFieldPair.first, pRecord);
+      });
+    return state->types.add(pRecord);
   }
   else
   {
