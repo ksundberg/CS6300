@@ -128,6 +128,8 @@ def attemptCompiling(path):
     Return: True if the compiler succeeded, false otherwise
     """
 
+    compilerOutput = None
+
     print "Attempting to compile " + path
     if args.cpslpath:
         compilerOutput = subprocess.check_output([args.cpslpath, path])
