@@ -63,6 +63,7 @@ For example, if we had a cpsl file names simple.cpsl, then the resulting expecte
 ```
 simple_ExpectedOutput.txt.
 ```
+One created simple add the output you expect to the file. Something to note, if your program generates a blank at either the begining or the end of the program, then make sure to add it to the expected output file.
 
 #### Sample Output
 If everything is as expected, then one would see the following output.
