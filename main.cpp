@@ -3,7 +3,6 @@
 #include "FrontEnd/FrontEnd.hpp"
 #include "Optimizations/Optimizer.hpp"
 #include "BackEnd/BackEnd.hpp"
-#include "gtest/gtest.h"
 
 int main(int argc, char* argv[])
 {
@@ -13,12 +12,7 @@ int main(int argc, char* argv[])
     std::string inFile = "in.cpsl";
 
     if (argc < 2) return EXIT_FAILURE;
-    if(argv[1] == std::string("-test"))
-    {
-      ::testing::InitGoogleTest(&argc, argv);
-      return RUN_ALL_TESTS();
-    }
-    else if (argv[1] == std::string("-o"))
+    if (argv[1] == std::string("-o"))
     {
       outFile = argv[2];
       inFile = argv[3];
@@ -38,6 +32,7 @@ int main(int argc, char* argv[])
       f.second = cs6300::optimizer(f.second);
     }
     cs6300::writeMIPS(intermediate, outFile);
+    std::cout << "Finished.";
   }
   catch (std::exception& e)
   {
