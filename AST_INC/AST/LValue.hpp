@@ -113,7 +113,7 @@ public:
   }
   bool isConst() const
   {
-    return expr->isConst();
+    return false;
   }
   std::shared_ptr<Expression> value() const
   {
