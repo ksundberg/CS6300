@@ -15,7 +15,7 @@ std::pair<std::shared_ptr<cs6300::BasicBlock>,
 cs6300::optimizer(std::pair<std::shared_ptr<cs6300::BasicBlock>,
                             std::shared_ptr<cs6300::BasicBlock>> original)
 {
-  maximizeBlocks(original);
+  //maximizeBlocks(original);
   return original;
 }
 
