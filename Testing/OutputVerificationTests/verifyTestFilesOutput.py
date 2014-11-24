@@ -1,4 +1,6 @@
 """
+Requires python 2.7 or later
+
 To use this script make sure that the cpsl compiler has been built.
 Once built simply run the following from the OutputVerificationTests directory.
 python verifyTestFilesOutput PATH_TO_MARS
@@ -12,6 +14,7 @@ Features:
       are missing from the appropriate file.
 
 """
+import sys
 import argparse
 import os
 import subprocess
@@ -20,6 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("marspath", help="The path to a Mars.jar file")
 parser.add_argument("-pm", "--pmars", help="Writes mars output to the console", action="store_true")
 parser.add_argument("-v", "--verbose", help="Prints additional details during matching", action="store_true")
+parser.add_argument("-c", "--cpslpath", type=str, default=None)
 args = parser.parse_args()
 
 
@@ -49,15 +53,13 @@ def compareOutputs(sourceOutput, expectedOutput):
                expectedOutput - The expected output returned by generateExpectedOutputList
     Return: True when both the sourceOutput and expectedOutput lists contain positionally equal elements, False otherwise.
     """
-    print "The length of the program's output is as expected"
+    print "The length of the program's output is as expected\n"
     for i, e in enumerate(expectedOutput):
         if e != sourceOutput[i]:
-            print ("Invalid output at line " + str(i + 1) + " when comparing program output " + sourceOutput[i]
-                   + " with correct output " + e)
+            print "\tInvalid output at line " + str(i + 1) + ": " + e + "\n\tExpected: " + sourceOutput[i] + "\n"
             return False
         elif args.verbose:
             print "\tThe line " + str(i + 1) + ": " + sourceOutput[i] + " is as expected"
-
     return True
 
 
@@ -125,8 +127,19 @@ def attemptCompiling(path):
     Arguments: path - The path of a cpsl file
     Return: True if the compiler succeeded, false otherwise
     """
+
+    compilerOutput = None
+
     print "Attempting to compile " + path
-    compilerOutput = subprocess.check_output(["../.././cpsl", path])
+    if args.cpslpath:
+        compilerOutput = subprocess.check_output([args.cpslpath, path])
+    else:
+        if not os.path.exists("../../cpsl"):
+            print "cpsl does not exist. Did you forget to build the compiler?"
+            print "Exiting program"
+            sys.exit()
+
+        compilerOutput = subprocess.check_output(["../.././cpsl", path])
 
     if not compilerOutput:
         print "Successfully compiled " + path + "\n"
@@ -181,7 +194,7 @@ def start():
                     failLst.append(f)
                     continue
 
-                print "Beginning comparison of " + path + " with " + expectedOutputPath
+                print "Beginning comparison of " + path + " with " + expectedOutputPath + "\n"
 
                 if doMatching(sourceOutput, expectedOutput, path):
                     print "The source program's output is as expected"
@@ -190,7 +203,7 @@ def start():
                     print "The source program's output does not match the expected output"
                     failLst.append(f)
 
-                print "Finished comparison of " + path + "\n"
+                print "\nFinished comparison of " + path + "\n"
             else:
                 failLst.append(f)
 
