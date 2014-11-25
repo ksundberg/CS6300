@@ -3,7 +3,7 @@
 #include "Expressions/Expression.hpp"
 #include "Type.hpp"
 #include <map>
-#include <string>
+#include <sstream>
 #include "Symbol.hpp"
 
 std::shared_ptr<cs6300::Type> cs6300::SymbolTable::lookupType(std::string id)
@@ -20,6 +20,17 @@ std::shared_ptr<cs6300::Symbol> cs6300::SymbolTable::lookupVariable(
   auto found = m_variables.find(id);
   if (found != m_variables.end()) return found->second;
   if (m_parent) return m_parent->lookupVariable(id);
+  return nullptr;
+}
+
+std::shared_ptr<cs6300::Symbol> cs6300::SymbolTable::lookupRecordVariable(
+  std::string id, std::shared_ptr<Type> type)
+{
+  std::stringstream idStrm;
+  idStrm << id << type;
+  auto found = m_variables.find(idStrm.str());
+  if (found != m_variables.end()) return found->second;
+  if (m_parent) return m_parent->lookupRecordVariable(id, type);
   return nullptr;
 }
 
@@ -61,3 +72,17 @@ void cs6300::SymbolTable::addVariable(std::string id,
   }
  m_memory_offset += type->size();
 }
+
+void cs6300::SymbolTable::addRecordVariable(std::string id,
+                                            std::shared_ptr<Type> type)
+{
+  std::stringstream idStrm;
+  idStrm << id << type;
+  auto found = m_variables.find(idStrm.str());
+  if (found == m_variables.end())
+  {
+      m_variables[idStrm.str()] = std::make_shared<Symbol>(id, type,  m_memory_offset , m_memorylocation);
+  }
+ m_memory_offset += type->size();
+}
+

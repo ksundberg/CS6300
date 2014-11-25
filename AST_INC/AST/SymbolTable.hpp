@@ -30,10 +30,12 @@ public:
 
   std::shared_ptr<Type> lookupType(std::string id);
   std::shared_ptr<Symbol> lookupVariable(std::string id);
+  std::shared_ptr<Symbol> lookupRecordVariable(std::string id, std::shared_ptr<Type> type);
   std::shared_ptr<Expression> lookupConstant(std::string id);
   void addConstant(std::string id, std::shared_ptr<Expression>);
   void addType(std::string id, std::shared_ptr<Type>);
   void addVariable(std::string id, std::shared_ptr<Type> type);
+  void addRecordVariable(std::string id, std::shared_ptr<Type> type);
 
   cs6300::MemoryLocation getMemoryLocation() { return m_memorylocation; }
 
