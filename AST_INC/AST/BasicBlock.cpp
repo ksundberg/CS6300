@@ -83,6 +83,7 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       break;
     case ThreeAddressInstruction::StoreMemory:
+    case ThreeAddressInstruction::StoreParameter:
     case ThreeAddressInstruction::AddValue:
     case ThreeAddressInstruction::LoadMemory:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];

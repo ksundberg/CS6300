@@ -25,7 +25,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "and $" << i.dest << ", $" << i.src1 << ", $" << i.src2;
     break;
   case cs6300::ThreeAddressInstruction::CallFunction:
-    out << "move $fp, $sp" << std::endl;
+//    out << "move $fp, $sp" << std::endl;
     out << "\tjal F" << i.src1;
     break;
   case cs6300::ThreeAddressInstruction::CopyArgument:
@@ -61,9 +61,12 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     break;
   case cs6300::ThreeAddressInstruction::LoadMemoryOffset:
     if (i.src1 == cs6300::GLOBAL)
-      out << "addi $" << i.dest << ", $gp, " << i.src2;
+      out << "addi $" << i.dest << ", $gp, " << i.src2 << " # Load a global";
     else if (i.src1 == cs6300::STACK)
-      out << "addi $" << i.dest << ", $sp, -" << i.src2;
+      out << "addi $" << i.dest << ", $fp, -" << i.src2 << " # Load a variable";
+    else if (i.src1 == cs6300::FRAME)
+      out << "addi $" << i.dest << ", $fp, " << i.src2+12 << " # Load a parameter";
+
     break;
 
   case cs6300::ThreeAddressInstruction::LoadValue:
@@ -120,6 +123,9 @@ std::ostream& cs6300::operator<<(std::ostream& out,
   case cs6300::ThreeAddressInstruction::StoreMemory:
     out << "sw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
     break;
+  case cs6300::ThreeAddressInstruction::StoreParameter:
+    out << "sw $" << i.dest << ", " << i.src2 << "($sp)   # storing a parameter";
+    break;
   case cs6300::ThreeAddressInstruction::Subtract:
     out << "sub $" << i.dest << ", $" << i.src1 << ", $" << i.src2;
     break;
@@ -140,12 +146,12 @@ std::ostream& cs6300::operator<<(std::ostream& out,
   case cs6300::ThreeAddressInstruction::WriteInt:
     out << "li $v0, 1" << std::endl;
     out << "\tmove $a0, $" << i.src1 << std::endl;
-    out << "\tsyscall";
+    out << "\tsyscall    # writing an integer";
     break;
   case cs6300::ThreeAddressInstruction::WriteStr:
     out << "li $v0, 4" << std::endl;
     out << "\tla $a0, SL" << i.src1 << std::endl;
-    out << "\tsyscall";
+    out << "\tsyscall    # writing a string";
     break;
   default:
     std::cerr << "Unknown TAL address" << i.op << " " << i.src1 << " " << i.src2

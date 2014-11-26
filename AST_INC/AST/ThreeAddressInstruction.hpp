@@ -38,6 +38,7 @@ public:
     Stop,
     StoreFrame,
     StoreMemory,
+    StoreParameter,
     Subtract,
     UnaryMinus,
     WriteBool,
