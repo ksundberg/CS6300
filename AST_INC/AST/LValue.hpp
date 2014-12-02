@@ -33,9 +33,12 @@ public:
   }
   std::shared_ptr<Expression> address() const
   {
+      auto entry =m_table->lookupVariable(name);
+      auto location =entry->m_memorylocation;
+      auto offset = entry->memory_offset;
     return std::make_shared<MemoryAccessExpression>(
-      m_table->lookupVariable(name)->m_memorylocation,
-      m_table->lookupVariable(name)->memory_offset);
+      location,
+     offset);
   }
   std::shared_ptr<Type> type() const
   {

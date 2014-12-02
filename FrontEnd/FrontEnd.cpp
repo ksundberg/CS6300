@@ -687,6 +687,9 @@ void cs6300::AddFunction(int signature, int body)
 {
   auto state = FrontEndState::instance();
   auto sig = state->signatures.get(signature);
+    for (auto&& param : sig->args) {
+        state->getSymTable()->addParameter(param.first, param.second);
+    }
   auto b = state->statementLists.get(body);
   auto program = state->getProgram();
   program->functions[*sig] =
