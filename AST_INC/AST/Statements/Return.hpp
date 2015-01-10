@@ -12,12 +12,9 @@ namespace cs6300
 class ReturnStatement : public Statement
 {
 public:
-  ReturnStatement(std::shared_ptr<Expression> v)
-      : Statement()
-      , value(v)
-  {
-  }
+  ReturnStatement(std::shared_ptr<Expression> v) : Statement(), value(v) {}
   std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
+
 private:
   std::shared_ptr<Expression> value;
 };

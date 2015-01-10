@@ -9,20 +9,18 @@
 
 namespace cs6300
 {
-  class Call : public Statement
+class Call : public Statement
+{
+public:
+  Call(int l, std::vector<std::shared_ptr<Expression>> args)
+    : Statement(), label(l), arguments(args)
   {
-    public:
-      Call(int l, std::vector<std::shared_ptr<Expression>> args)
-          : Statement()
-          , label(l)
-          , arguments(args)
-      {
-      }
-    std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
+  }
+  std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
 
-    private:
-      int label;
-      std::vector<std::shared_ptr<Expression>> arguments;
-  };
+private:
+  int label;
+  std::vector<std::shared_ptr<Expression>> arguments;
+};
 }
 #endif

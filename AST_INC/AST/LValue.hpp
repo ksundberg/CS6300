@@ -33,23 +33,17 @@ public:
   }
   std::shared_ptr<Expression> address() const
   {
-      auto entry =m_table->lookupVariable(name);
-      auto location =entry->m_memorylocation;
-      auto offset = entry->memory_offset;
-    return std::make_shared<MemoryAccessExpression>(
-      location,
-     offset);
+    auto entry = m_table->lookupVariable(name);
+    auto location = entry->m_memorylocation;
+    auto offset = entry->memory_offset;
+    return std::make_shared<MemoryAccessExpression>(location, offset);
   }
   std::shared_ptr<Type> type() const
   {
-    if (isConst())
-      return m_table->lookupConstant(name)->type();
+    if (isConst()) return m_table->lookupConstant(name)->type();
     return m_table->lookupVariable(name)->type;
   }
-  bool isConst() const
-  {
-    return (m_table->lookupConstant(name) != nullptr);
-  }
+  bool isConst() const { return (m_table->lookupConstant(name) != nullptr); }
   std::shared_ptr<Expression> value() const
   {
     return m_table->lookupConstant(name);
@@ -69,25 +63,14 @@ public:
   {
     int offset = 0;
     auto pSymbol = m_table->lookupRecordVariable(field, base->type());
-    if(pSymbol)
-      offset = pSymbol->memory_offset;
+    if (pSymbol) offset = pSymbol->memory_offset;
 
     return std::make_shared<MemoryAccessExpression>(
-      pSymbol->m_memorylocation,
-      offset);
+      pSymbol->m_memorylocation, offset);
   }
-  std::shared_ptr<Type> type() const
-  {
-    return m_table->lookupType(field);
-  }
-  bool isConst() const
-  {
-    return false;
-  }
-  std::shared_ptr<Expression> value() const
-  {
-    return 0;
-  }
+  std::shared_ptr<Type> type() const { return m_table->lookupType(field); }
+  bool isConst() const { return false; }
+  std::shared_ptr<Expression> value() const { return 0; }
   std::shared_ptr<LValue> base;
   std::string field;
 };
@@ -114,18 +97,11 @@ public:
     auto t = std::dynamic_pointer_cast<ArrayType>(base->type());
     return t->baseType;
   }
-  bool isConst() const
-  {
-    return expr->isConst();
-  }
-  std::shared_ptr<Expression> value() const
-  {
-    return expr;
-  }
+  bool isConst() const { return expr->isConst(); }
+  std::shared_ptr<Expression> value() const { return expr; }
   std::shared_ptr<LValue> base;
   std::shared_ptr<Expression> expr;
 };
 }
 
 #endif
-

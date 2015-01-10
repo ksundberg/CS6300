@@ -30,11 +30,11 @@ std::set<std::shared_ptr<cs6300::BasicBlock>> allBlocks(
     {
       if (!all.count(at))
       {
-          all.insert(at);
+        all.insert(at);
       }
       else
       {
-          break;
+        break;
       }
 
       if (at->branchTo && !all.count(at->branchTo))
@@ -139,7 +139,10 @@ std::vector<std::set<int>> cs6300::regDeps(
     res.insert(res.begin(), prop);
   }
 
-  if (b->branchTo) { res.push_back(std::set<int>{b->branchOn}); };
+  if (b->branchTo)
+  {
+    res.push_back(std::set<int>{b->branchOn});
+  };
 
   return res;
 }

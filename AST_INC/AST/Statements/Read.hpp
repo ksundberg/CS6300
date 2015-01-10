@@ -12,16 +12,11 @@ namespace cs6300
 class Read : public Statement
 {
 public:
-  Read(std::shared_ptr<LValue> v)
-      : Statement()
-      , values()
+  Read(std::shared_ptr<LValue> v) : Statement(), values()
   {
     values.push_back(v);
   }
-  void append(std::shared_ptr<LValue> v)
-  {
-    values.push_back(v);
-  }
+  void append(std::shared_ptr<LValue> v) { values.push_back(v); }
 
   std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
 

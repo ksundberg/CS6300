@@ -10,21 +10,18 @@
 namespace cs6300
 {
 class WhileStatement : public Statement
+{
+public:
+  WhileStatement(std::shared_ptr<Expression> c,
+                 std::vector<std::shared_ptr<Statement>> statements)
+    : Statement(), condition(c), body(statements)
   {
-    public:
-      WhileStatement(std::shared_ptr<Expression> c,
-                     std::vector<std::shared_ptr<Statement>> statements)
-          : Statement()
-          , condition(c)
-          , body(statements)
-      {
-      }
-      std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>
-      emit();
+  }
+  std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
 
-    private:
-      std::shared_ptr<Expression> condition;
-      std::vector<std::shared_ptr<Statement>> body;
-  };
+private:
+  std::shared_ptr<Expression> condition;
+  std::vector<std::shared_ptr<Statement>> body;
+};
 }
 #endif

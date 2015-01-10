@@ -10,6 +10,7 @@ public:
   static std::shared_ptr<ProcessLog> getInstance();
   void nextLine();
   void logError(std::string message);
+
 private:
   ProcessLog();
   size_t m_line;
@@ -17,4 +18,3 @@ private:
 };
 
 #endif
-
