@@ -44,7 +44,7 @@ for file in $files; do
         continue
     fi
 
-    ${CPSLDIR}${BINARY} -o ${ASM}${file} ${TESTDIR}${file} 
+    ${CPSLDIR}${BINARY} -o ${ASM}${file} ${TESTDIR}${file}
 
     if [ $? -ne 0 ]; then
         echo "Error running: ${CPSLDIR}${BINARY} -o ${ASM}${file} ${TESTDIR}${file}"
@@ -52,16 +52,42 @@ for file in $files; do
         continue
     fi
 
-    echo -n "Executing: ${file}"
-    java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} nc 1000000 ${ASM}${file} > ${RESULTS}${file}
-
+    echo -n "Executing: ${file}..."
+    java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} me ic nc 1000000 ${ASM}${file} 2> stderr.txt > ${RESULTS}${file}
     if [ $? -ne 0 ]; then
-        echo "Error running: java -jar nc 1000000 ${MARSDIR}${MARSJAR} ${ASM}${file} > ${RESULTS}${file}"
+        echo "  Error running: java -jar nc 1000000 ${MARSDIR}${MARSJAR} ${ASM}${file} > ${RESULTS}${file}"
+        cat stderr.txt
         ret=1
         continue
     fi
-    echo "...finished"
 
-    cmp ${RESULTS}${file} ${BASE}${file}
+    le=$(cat stderr.txt | grep -oE "[[:digit:]]+")
+    be=$(cat ${BASE}count_${file} 2>/dev/null)
+
+    if [ -z "${le}" ]; then
+        le="?"
+    fi
+
+    if [ -z "${be}" ]; then
+        be="?"
+    fi
+
+    div=$(awk "BEGIN {printf \"%d\",${le}*100/${be}}" 2>/dev/null)
+
+    if [ $? -ne 0 ]; then
+        div="?"
+    fi
+
+    echo "finished  ${le}/${be} ${div}%"
+    echo ${le} > ${RESULTS}count_${file}
+
+    diff=$(diff ${RESULTS}${file} ${BASE}${file})
+
+    if [ $? -ne 0 ]; then
+        echo "  diff ${RESULTS}${file} ${BASE}${file}"
+        echo $diff
+        echo
+    fi
 done
+rm -f stderr.txt
 exit $ret
