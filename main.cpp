@@ -3,7 +3,10 @@
 #include "FrontEnd/FrontEnd.hpp"
 #include "Optimizations/Optimizer.hpp"
 #include "BackEnd/BackEnd.hpp"
-#include "gtest/gtest.h"
+
+// Unit testing header
+#define CATCH_CONFIG_RUNNER
+#include "Testing/catch.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -12,13 +15,15 @@ int main(int argc, char* argv[])
     std::string outFile = "out.asm";
     std::string inFile = "in.cpsl";
 
-    if (argc < 2) return EXIT_FAILURE;
+    if (argc < 2)
+    {
+        return EXIT_FAILURE;
+    }
     if(argv[1] == std::string("-test"))
     {
-      ::testing::InitGoogleTest(&argc, argv);
-      return RUN_ALL_TESTS();
+        return Catch::Session().run(0, argv );
     }
-    else if (argv[1] == std::string("-o"))
+    if (argv[1] == std::string("-o"))
     {
       outFile = argv[2];
       inFile = argv[3];
