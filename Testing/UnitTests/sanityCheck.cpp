@@ -1,8 +1,6 @@
-#include <iostream>
+#include "../catch.hpp"
 
-#include "gtest/gtest.h"
-
-TEST(sampleTestCase, sampleTest)
+TEST_CASE("sampleTestCase", "[sampleTest]")
 {
-    EXPECT_EQ(1, 1);
+    REQUIRE(1 == 1);
 }

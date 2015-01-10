@@ -14,6 +14,7 @@ INITIALIZE_EASYLOGGINGPP
 #include "ProcessLog.hpp"
 
 namespace po = boost::program_options;
+#include "logger.h"
 
 int main(int argc, char* argv[])
 {
@@ -84,7 +85,6 @@ int main(int argc, char* argv[])
     LOG(INFO) << "Compiling " << inFile << " to " << outFile;
 
     ProcessLog::getInstance()->set_infile(inFile);
-    LOG(INFO) << "Compiling " << inFile << " to " << outFile;
 
     auto program = cs6300::parseCPSL(inFile);
     auto optimized = cs6300::optimizer(program);

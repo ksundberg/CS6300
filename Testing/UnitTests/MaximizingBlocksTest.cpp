@@ -1,4 +1,4 @@
-﻿#include "gtest/gtest.h"
+﻿#include "../catch.hpp"
 #include "../Optimizations/MaximizeBlocks/MaximizeBlocks.hpp"
 #include "../Optimizations/MaximizeBlocks/VisitedBlocks.hpp"
 #include "../Optimizations/MaximizeBlocks/NumParents.hpp"
@@ -12,7 +12,7 @@ void singletonCleanUp()
     vb->reset();
 }
 
-TEST(maximizingBlocksTest, complexMerge)
+TEST_CASE("Complex", "[maximizeBlocks]")
 {
     auto emptyBlock = std::make_shared<cs6300::BasicBlock>();
     auto b0 = std::make_shared<cs6300::BasicBlock>();
@@ -57,23 +57,23 @@ TEST(maximizingBlocksTest, complexMerge)
 
     cs6300::maximizeBlocks(blocks);
 
-    EXPECT_EQ(4, b2->instructions.size());
-    EXPECT_EQ(b4, b2->jumpTo);
+    REQUIRE(4 == b2->instructions.size());
+    REQUIRE(b4 == b2->jumpTo);
 
     //Check order, jumpTos, and branches
-    EXPECT_EQ(b1, b0->jumpTo);
-    EXPECT_EQ(b2, b1->jumpTo);
-    EXPECT_EQ(b6, b1->branchTo);
-    EXPECT_EQ(b4, b2->jumpTo);
-    EXPECT_EQ(b5, b2->branchTo);
-    EXPECT_EQ(b5, b4->jumpTo);
-    EXPECT_EQ(b6, b5->jumpTo);
-    EXPECT_EQ(b1, b5->branchTo);
+    REQUIRE(b1 == b0->jumpTo);
+    REQUIRE(b2 == b1->jumpTo);
+    REQUIRE(b6 == b1->branchTo);
+    REQUIRE(b4 == b2->jumpTo);
+    REQUIRE(b5 == b2->branchTo);
+    REQUIRE(b5 == b4->jumpTo);
+    REQUIRE(b6 == b5->jumpTo);
+    REQUIRE(b1 == b5->branchTo);
 
     singletonCleanUp();
 }
 
-TEST(maximizingBlocksTest, simpleMerge)
+TEST_CASE("Simple", "[maximizeBlocks]")
 {
     auto emptyBlock = std::make_shared<cs6300::BasicBlock>();
     auto b0 = std::make_shared<cs6300::BasicBlock>();
@@ -93,19 +93,19 @@ TEST(maximizingBlocksTest, simpleMerge)
 
     auto blocks = cs6300::FlowGraph(b0, b1);
 
-    EXPECT_EQ(1, b0->instructions.size());
-    EXPECT_NE(nullptr, b0->jumpTo);
+    REQUIRE(1 == b0->instructions.size());
+    REQUIRE(nullptr != b0->jumpTo);
 
     cs6300::maximizeBlocks(blocks);
 
-    EXPECT_EQ(7, b0->instructions.size());
-    EXPECT_EQ(nullptr, b0->jumpTo);
+    REQUIRE(7 == b0->instructions.size());
+    REQUIRE(nullptr == b0->jumpTo);
 
     singletonCleanUp();
 }
 
 
-TEST(maximizingBlocksTest, threeBlockeMergeCheckOrder)
+TEST_CASE("Check Block Merge Order", "[maximizeBlocks]")
 {
 
     auto emptyBlock = std::make_shared<cs6300::BasicBlock>();
@@ -129,21 +129,21 @@ TEST(maximizingBlocksTest, threeBlockeMergeCheckOrder)
 
     auto blocks = cs6300::FlowGraph(b0, b2);
 
-    EXPECT_EQ(1, b0->instructions.size());
-    EXPECT_NE(nullptr, b0->jumpTo);
+    REQUIRE(1 == b0->instructions.size());
+    REQUIRE(nullptr != b0->jumpTo);
 
     cs6300::maximizeBlocks(blocks);
 
-    EXPECT_EQ(7, b0->instructions.size());
-    EXPECT_EQ(nullptr, b0->jumpTo);
+    REQUIRE(7 == b0->instructions.size());
+    REQUIRE(nullptr == b0->jumpTo);
 
-    EXPECT_EQ(cs6300::ThreeAddressInstruction::LoadValue, b0->instructions[0].op);
-    EXPECT_EQ(cs6300::ThreeAddressInstruction::LoadValue, b0->instructions[1].op);
-    EXPECT_EQ(cs6300::ThreeAddressInstruction::LoadValue, b0->instructions[2].op);
-    EXPECT_EQ(cs6300::ThreeAddressInstruction::IsLess, b0->instructions[3].op);
-    EXPECT_EQ(cs6300::ThreeAddressInstruction::LoadValue, b0->instructions[4].op);
-    EXPECT_EQ(cs6300::ThreeAddressInstruction::Modulo, b0->instructions[5].op);
-    EXPECT_EQ(cs6300::ThreeAddressInstruction::StoreMemory, b0->instructions[6].op);
+    REQUIRE(cs6300::ThreeAddressInstruction::LoadValue == b0->instructions[0].op);
+    REQUIRE(cs6300::ThreeAddressInstruction::LoadValue == b0->instructions[1].op);
+    REQUIRE(cs6300::ThreeAddressInstruction::LoadValue == b0->instructions[2].op);
+    REQUIRE(cs6300::ThreeAddressInstruction::IsLess == b0->instructions[3].op);
+    REQUIRE(cs6300::ThreeAddressInstruction::LoadValue == b0->instructions[4].op);
+    REQUIRE(cs6300::ThreeAddressInstruction::Modulo == b0->instructions[5].op);
+    REQUIRE(cs6300::ThreeAddressInstruction::StoreMemory == b0->instructions[6].op);
 
     singletonCleanUp();
 }

@@ -3,6 +3,7 @@
 
 #include <boost/filesystem.hpp>
 #include <string>
+INITIALIZE_EASYLOGGINGPP
 
 const char* cpsl_log::getLine() {
     return std::to_string(ProcessLog::getInstance()->line()).c_str();

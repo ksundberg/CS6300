@@ -17,6 +17,7 @@ bison_target(CpslParser FrontEnd/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp
 flex_target(CpslScanner FrontEnd/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 add_flex_bison_dependency(CpslScanner CpslParser)
 
+enable_testing()
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -30,8 +31,9 @@ set(EXTRA_COMPILE_FLAGS "-g -std=c++0x")
 set(LCOV_FLAGS "--coverage")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_COMPILE_FLAGS} ${LCOV_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LCOV_FLAGS}")
-set(cpsl_srcs main.cpp)
-source_group("" FILES ${cpsl_srcs})
+
+set(main_srcs main.cpp)
+source_group("Main" FILES ${cpsl_srcs})
 
 set(frontend_srcs
   FrontEnd/FrontEnd.hpp
@@ -40,7 +42,7 @@ set(frontend_srcs
   ${FLEX_CpslScanner_OUTPUTS}
 )
 source_group("FrontEnd" FILES ${frontend_srcs})
-list(APPEND cpsl_srcs ${frontend_srcs})
+set(cpsl_srcs ${frontend_srcs})
 
 set(ast_srcs
   AST_INC/AST/BasicBlock.cpp
@@ -178,6 +180,33 @@ set(optimization_srcs
 source_group("Optimizations" FILES ${optimization_srcs})
 list(APPEND cpsl_srcs ${optimization_srcs})
 
-add_executable(cpsl ${cpsl_srcs})
+list(APPEND cpsl_srcs ${unittests})
+
+file(GLOB unittests Testing/UnitTests/*.cpp)
+set(test_srcs ${unittests}
+    Testing/main.cpp
+    ${BISON_CpslParser_OUTPUTS}
+    ${FLEX_CpslScanner_OUTPUTS}
+    )
+
+
+set(CMAKE_INSTALL_RPATH ".")
+add_library(cpsl_common SHARED ${cpsl_srcs})
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set_target_properties(cpsl_common PROPERTIES MACOSX_RPATH "@loader_path/../lib")
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+add_executable(cpsl ${main_srcs})
+add_executable(cpsl_test ${test_srcs})
+
+target_link_libraries(cpsl_common ${FLEX_LIBRARIES} ${BISON_LIBRARIES})
+target_link_libraries(cpsl cpsl_common)
+target_link_libraries(cpsl_test cpsl_common)
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/log/log.conf DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/log)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tester/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/tester)
 
 target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES} ${Boost_LIBRARIES})
+
+add_test(UnitTests cpsl_test)
