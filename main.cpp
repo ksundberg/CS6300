@@ -3,13 +3,20 @@
 #include "FrontEnd/FrontEnd.hpp"
 #include "Optimizations/Optimizer.hpp"
 #include "BackEnd/BackEnd.hpp"
+#include "ProcessLog.hpp"
 
 // Unit testing header
 #define CATCH_CONFIG_RUNNER
 #include "Testing/catch.hpp"
 
+// Logging header
+#include "logger.h"
+INITIALIZE_EASYLOGGINGPP
+
 int main(int argc, char* argv[])
 {
+  cpsl_log::init_log(argc, argv);
+
   try
   {
     std::string outFile = "out.asm";
@@ -33,6 +40,9 @@ int main(int argc, char* argv[])
       inFile = argv[1];
     }
 
+    ProcessLog::getInstance()->set_infile(inFile);
+    LOG(INFO) << "Compiling " << inFile << " to " << outFile;
+
     auto program = cs6300::parseCPSL(inFile);
     auto optimized = cs6300::optimizer(program);
     auto intermediate =
@@ -46,7 +56,7 @@ int main(int argc, char* argv[])
   }
   catch (std::exception& e)
   {
-    std::cout << "Error: " << e.what();
+    LOG(ERROR) << "Error: " << e.what();
     return EXIT_FAILURE;
   }
   catch (...)

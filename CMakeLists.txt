@@ -20,6 +20,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/AST_INC
+    ${CMAKE_CURRENT_SOURCE_DIR}/log
     ${WINDOWS_GNU}
     )
 
@@ -33,8 +34,6 @@ source_group("" FILES ${cpsl_srcs})
 set(frontend_srcs
 FrontEnd/FrontEnd.hpp
 FrontEnd/FrontEnd.cpp
-FrontEnd/ProcessLog.cpp
-FrontEnd/ProcessLog.hpp
 ${BISON_CpslParser_OUTPUTS}
 ${FLEX_CpslScanner_OUTPUTS}
 )
@@ -60,6 +59,13 @@ set(ast_srcs
   AST_INC/AST/Type.cpp
   AST_INC/AST/Type.hpp
 )
+
+set(log_srcs
+    log/logger.cpp
+    log/ProcessLog.cpp
+)
+source_group("log" FILES ${log_srcs})
+list(APPEND cpsl_srcs ${log_srcs})
 
 source_group("FrontEnd" FILES ${ast_srcs})
 list(APPEND cpsl_srcs ${ast_srcs})
