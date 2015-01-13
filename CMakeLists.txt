@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 project(cpsl)
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    LIST(APPEND CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    FIND_LIBRARY(FL_LIBRARY NAMES libfl fl DOC C:/Program Files (x86)/GnuWin32/lib/libfl.a)
+    set(WINDOWS_GNU "C:/Program Files (x86)/GnuWin32/include")
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
 find_package(BISON)
 find_package(FLEX)
 
@@ -13,7 +19,9 @@ enable_testing()
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/AST_INC)
+    ${CMAKE_CURRENT_SOURCE_DIR}/AST_INC
+    ${WINDOWS_GNU}
+    )
 
 set(EXTRA_COMPILE_FLAGS "-g -std=c++0x")
 set(LCOV_FLAGS "--coverage")
