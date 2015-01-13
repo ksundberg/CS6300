@@ -17,12 +17,16 @@
 
 #include "AST/BasicBlock.hpp"
 
-namespace cs6300 {
+namespace cs6300
+{
 
+std::map<std::shared_ptr<cs6300::BasicBlock>,
+         std::vector<std::shared_ptr<cs6300::BasicBlock>>>
+buildParentMap(std::shared_ptr<cs6300::BasicBlock> flowGraph);
 
-std::map<std::shared_ptr<cs6300::BasicBlock>, std::vector<std::shared_ptr<cs6300::BasicBlock>>> buildParentMap(std::shared_ptr<cs6300::BasicBlock> flowGraph);
-
-void traverseFlowGraph(std::shared_ptr<cs6300::BasicBlock> sourceBlock, std::function<bool(std::shared_ptr<cs6300::BasicBlock>)>  action);
+void traverseFlowGraph(
+  std::shared_ptr<cs6300::BasicBlock> sourceBlock,
+  std::function<bool(std::shared_ptr<cs6300::BasicBlock>)> action);
 }
 
 #endif /* defined(__cpsl__TraverseBasicBlock__) */

@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 project(cpsl)
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    LIST(APPEND CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    FIND_LIBRARY(FL_LIBRARY NAMES libfl fl DOC C:/Program Files (x86)/GnuWin32/lib/libfl.a)
+    set(WINDOWS_GNU "C:/Program Files (x86)/GnuWin32/include")
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
 find_package(BISON)
 find_package(FLEX)
 
@@ -11,21 +17,23 @@ ADD_FLEX_BISON_DEPENDENCY(CpslScanner CpslParser)
 enable_testing()
 
 include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR} 
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/AST_INC
-    ${gtest_SOURCE_DIR}/include
-    ${gtest_SOURCE_DIR})
+    ${CMAKE_CURRENT_SOURCE_DIR}/log
+    ${WINDOWS_GNU}
+    )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x")
+set(EXTRA_COMPILE_FLAGS "-g -std=c++0x")
+set(LCOV_FLAGS "--coverage")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_COMPILE_FLAGS} ${LCOV_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LCOV_FLAGS}")
 set(cpsl_srcs main.cpp)
 source_group("" FILES ${cpsl_srcs})
 
 set(frontend_srcs
 FrontEnd/FrontEnd.hpp
 FrontEnd/FrontEnd.cpp
-FrontEnd/ProcessLog.cpp
-FrontEnd/ProcessLog.hpp
 ${BISON_CpslParser_OUTPUTS}
 ${FLEX_CpslScanner_OUTPUTS}
 )
@@ -51,6 +59,13 @@ set(ast_srcs
   AST_INC/AST/Type.cpp
   AST_INC/AST/Type.hpp
 )
+
+set(log_srcs
+    log/logger.cpp
+    log/ProcessLog.cpp
+)
+source_group("log" FILES ${log_srcs})
+list(APPEND cpsl_srcs ${log_srcs})
 
 source_group("FrontEnd" FILES ${ast_srcs})
 list(APPEND cpsl_srcs ${ast_srcs})
@@ -164,6 +179,6 @@ list(APPEND cpsl_srcs ${unittests})
 
 add_executable(cpsl ${cpsl_srcs})
 
-target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES} gtest)
+target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES})
 
 add_test(NAME runUnitTests COMMAND cpsl -test)

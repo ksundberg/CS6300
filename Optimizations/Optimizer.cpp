@@ -1,5 +1,6 @@
 #include "Optimizer.hpp"
 #include "MaximizeBlocks/MaximizeBlocks.hpp"
+#include "logger.h"
 
 #include <sstream>
 
@@ -15,6 +16,7 @@ std::pair<std::shared_ptr<cs6300::BasicBlock>,
 cs6300::optimizer(std::pair<std::shared_ptr<cs6300::BasicBlock>,
                             std::shared_ptr<cs6300::BasicBlock>> original)
 {
+  LOG(DEBUG) << "Optimizing flowgraph";
   maximizeBlocks(original);
   return original;
 }

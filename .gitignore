@@ -11,3 +11,4 @@ out.asm
 parser.cpp
 parser.hpp
 scanner.cpp
+tags

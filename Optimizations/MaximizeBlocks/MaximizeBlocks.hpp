@@ -12,11 +12,10 @@
 
 namespace cs6300
 {
-  void maximizeBlocks(std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>);
+void maximizeBlocks(
+  std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>);
 
-  void traverse(std::shared_ptr<BasicBlock> block);
+void traverse(std::shared_ptr<BasicBlock> block);
 }
 
-
 #endif
-

@@ -1,12 +1,14 @@
 #include "If.hpp"
 #include <memory>
 
-std::pair<std::shared_ptr<cs6300::BasicBlock>, std::shared_ptr<cs6300::BasicBlock>> cs6300::IfStatement::emit()
+std::pair<std::shared_ptr<cs6300::BasicBlock>,
+          std::shared_ptr<cs6300::BasicBlock>>
+cs6300::IfStatement::emit()
 {
   auto entryPoint = std::make_shared<BasicBlock>();
   auto cur = entryPoint;
   auto exitPoint = std::make_shared<BasicBlock>();
-  for(auto&& c:clauses)
+  for (auto&& c : clauses)
   {
     auto exp = c.first->emit();
     auto thenPart = emitList(c.second);
@@ -19,5 +21,5 @@ std::pair<std::shared_ptr<cs6300::BasicBlock>, std::shared_ptr<cs6300::BasicBloc
   auto elsePart = emitList(elseClause);
   cur->jumpTo = elsePart.first;
   elsePart.second->jumpTo = exitPoint;
-  return std::make_pair(entryPoint , exitPoint);
+  return std::make_pair(entryPoint, exitPoint);
 }

@@ -12,10 +12,10 @@ public:
   std::shared_ptr<Type> type() const;
   int value() const;
   bool isConst() const;
+
 private:
   std::shared_ptr<Type> m_type;
   int m_value;
 };
 }
 #endif
-

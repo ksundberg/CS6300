@@ -25,7 +25,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "and $" << i.dest << ", $" << i.src1 << ", $" << i.src2;
     break;
   case cs6300::ThreeAddressInstruction::CallFunction:
-//    out << "move $fp, $sp" << std::endl;
+    //    out << "move $fp, $sp" << std::endl;
     out << "\tjal F" << i.src1;
     break;
   case cs6300::ThreeAddressInstruction::CopyArgument:
@@ -65,7 +65,8 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     else if (i.src1 == cs6300::STACK)
       out << "addi $" << i.dest << ", $fp, -" << i.src2 << " # Load a variable";
     else if (i.src1 == cs6300::FRAME)
-      out << "addi $" << i.dest << ", $fp, " << i.src2+12 << " # Load a parameter";
+      out << "addi $" << i.dest << ", $fp, " << i.src2 + 12
+          << " # Load a parameter";
 
     break;
 
@@ -102,7 +103,8 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tlw $fp, -4($sp)";
     break;
   case cs6300::ThreeAddressInstruction::Return:
-    if (i.src1) {
+    if (i.src1)
+    {
       out << "move $v1, $" << i.src1 << std::endl;
       out << "\tjr $ra";
     }
@@ -124,7 +126,8 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "sw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
     break;
   case cs6300::ThreeAddressInstruction::StoreParameter:
-    out << "sw $" << i.dest << ", " << i.src2 << "($sp)   # storing a parameter";
+    out << "sw $" << i.dest << ", " << i.src2
+        << "($sp)   # storing a parameter";
     break;
   case cs6300::ThreeAddressInstruction::Subtract:
     out << "sub $" << i.dest << ", $" << i.src1 << ", $" << i.src2;

@@ -23,13 +23,17 @@ class SymbolTable
 public:
   SymbolTable(std::shared_ptr<SymbolTable> parent,
               cs6300::MemoryLocation memory_location)
-    : m_memorylocation(memory_location), m_parent(parent), m_memory_offset(0), m_param_offset(0) 
+    : m_memorylocation(memory_location)
+    , m_parent(parent)
+    , m_memory_offset(0)
+    , m_param_offset(0)
   {
   }
 
   std::shared_ptr<Type> lookupType(std::string id);
   std::shared_ptr<Symbol> lookupVariable(std::string id);
-  std::shared_ptr<Symbol> lookupRecordVariable(std::string id, std::shared_ptr<Type> type);
+  std::shared_ptr<Symbol> lookupRecordVariable(std::string id,
+                                               std::shared_ptr<Type> type);
   std::shared_ptr<Expression> lookupConstant(std::string id);
   void addConstant(std::string id, std::shared_ptr<Expression>);
   void addType(std::string id, std::shared_ptr<Type>);
@@ -44,8 +48,8 @@ public:
 private:
   cs6300::MemoryLocation m_memorylocation;
   std::shared_ptr<SymbolTable> m_parent;
-  int  m_memory_offset;
-    int m_param_offset;
+  int m_memory_offset;
+  int m_param_offset;
   std::map<std::string, std::shared_ptr<Type>> m_types;
   std::map<std::string, std::shared_ptr<Symbol>> m_variables;
   std::map<std::string, std::shared_ptr<Expression>> m_consts;

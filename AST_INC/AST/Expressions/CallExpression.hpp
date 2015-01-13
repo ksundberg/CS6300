@@ -6,11 +6,14 @@ namespace cs6300
 class CallExpression : public Expression
 {
 public:
-  CallExpression(int, std::vector<std::shared_ptr<Expression> >, std::shared_ptr<Type>);
+  CallExpression(int,
+                 std::vector<std::shared_ptr<Expression>>,
+                 std::shared_ptr<Type>);
   std::shared_ptr<BasicBlock> emit() const;
   std::shared_ptr<Type> type() const;
   int value() const;
   bool isConst() const;
+
 private:
   int funcLabel;
   std::vector<std::shared_ptr<Expression>> actualArguments;
@@ -18,4 +21,3 @@ private:
 };
 }
 #endif
-

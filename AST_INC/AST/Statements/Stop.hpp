@@ -8,9 +8,7 @@ namespace cs6300
 class StopStatement : public Statement
 {
 public:
-  StopStatement() : Statement()
-  {
-  }
+  StopStatement() : Statement() {}
   std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
 };
 }
