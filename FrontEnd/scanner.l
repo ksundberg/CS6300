@@ -2,7 +2,8 @@
 #include <cstring>
 #include <cstdlib>
 #include "parser.hpp"
-#include "FrontEnd/ProcessLog.hpp"
+#include "ProcessLog.hpp"
+#include "logger.h"
 %}
 
 %option nounput
@@ -80,6 +81,6 @@ write|WRITE         {return WRITESY;}
 \$.*$ {ProcessLog::getInstance()->nextLine();}
 \n {ProcessLog::getInstance()->nextLine();}
 [ \t]+ {}
-. {ProcessLog::getInstance()->logError(std::string("Unexpected token ")+yytext);}
+. {LOG(ERROR) << std::string("Unexpected token ")+yytext;}
 
 %%

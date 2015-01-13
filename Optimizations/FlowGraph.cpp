@@ -21,7 +21,8 @@ std::map<std::shared_ptr<cs6300::BasicBlock>, std::vector<std::shared_ptr<cs6300
 }
 
 
-void cs6300::traverseFlowGraph(std::shared_ptr<cs6300::BasicBlock> sourceBlock, std::function<bool(std::shared_ptr<cs6300::BasicBlock>)> action) {
+void cs6300::traverseFlowGraph(std::shared_ptr<cs6300::BasicBlock> sourceBlock, std::function<bool(std::shared_ptr<cs6300::BasicBlock>)> action)
+{
   auto searchBlock = sourceBlock;
   std::set<std::shared_ptr<cs6300::BasicBlock>> seenList;
   std::vector<std::shared_ptr<cs6300::BasicBlock>> visitStack;
@@ -105,5 +106,5 @@ std::string cs6300::flowGraphDot(cs6300::FlowGraph graph)
   for(auto& s : edges)
     digraph += s + "\n";
 
-  return digraph + "}";
+  return digraph + "\n}";
 }
