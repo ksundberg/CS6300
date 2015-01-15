@@ -12,11 +12,11 @@ TESTDIR=TestFiles/ #test files directory (where all test.cpsl files are)
 RESULTS=Result/ #results folder (where to store cpsl run results for comparison)
 BASE=Base/ #base folder name (contains results to compare against)
 
-CPSLDIR=../build/ #where cpsl compiler binary lives
+CPSLDIR=../ #where cpsl compiler binary lives
 BINARY=cpsl #binary name
 ASM=asm/ #tmp directory for asm files for mars to run
 
-MARSDIR=~/src/mars/
+MARSDIR=./
 MARSJAR=Mars4_4.jar
 
 if [ -z $1 ]; then

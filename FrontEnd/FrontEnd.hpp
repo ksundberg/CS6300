@@ -9,6 +9,7 @@ namespace cs6300
 {
 /*Returns the Abstract Syntax Tree that is the result of parsing filename*/
 std::shared_ptr<Program> parseCPSL(std::string filename);
+void compileCPSL(std::string inFile, std::string outFile);
 /*Various functions called from the bison generated parser*/
 int AddExpr(int a, int b);
 int AddField(int list,int type);

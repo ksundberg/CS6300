@@ -44,6 +44,8 @@
 #include "AST/Statements/Write.hpp"
 #include "AST/Type.hpp"
 #include "AST/Function.hpp"
+#include "Optimizations/Optimizer.hpp"
+#include "BackEnd/BackEnd.hpp"
 
 extern FILE* yyin;
 extern int yyparse();
@@ -182,6 +184,20 @@ std::shared_ptr<cs6300::Program> cs6300::parseCPSL(std::string filename)
   FrontEndState::instance()->initParse();
   yyparse();
   return FrontEndState::instance()->getProgram();
+}
+
+void cs6300::compileCPSL(std::string inFile, std::string outFile)
+{
+    auto program = cs6300::parseCPSL(inFile);
+    auto optimized = cs6300::optimizer(program);
+    auto intermediate =
+      std::make_shared<cs6300::IntermediateRepresentationProgram>(optimized);
+    intermediate->main = cs6300::optimizer(intermediate->main);
+    for (auto&& f : intermediate->functions)
+    {
+      f.second = cs6300::optimizer(f.second);
+    }
+    cs6300::writeMIPS(intermediate, outFile);
 }
 
 int cs6300::AddExpr(int a, int b)
