@@ -2,7 +2,7 @@
 #include "BackEnd/Allocation.hpp"
 #include "AST/BasicBlock.hpp"
 
-#define TAL cs6300::ThreeAddressInstruction
+using TAL = cs6300::ThreeAddressInstruction;
 
 TEST_CASE("AllocationTest", "regalloc")
 {
