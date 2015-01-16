@@ -1,6 +1,6 @@
-#include "../catch.hpp"
-#include "../BackEnd/Allocation.hpp"
-#include "../AST_INC/AST/BasicBlock.hpp"
+#include "catch.hpp"
+#include "BackEnd/Allocation.hpp"
+#include "AST/BasicBlock.hpp"
 
 #define TAL cs6300::ThreeAddressInstruction
 

@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "VisitedBlocks.hpp"
-#include "../../AST_INC/AST/BasicBlock.hpp"
+#include "AST/BasicBlock.hpp"
 
 std::shared_ptr<cs6300::VisitedBlocks> cs6300::VisitedBlocks::m_instance;
 
