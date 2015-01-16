@@ -9,9 +9,7 @@
 #include "BackEnd/BackEnd.hpp"
 #include "ProcessLog.hpp"
 
-// Logging header
 #include "logger.h"
-INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char* argv[])
 {
@@ -25,41 +23,42 @@ int main(int argc, char* argv[])
     std::string outFile = "";
     std::string inFile = "";
 
-    while ((opt = getopt (argc, argv, "Ffo:i:")) != -1)
+    while ((opt = getopt(argc, argv, "Ffo:i:")) != -1)
     {
       switch (opt)
       {
-        case 'f':
-          emitFlowGraph = true;
-          break;
-        case 'F':
-          emitOptimizedFlowGraph = true;
-          break;
-        case 'o':
-          outFile = optarg;
-          break;
-        case 'i':
-          inFile = optarg;
-          break;
-        case '?':
-          std::cerr << "Unknown option character '" << char(optopt) << "'" << std::endl;
-          return EXIT_FAILURE;
-        default:
-          // All options must precede filenames
-          break;
+      case 'f':
+        emitFlowGraph = true;
+        break;
+      case 'F':
+        emitOptimizedFlowGraph = true;
+        break;
+      case 'o':
+        outFile = optarg;
+        break;
+      case 'i':
+        inFile = optarg;
+        break;
+      case '?':
+        std::cerr << "Unknown option character '" << char(optopt) << "'"
+                  << std::endl;
+        return EXIT_FAILURE;
+      default:
+        // All options must precede filenames
+        break;
       }
     }
 
-    if(emitFlowGraph && emitOptimizedFlowGraph)
+    if (emitFlowGraph && emitOptimizedFlowGraph)
     {
       std::cerr << "Warning: generating multiple flow graphs" << std::endl;
     }
 
-    if(inFile == "")
+    if (inFile == "")
     {
-      if(argc > 1 && argv[argc-1][0] != '-')
+      if (argc > 1 && argv[argc - 1][0] != '-')
       {
-        inFile = argv[argc-1];
+        inFile = argv[argc - 1];
       }
       else
       {
@@ -67,11 +66,10 @@ int main(int argc, char* argv[])
       }
     }
 
-    if(outFile == "") outFile = "out.asm";
+    if (outFile == "") outFile = "out.asm";
     LOG(INFO) << "Compiling " << inFile << " to " << outFile;
 
     ProcessLog::getInstance()->set_infile(inFile);
-    LOG(INFO) << "Compiling " << inFile << " to " << outFile;
 
     auto program = cs6300::parseCPSL(inFile);
     auto optimized = cs6300::optimizer(program);
@@ -79,8 +77,7 @@ int main(int argc, char* argv[])
       std::make_shared<cs6300::IntermediateRepresentationProgram>(optimized);
 
     /* Print out flowgraph */
-    if(emitFlowGraph)
-      std::cout << cs6300::flowGraphDot(intermediate->main);
+    if (emitFlowGraph) std::cout << cs6300::flowGraphDot(intermediate->main);
 
     intermediate->main = cs6300::optimizer(intermediate->main);
     for (auto&& f : intermediate->functions)
@@ -89,7 +86,7 @@ int main(int argc, char* argv[])
     }
 
     /* Print out optimized flowgraph */
-    if(emitOptimizedFlowGraph)
+    if (emitOptimizedFlowGraph)
       std::cout << cs6300::flowGraphDot(intermediate->main);
 
     cs6300::writeMIPS(intermediate, outFile);

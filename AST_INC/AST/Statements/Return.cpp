@@ -6,7 +6,8 @@ cs6300::FlowGraph cs6300::ReturnStatement::emit()
 {
   auto block = std::make_shared<BasicBlock>();
 
-  if (value) {
+  if (value)
+  {
     auto b = value->emit();
     std::copy(b->instructions.begin(),
               b->instructions.end(),
@@ -15,9 +16,10 @@ cs6300::FlowGraph cs6300::ReturnStatement::emit()
     block->instructions.push_back(ThreeAddressInstruction(
       ThreeAddressInstruction::Return, 0, value->getLabel(), 0));
   }
-  else {
-    block->instructions.push_back(ThreeAddressInstruction(
-      ThreeAddressInstruction::Return, 0, 0, 0));
+  else
+  {
+    block->instructions.push_back(
+      ThreeAddressInstruction(ThreeAddressInstruction::Return, 0, 0, 0));
   }
 
   return std::make_pair(block, block);

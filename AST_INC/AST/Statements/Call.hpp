@@ -9,20 +9,18 @@
 
 namespace cs6300
 {
-  class Call : public Statement
+class Call : public Statement
+{
+public:
+  Call(int l, std::vector<std::shared_ptr<Expression>> args)
+    : Statement(), label(l), arguments(args)
   {
-    public:
-      Call(int l, std::vector<std::shared_ptr<Expression>> args)
-          : Statement()
-          , label(l)
-          , arguments(args)
-      {
-      }
-      cs6300::FlowGraph emit();
+  }
+  cs6300::FlowGraph emit();
 
-    private:
-      int label;
-      std::vector<std::shared_ptr<Expression>> arguments;
-  };
+private:
+  int label;
+  std::vector<std::shared_ptr<Expression>> arguments;
+};
 }
 #endif

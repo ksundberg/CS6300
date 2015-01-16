@@ -44,6 +44,8 @@
 #include "AST/Statements/Write.hpp"
 #include "AST/Type.hpp"
 #include "AST/Function.hpp"
+#include "Optimizations/Optimizer.hpp"
+#include "BackEnd/BackEnd.hpp"
 
 extern FILE* yyin;
 extern int yyparse();
@@ -184,6 +186,20 @@ std::shared_ptr<cs6300::Program> cs6300::parseCPSL(std::string filename)
   return FrontEndState::instance()->getProgram();
 }
 
+void cs6300::compileCPSL(std::string inFile, std::string outFile)
+{
+  auto program = cs6300::parseCPSL(inFile);
+  auto optimized = cs6300::optimizer(program);
+  auto intermediate =
+    std::make_shared<cs6300::IntermediateRepresentationProgram>(optimized);
+  intermediate->main = cs6300::optimizer(intermediate->main);
+  for (auto&& f : intermediate->functions)
+  {
+    f.second = cs6300::optimizer(f.second);
+  }
+  cs6300::writeMIPS(intermediate, outFile);
+}
+
 int cs6300::AddExpr(int a, int b)
 {
   return binaryOp<AdditionExpression>(a, b);
@@ -191,7 +207,7 @@ int cs6300::AddExpr(int a, int b)
 
 namespace
 {
-  std::map<std::string, std::shared_ptr<cs6300::Type> > currentRecordFields;
+std::map<std::string, std::shared_ptr<cs6300::Type>> currentRecordFields;
 }
 
 int cs6300::AddField(int listIndex, int typeIndex)
@@ -264,22 +280,24 @@ int cs6300::CallExpr(char* a, int b)
     std::copy(pArgs->begin(), pArgs->end(), std::back_inserter(args));
   }
 
-
   // build signature to get function label
   auto program = state->getProgram();
   auto sigArgs = std::vector<std::pair<std::string, std::shared_ptr<Type>>>();
   if (pArgs)
     for (int i = 0; i < pArgs->size(); i++)
-      sigArgs.push_back(std::make_pair<std::string, std::shared_ptr<Type>>("", (*pArgs)[i]->type()));
+      sigArgs.push_back(std::make_pair<std::string, std::shared_ptr<Type>>(
+        "", (*pArgs)[i]->type()));
   auto functionSig = FunctionSignature(a, sigArgs, nullptr);
   int label = -1;
   std::shared_ptr<Type> type = nullptr;
   for (auto iter : program->functions)
-    if (iter.first == functionSig) { // find matching signature and get label
+    if (iter.first == functionSig)
+    { // find matching signature and get label
       label = iter.first.getLabel();
       type = iter.first.returnType;
       auto val = iter.second;
-      program->functions.erase(iter.first); // we need label on function sig to be updated, so reinsert
+      program->functions.erase(
+        iter.first); // we need label on function sig to be updated, so reinsert
       program->functions[iter.first] = val;
       break;
     }
@@ -303,14 +321,17 @@ int cs6300::CallProc(char* name, int argsIndex)
   auto sigArgs = std::vector<std::pair<std::string, std::shared_ptr<Type>>>();
   if (a)
     for (int i = 0; i < a->size(); i++)
-      sigArgs.push_back(std::make_pair<std::string, std::shared_ptr<Type>>("", (*a)[i]->type()));
+      sigArgs.push_back(std::make_pair<std::string, std::shared_ptr<Type>>(
+        "", (*a)[i]->type()));
   auto functionSig = FunctionSignature(name, sigArgs, nullptr);
   int label = -1;
   for (auto iter : program->functions)
-    if (iter.first == functionSig) { // find matching signature and get label
+    if (iter.first == functionSig)
+    { // find matching signature and get label
       label = iter.first.getLabel();
       auto val = iter.second;
-      program->functions.erase(iter.first); // we need label on function sig to be updated, so reinsert
+      program->functions.erase(
+        iter.first); // we need label on function sig to be updated, so reinsert
       program->functions[iter.first] = val;
       break;
     }
@@ -350,10 +371,12 @@ int cs6300::FieldList(int typeIndex, int field)
   if (typeIndex == -1)
   {
     auto pRecord = std::make_shared<cs6300::RecordType>();
-    std::for_each(currentRecordFields.begin(), currentRecordFields.end(),
+    std::for_each(
+      currentRecordFields.begin(),
+      currentRecordFields.end(),
       [&](std::pair<std::string, std::shared_ptr<cs6300::Type>> recFieldPair)
       {
-        pRecord->fields[recFieldPair.first] = recFieldPair.second;        
+        pRecord->fields[recFieldPair.first] = recFieldPair.second;
         state->getSymTable()->addRecordVariable(recFieldPair.first, pRecord);
       });
     return state->types.add(pRecord);
@@ -667,9 +690,9 @@ void cs6300::AddConstant(char* ident, int expr)
 }
 void cs6300::AddLiteral(std::string ident, int expr)
 {
-    auto state = FrontEndState::instance();
-    auto e = state->expressions.get(expr);
-    state->getSymTable()->addConstant(ident, e);
+  auto state = FrontEndState::instance();
+  auto e = state->expressions.get(expr);
+  state->getSymTable()->addConstant(ident, e);
 }
 void cs6300::AddFunction(int signature)
 {
@@ -687,9 +710,10 @@ void cs6300::AddFunction(int signature, int body)
 {
   auto state = FrontEndState::instance();
   auto sig = state->signatures.get(signature);
-    for (auto&& param : sig->args) {
-        state->getSymTable()->addParameter(param.first, param.second);
-    }
+  for (auto&& param : sig->args)
+  {
+    state->getSymTable()->addParameter(param.first, param.second);
+  }
   auto b = state->statementLists.get(body);
   auto program = state->getProgram();
   program->functions[*sig] =
@@ -705,12 +729,14 @@ void cs6300::AddMain(int body)
   auto program = state->getProgram();
   std::copy(b->begin(), b->end(), std::back_inserter(program->main));
 
-  int t = state->expressions.add(std::make_shared<cs6300::LiteralExpression>(1));
-  int f = state->expressions.add(std::make_shared<cs6300::LiteralExpression>(0));
-  AddLiteral("true",t);
-  AddLiteral("TRUE",t);
-  AddLiteral("false",f);
-  AddLiteral("FALSE",f);
+  int t =
+    state->expressions.add(std::make_shared<cs6300::LiteralExpression>(1));
+  int f =
+    state->expressions.add(std::make_shared<cs6300::LiteralExpression>(0));
+  AddLiteral("true", t);
+  AddLiteral("TRUE", t);
+  AddLiteral("false", f);
+  AddLiteral("FALSE", f);
 }
 void cs6300::AddType(char* ident, int typeIndex)
 {

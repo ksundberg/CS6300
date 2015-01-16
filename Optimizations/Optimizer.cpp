@@ -5,8 +5,8 @@
 #include <sstream>
 
 /*Add new AST based optimizations here*/
-std::shared_ptr<cs6300::Program>
-cs6300::optimizer(std::shared_ptr<cs6300::Program> original)
+std::shared_ptr<cs6300::Program> cs6300::optimizer(
+  std::shared_ptr<cs6300::Program> original)
 {
   return original;
 }
@@ -17,4 +17,3 @@ cs6300::FlowGraph cs6300::optimizer(cs6300::FlowGraph original)
   maximizeBlocks(original);
   return original;
 }
-
