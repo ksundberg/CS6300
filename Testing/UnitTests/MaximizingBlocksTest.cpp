@@ -1,7 +1,7 @@
-﻿#include "../catch.hpp"
-#include "../Optimizations/MaximizeBlocks/MaximizeBlocks.hpp"
-#include "../Optimizations/MaximizeBlocks/VisitedBlocks.hpp"
-#include "../Optimizations/MaximizeBlocks/NumParents.hpp"
+﻿#include "catch.hpp"
+#include "Optimizations/MaximizeBlocks/MaximizeBlocks.hpp"
+#include "Optimizations/MaximizeBlocks/VisitedBlocks.hpp"
+#include "Optimizations/MaximizeBlocks/NumParents.hpp"
 
 void singletonCleanUp()
 {

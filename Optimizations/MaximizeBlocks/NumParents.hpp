@@ -4,7 +4,7 @@
 #include <memory>
 #include <map>
 
-#include "../../AST_INC/AST/BasicBlock.hpp"
+#include "AST/BasicBlock.hpp"
 
 namespace cs6300{
   class NumParents {

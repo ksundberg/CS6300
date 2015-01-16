@@ -1,8 +1,8 @@
 #include <algorithm>
 
 #include "MaximizeBlocks.hpp"
-#include "../../AST_INC/AST/BasicBlock.hpp"
-#include "../../AST_INC/AST/ThreeAddressInstruction.hpp"
+#include "AST/BasicBlock.hpp"
+#include "AST/ThreeAddressInstruction.hpp"
 #include "VisitedBlocks.hpp"
 #include "NumParents.hpp"
 
