@@ -5,7 +5,7 @@ std::shared_ptr<ProcessLog> ProcessLog::m_instance;
 
 std::shared_ptr<ProcessLog> ProcessLog::getInstance()
 {
-  if(!m_instance)
+  if (!m_instance)
   {
     m_instance = std::shared_ptr<ProcessLog>(new ProcessLog());
   }
@@ -16,8 +16,6 @@ void ProcessLog::nextLine()
   m_line++;
 }
 
-ProcessLog::ProcessLog()
-:m_line(1)
-{}
-
-
+ProcessLog::ProcessLog() : m_line(1)
+{
+}

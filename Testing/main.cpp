@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
   try
   {
-    return Catch::Session().run(argc, argv );
+    return Catch::Session().run(argc, argv);
   }
   catch (std::exception& e)
   {

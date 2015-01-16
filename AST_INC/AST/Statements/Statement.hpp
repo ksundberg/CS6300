@@ -5,14 +5,14 @@
 
 namespace cs6300
 {
-  class Statement
-  {
-  public:
-    virtual ~Statement()=default;
-    virtual cs6300::FlowGraph emit() = 0;
-  };
+class Statement
+{
+public:
+  virtual ~Statement() = default;
+  virtual cs6300::FlowGraph emit() = 0;
+};
 
-  cs6300::FlowGraph emitList(std::vector<std::shared_ptr<Statement>> statements);
+cs6300::FlowGraph emitList(std::vector<std::shared_ptr<Statement>> statements);
 }
 
 #endif

@@ -2,5 +2,5 @@
 
 TEST_CASE("sampleTestCase", "[sampleTest]")
 {
-    REQUIRE(1 == 1);
+  REQUIRE(1 == 1);
 }
