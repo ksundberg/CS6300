@@ -19,7 +19,7 @@ public:
   std::vector<ThreeAddressInstruction> instructions;
   std::shared_ptr<BasicBlock> jumpTo;
   std::shared_ptr<BasicBlock> branchTo;
-  std::vector<std::shared_ptr<BasicBlock>> parents;
+  std::set<std::shared_ptr<BasicBlock>> parents;
   int branchOn;
   std::string getLabel();
 
