@@ -1,6 +1,7 @@
 #include "Allocation.hpp"
 #include "AST/Program.hpp"
 #include "AST/ThreeAddressInstruction.hpp"
+#include "Optimizations/FlowGraph.h"
 #include <algorithm>
 
 struct RegColorNode
@@ -9,42 +10,6 @@ struct RegColorNode
   std::set<RegColorNode*> nodes;
   std::set<int> cant;
 };
-
-std::set<std::shared_ptr<cs6300::BasicBlock>> allBlocks(
-  cs6300::FlowGraph graph)
-{
-  std::set<std::shared_ptr<cs6300::BasicBlock>> all;
-  std::vector<std::shared_ptr<cs6300::BasicBlock>> todo;
-  auto at = graph.first;
-
-  do
-  {
-    if (todo.size())
-    {
-      at = todo.back();
-      todo.pop_back();
-    }
-
-    while (at)
-    {
-      if (!all.count(at))
-      {
-          all.insert(at);
-      }
-      else
-      {
-          break;
-      }
-
-      if (at->branchTo && !all.count(at->branchTo))
-        todo.emplace_back(at->branchTo);
-
-      at = at->jumpTo;
-    }
-  } while (todo.size());
-
-  return all;
-}
 
 void cs6300::locRegAlloc(cs6300::FlowGraph graph)
 {

@@ -1,15 +1,4 @@
-//
-//  TraverseBasicBlock.cpp
-//  cpsl
-//
-//  Created by Steve Goodrich on 10/10/14.
-//
-//
-
-#include <set>
-#include <map>
 #include "FlowGraph.h"
-
 
 // I should probably just add this as a property of basic block but I am paranoid about code merges.
 std::map<std::shared_ptr<cs6300::BasicBlock>, std::vector<std::shared_ptr<cs6300::BasicBlock>>> cs6300::buildParentMap(std::shared_ptr<cs6300::BasicBlock> flowGraph)
@@ -62,3 +51,57 @@ void cs6300::traverseFlowGraph(std::shared_ptr<cs6300::BasicBlock> sourceBlock, 
     }
 }
 
+std::set<std::shared_ptr<cs6300::BasicBlock>> cs6300::allBlocks(
+  cs6300::FlowGraph graph)
+{
+  std::set<std::shared_ptr<cs6300::BasicBlock>> all;
+  std::vector<std::shared_ptr<cs6300::BasicBlock>> todo;
+  auto at = graph.first;
+
+  do
+  {
+    if (todo.size())
+    {
+      at = todo.back();
+      todo.pop_back();
+    }
+
+    while (at)
+    {
+      if (!all.count(at))
+      {
+          all.insert(at);
+      }
+      else
+      {
+          break;
+      }
+
+      if (at->branchTo && !all.count(at->branchTo))
+        todo.emplace_back(at->branchTo);
+
+      at = at->jumpTo;
+    }
+  } while (todo.size());
+
+  return all;
+}
+
+std::string cs6300::flowGraphDot(cs6300::FlowGraph graph)
+{
+  std::vector<std::string> edges;
+  for (auto&& v : allBlocks(graph))
+  {
+    if(v->branchTo)
+      edges.emplace_back("\t" + v->getLabel() + " -> " + v->branchTo->getLabel() + " [label=\"br\"];");
+    if(v->jumpTo)
+      edges.emplace_back("\t" + v->getLabel() + " -> " + v->jumpTo->getLabel() + " [label=\"j\"];");
+  }
+
+  std::string digraph =  "digraph G {";
+
+  for(auto& s : edges)
+    digraph += s;
+
+  return digraph + "\n}";
+}
