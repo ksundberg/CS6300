@@ -16,11 +16,6 @@ void ProcessLog::nextLine()
   m_line++;
 }
 
-void ProcessLog::logError(std::string message)
-{
-  std::cout << "At line " << m_line << ": " << message << std::endl;
-}
-
 ProcessLog::ProcessLog()
 :m_line(1)
 {}
