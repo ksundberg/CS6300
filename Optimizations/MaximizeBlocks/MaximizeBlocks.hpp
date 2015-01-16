@@ -7,16 +7,15 @@
 #include <map>
 #include <vector>
 
-#include "../../AST_INC/AST/BasicBlock.hpp"
-#include "../../AST_INC/AST/ThreeAddressInstruction.hpp"
+#include "AST/BasicBlock.hpp"
+#include "AST/ThreeAddressInstruction.hpp"
 
 namespace cs6300
 {
-  void maximizeBlocks(std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>);
+  void maximizeBlocks(cs6300::FlowGraph);
 
   void traverse(std::shared_ptr<BasicBlock> block);
 }
-
 
 #endif
 

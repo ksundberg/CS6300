@@ -1,8 +1,6 @@
 #include "Repeat.hpp"
 
-std::pair<std::shared_ptr<cs6300::BasicBlock>,
-          std::shared_ptr<cs6300::BasicBlock>>
-cs6300::RepeatStatement::emit()
+cs6300::FlowGraph cs6300::RepeatStatement::emit()
 {
   auto b = emitList(body);
   auto expr = condition->emit();

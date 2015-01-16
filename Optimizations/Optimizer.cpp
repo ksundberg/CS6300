@@ -10,10 +10,7 @@ cs6300::optimizer(std::shared_ptr<cs6300::Program> original)
   return original;
 }
 /*Add new control flow graph based optimizations here*/
-std::pair<std::shared_ptr<cs6300::BasicBlock>,
-          std::shared_ptr<cs6300::BasicBlock>>
-cs6300::optimizer(std::pair<std::shared_ptr<cs6300::BasicBlock>,
-                            std::shared_ptr<cs6300::BasicBlock>> original)
+cs6300::FlowGraph cs6300::optimizer(cs6300::FlowGraph original)
 {
   maximizeBlocks(original);
   return original;

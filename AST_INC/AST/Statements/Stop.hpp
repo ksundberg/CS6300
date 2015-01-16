@@ -11,7 +11,7 @@ public:
   StopStatement() : Statement()
   {
   }
-  std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
+  cs6300::FlowGraph emit();
 };
 }
 #endif

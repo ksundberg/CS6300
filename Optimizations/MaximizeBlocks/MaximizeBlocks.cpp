@@ -6,8 +6,7 @@
 #include "VisitedBlocks.hpp"
 #include "NumParents.hpp"
 
-void cs6300::maximizeBlocks(std::pair<std::shared_ptr<cs6300::BasicBlock>,
-                            std::shared_ptr<cs6300::BasicBlock>> original)
+void cs6300::maximizeBlocks(cs6300::FlowGraph original)
 {
   // traverse the blocks
   cs6300::traverse(original.first);

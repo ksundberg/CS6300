@@ -2,6 +2,7 @@
 #define CS6300_IF_STATEMENT_HPP
 
 #include "Statement.hpp"
+#include "AST/BasicBlock.hpp"
 #include "AST/Expressions/Expression.hpp"
 
 #include <string>
@@ -12,8 +13,7 @@ namespace cs6300
 class IfStatement : public Statement
   {
     public:
-      typedef std::pair<std::shared_ptr<Expression>,
-                        std::vector<std::shared_ptr<Statement>>> clause_t;
+      typedef std::pair<std::shared_ptr<Expression>, std::vector<std::shared_ptr<Statement>>> clause_t;
       IfStatement(std::vector<clause_t> c,
                   std::vector<std::shared_ptr<Statement>> e)
           : Statement()
@@ -21,7 +21,7 @@ class IfStatement : public Statement
           , elseClause(e)
       {
       }
-    std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
+      cs6300::FlowGraph emit();
 
     private:
       std::vector<clause_t> clauses;

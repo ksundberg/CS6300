@@ -9,12 +9,10 @@ namespace cs6300
   {
   public:
     virtual ~Statement()=default;
-    virtual std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>
-    emit() = 0;
+    virtual cs6300::FlowGraph emit() = 0;
   };
 
-  std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>
-  emitList(std::vector<std::shared_ptr<Statement>> statements);
+  cs6300::FlowGraph emitList(std::vector<std::shared_ptr<Statement>> statements);
 }
 
 #endif

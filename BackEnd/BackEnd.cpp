@@ -33,8 +33,7 @@ void emitMIPS(std::shared_ptr<cs6300::BasicBlock> block, std::ofstream& fout)
   emitMIPS(block->branchTo, fout);
   emitMIPS(block->jumpTo, fout);
 }
-void emitMIPS(std::pair<std::shared_ptr<cs6300::BasicBlock>,
-                        std::shared_ptr<cs6300::BasicBlock>> cfg,
+void emitMIPS(cs6300::FlowGraph cfg,
               std::ofstream& fout)
 {
   seenBlocks.clear();

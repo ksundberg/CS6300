@@ -1,0 +1,6 @@
+To generate flowgraph use the -f option. The flowgraph will print to stdout allowing piping.
+    ./cpsl -f foo.cpsl
+To view as a graphviz try the following: (with dot and feh installed)
+    ./cpsl -f foo.cpsl | dot -Tpng | feh -
+
+This documentation will be more fully developed and formatted in the future.

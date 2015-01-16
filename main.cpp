@@ -1,42 +1,85 @@
-#include <string>
 #include <iostream>
-#include "FrontEnd/FrontEnd.hpp"
-#include "Optimizations/Optimizer.hpp"
+#include <string>
+#include <unistd.h>
+
 #include "BackEnd/BackEnd.hpp"
-#include "gtest/gtest.h"
+#include "FrontEnd/FrontEnd.hpp"
+#include "Optimizations/FlowGraph.h"
+#include "Optimizations/Optimizer.hpp"
 
 int main(int argc, char* argv[])
 {
   try
   {
-    std::string outFile = "out.asm";
-    std::string inFile = "in.cpsl";
+    int opt;
+    bool emitFlowGraph = false;
+    bool emitOptimizedFlowGraph = false;
+    std::string outFile = "";
+    std::string inFile = "";
 
-    if (argc < 2) return EXIT_FAILURE;
-    if(argv[1] == std::string("-test"))
+    while ((opt = getopt (argc, argv, "Ffo:i:")) != -1)
     {
-      ::testing::InitGoogleTest(&argc, argv);
-      return RUN_ALL_TESTS();
+      switch (opt)
+      {
+        case 'f':
+          emitFlowGraph = true;
+          break;
+        case 'F':
+          emitOptimizedFlowGraph = true;
+          break;
+        case 'o':
+          outFile = optarg;
+          break;
+        case 'i':
+          inFile = optarg;
+          break;
+        case '?':
+          std::cerr << "Unknown option character '" << char(optopt) << "'" << std::endl;
+          return EXIT_FAILURE;
+        default:
+          // All options must precede filenames
+          break;
+      }
     }
-    else if (argv[1] == std::string("-o"))
+
+    if(emitFlowGraph && emitOptimizedFlowGraph)
     {
-      outFile = argv[2];
-      inFile = argv[3];
+      std::cerr << "Warning: generating multiple flow graphs" << std::endl;
     }
-    else
+
+    if(inFile == "")
     {
-      inFile = argv[1];
+      if(argc > 1 && argv[argc-1][0] != '-')
+      {
+        inFile = argv[argc-1];
+      }
+      else
+      {
+        inFile = "in.cpsl";
+      }
     }
+
+    if(outFile == "") outFile = "out.asm";
 
     auto program = cs6300::parseCPSL(inFile);
     auto optimized = cs6300::optimizer(program);
     auto intermediate =
       std::make_shared<cs6300::IntermediateRepresentationProgram>(optimized);
+
+    /* Print out flowgraph */
+    if(emitFlowGraph)
+      std::cout << cs6300::flowGraphDot(intermediate->main);
+
     intermediate->main = cs6300::optimizer(intermediate->main);
     for (auto&& f : intermediate->functions)
     {
       f.second = cs6300::optimizer(f.second);
     }
+
+    /* Print out optimized flowgraph */
+    if(emitOptimizedFlowGraph)
+      std::cout << cs6300::flowGraphDot(intermediate->main);
+
     cs6300::writeMIPS(intermediate, outFile);
   }
   catch (std::exception& e)
