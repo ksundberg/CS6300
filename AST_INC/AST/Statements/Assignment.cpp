@@ -2,9 +2,7 @@
 #include "AST/Type.hpp"
 #include "AST/ThreeAddressInstruction.hpp"
 
-std::pair<std::shared_ptr<cs6300::BasicBlock>,
-          std::shared_ptr<cs6300::BasicBlock>>
-cs6300::Assignment::emit()
+cs6300::FlowGraph cs6300::Assignment::emit()
 {
   auto block = expr->emit();
   auto addr = lval->address();

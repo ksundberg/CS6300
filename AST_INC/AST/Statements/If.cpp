@@ -1,7 +1,7 @@
 #include "If.hpp"
 #include <memory>
 
-std::pair<std::shared_ptr<cs6300::BasicBlock>, std::shared_ptr<cs6300::BasicBlock>> cs6300::IfStatement::emit()
+cs6300::FlowGraph cs6300::IfStatement::emit()
 {
   auto entryPoint = std::make_shared<BasicBlock>();
   auto cur = entryPoint;

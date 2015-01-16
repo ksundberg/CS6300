@@ -11,6 +11,7 @@
 
 namespace cs6300
 {
+
 class BasicBlock
 {
 
@@ -31,5 +32,8 @@ public:
 private:
   std::string label;
 };
+
+typedef std::pair<std::shared_ptr<cs6300::BasicBlock>, std::shared_ptr<cs6300::BasicBlock>> FlowGraph;
+
 }
 #endif

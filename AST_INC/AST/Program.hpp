@@ -47,10 +47,8 @@ public:
       functions.insert(std::make_pair(f.first, emitList(f.second->body)));
     }
   }
-  std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> main;
-  std::map<cs6300::FunctionSignature,
-           std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>>>
-    functions;
+  cs6300::FlowGraph main;
+  std::map<cs6300::FunctionSignature, cs6300::FlowGraph> functions;
 };
 }
 

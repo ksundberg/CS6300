@@ -53,10 +53,7 @@ TEST(maximizingBlocksTest, complexMerge)
     b5->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::Add, 11, 9, 10));
     b5->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::StoreMemory, 11, 1, 0));
 
-
-
-    auto blocks = std::pair<std::shared_ptr<cs6300::BasicBlock>,
-            std::shared_ptr<cs6300::BasicBlock>>(b0, b6);
+    auto blocks = cs6300::FlowGraph(b0, b6);
 
     cs6300::maximizeBlocks(blocks);
 
@@ -94,8 +91,7 @@ TEST(maximizingBlocksTest, simpleMerge)
     b1->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::Modulo, 7, 2, 5));
     b1->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::StoreMemory, 7, 2, 0));
 
-    auto blocks = std::pair<std::shared_ptr<cs6300::BasicBlock>,
-            std::shared_ptr<cs6300::BasicBlock>>(b0, b1);
+    auto blocks = cs6300::FlowGraph(b0, b1);
 
     EXPECT_EQ(1, b0->instructions.size());
     EXPECT_NE(nullptr, b0->jumpTo);
@@ -131,8 +127,7 @@ TEST(maximizingBlocksTest, threeBlockeMergeCheckOrder)
     b2->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::Modulo, 7, 2, 5));
     b2->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::StoreMemory, 7, 2, 0));
 
-    auto blocks = std::pair<std::shared_ptr<cs6300::BasicBlock>,
-            std::shared_ptr<cs6300::BasicBlock>>(b0, b2);
+    auto blocks = cs6300::FlowGraph(b0, b2);
 
     EXPECT_EQ(1, b0->instructions.size());
     EXPECT_NE(nullptr, b0->jumpTo);

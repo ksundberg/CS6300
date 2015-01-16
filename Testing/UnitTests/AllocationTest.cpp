@@ -43,8 +43,7 @@ TEST(AllocationTest, validateSets)
     b5->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::LoadValue, 10, 1, 0));
     b5->instructions.push_back(cs6300::ThreeAddressInstruction(cs6300::ThreeAddressInstruction::Add, 11, 9, 10));
 
-    auto blocks = std::pair<std::shared_ptr<cs6300::BasicBlock>,
-            std::shared_ptr<cs6300::BasicBlock>>(b0, b5);
+    auto blocks = cs6300::FlowGraph(b0, b5);
 
     cs6300::locRegAlloc(blocks);
 

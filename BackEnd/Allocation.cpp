@@ -11,12 +11,11 @@ struct RegColorNode
 };
 
 std::set<std::shared_ptr<cs6300::BasicBlock>> allBlocks(
-  std::pair<std::shared_ptr<cs6300::BasicBlock>,
-            std::shared_ptr<cs6300::BasicBlock>> b)
+  cs6300::FlowGraph graph)
 {
   std::set<std::shared_ptr<cs6300::BasicBlock>> all;
   std::vector<std::shared_ptr<cs6300::BasicBlock>> todo;
-  auto at = b.first;
+  auto at = graph.first;
 
   do
   {
@@ -47,12 +46,11 @@ std::set<std::shared_ptr<cs6300::BasicBlock>> allBlocks(
   return all;
 }
 
-void cs6300::locRegAlloc(std::pair<std::shared_ptr<cs6300::BasicBlock>,
-                                   std::shared_ptr<cs6300::BasicBlock>> b)
+void cs6300::locRegAlloc(cs6300::FlowGraph graph)
 {
   int count = 0;
 
-  for (auto&& v : allBlocks(b))
+  for (auto&& v : allBlocks(graph))
     v->initSets();
 
   // propogate block meta
@@ -60,7 +58,7 @@ void cs6300::locRegAlloc(std::pair<std::shared_ptr<cs6300::BasicBlock>,
   do
   {
     change = false;
-    for (auto&& v : allBlocks(b))
+    for (auto&& v : allBlocks(graph))
     {
       if (pushUp(v, v->jumpTo)) change = true;
 
@@ -69,7 +67,7 @@ void cs6300::locRegAlloc(std::pair<std::shared_ptr<cs6300::BasicBlock>,
   } while (change);
 
   std::map<int, RegColorNode*> nodes;
-  for (auto&& cur : allBlocks(b))
+  for (auto&& cur : allBlocks(graph))
   {
     auto t = regDeps(cur);
     auto s = std::set<std::set<int>>(t.begin(), t.end());
@@ -116,7 +114,7 @@ void cs6300::locRegAlloc(std::pair<std::shared_ptr<cs6300::BasicBlock>,
     }
   }
 
-  for (auto&& v : allBlocks(b))
+  for (auto&& v : allBlocks(graph))
   {
     v->remap(regRemap);
   }

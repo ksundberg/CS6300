@@ -1,8 +1,6 @@
 #include "Statement.hpp"
 
-std::pair<std::shared_ptr<cs6300::BasicBlock>,
-          std::shared_ptr<cs6300::BasicBlock>>
-cs6300::emitList(std::vector<std::shared_ptr<Statement>> statements)
+cs6300::FlowGraph cs6300::emitList(std::vector<std::shared_ptr<Statement>> statements)
 {
   auto entry = std::make_shared<BasicBlock>();
   auto current = entry;

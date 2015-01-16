@@ -23,7 +23,7 @@ public:
     values.push_back(v);
   }
 
-  std::pair<std::shared_ptr<BasicBlock>, std::shared_ptr<BasicBlock>> emit();
+  cs6300::FlowGraph emit();
 
 private:
   std::vector<std::shared_ptr<LValue>> values;
