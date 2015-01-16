@@ -76,7 +76,6 @@ int main(int argc, char* argv[])
     {
       inFile = "in.cpsl";
     }
-
     if (emitFlowGraph && emitOptimizedFlowGraph)
     {
       std::cerr << "Warning: generating multiple flow graphs" << std::endl;

@@ -11,22 +11,20 @@
 namespace cs6300
 {
 class IfStatement : public Statement
+{
+public:
+  typedef std::pair<std::shared_ptr<Expression>,
+                    std::vector<std::shared_ptr<Statement>>> clause_t;
+  IfStatement(std::vector<clause_t> c,
+              std::vector<std::shared_ptr<Statement>> e)
+    : Statement(), clauses(c), elseClause(e)
   {
-    public:
-      typedef std::pair<std::shared_ptr<Expression>, std::vector<std::shared_ptr<Statement>>> clause_t;
-      IfStatement(std::vector<clause_t> c,
-                  std::vector<std::shared_ptr<Statement>> e)
-          : Statement()
-          , clauses(c)
-          , elseClause(e)
-      {
-      }
-      cs6300::FlowGraph emit();
+  }
+  cs6300::FlowGraph emit();
 
-    private:
-      std::vector<clause_t> clauses;
-      std::vector<std::shared_ptr<Statement>> elseClause;
-
-  };
+private:
+  std::vector<clause_t> clauses;
+  std::vector<std::shared_ptr<Statement>> elseClause;
+};
 }
 #endif

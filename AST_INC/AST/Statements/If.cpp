@@ -6,7 +6,7 @@ cs6300::FlowGraph cs6300::IfStatement::emit()
   auto entryPoint = std::make_shared<BasicBlock>();
   auto cur = entryPoint;
   auto exitPoint = std::make_shared<BasicBlock>();
-  for(auto&& c:clauses)
+  for (auto&& c : clauses)
   {
     auto exp = c.first->emit();
     auto thenPart = emitList(c.second);
@@ -19,5 +19,5 @@ cs6300::FlowGraph cs6300::IfStatement::emit()
   auto elsePart = emitList(elseClause);
   cur->jumpTo = elsePart.first;
   elsePart.second->jumpTo = exitPoint;
-  return std::make_pair(entryPoint , exitPoint);
+  return std::make_pair(entryPoint, exitPoint);
 }

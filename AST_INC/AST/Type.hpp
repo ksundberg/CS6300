@@ -9,38 +9,47 @@ namespace cs6300
 {
 class Type
 {
-  public:
+public:
   virtual int size() = 0;
-  virtual ~Type()=default;
+  virtual ~Type() = default;
 };
 
-class IntType:public Type {public: int size(){return 4;} };
-class CharType:public Type {public: int size(){return 4;} };
-class BoolType:public Type {public: int size(){return 4;} };
-class StringType:public Type {public: int size(){return 0;} };
+class IntType : public Type
+{
+public:
+  int size() { return 4; }
+};
+class CharType : public Type
+{
+public:
+  int size() { return 4; }
+};
+class BoolType : public Type
+{
+public:
+  int size() { return 4; }
+};
+class StringType : public Type
+{
+public:
+  int size() { return 0; }
+};
 
 class RecordType : public Type
 {
-  public:
-    RecordType()
-        : Type()
-        , fields()
-    {
-    }
+public:
+  RecordType() : Type(), fields() {}
   int size();
-  std::map<std::string,std::shared_ptr<Type>> fields;
+  std::map<std::string, std::shared_ptr<Type>> fields;
 };
 
 class ArrayType : public Type
 {
-  public:
-    ArrayType(int lb, int ub, std::shared_ptr<Type> t)
-        : Type()
-        , baseType(t)
-        , lowerbound(lb)
-        , upperbound(ub)
-    {
-    }
+public:
+  ArrayType(int lb, int ub, std::shared_ptr<Type> t)
+    : Type(), baseType(t), lowerbound(lb), upperbound(ub)
+  {
+  }
   int size();
   std::shared_ptr<Type> baseType;
   int lowerbound;
@@ -70,6 +79,7 @@ public:
     if (!m_str) m_str = std::make_shared<StringType>();
     return m_str;
   }
+
 private:
   static std::shared_ptr<Type> m_char;
   static std::shared_ptr<Type> m_int;
@@ -78,4 +88,3 @@ private:
 };
 }
 #endif
-

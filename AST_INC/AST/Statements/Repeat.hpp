@@ -10,20 +10,18 @@
 namespace cs6300
 {
 class RepeatStatement : public Statement
+{
+public:
+  RepeatStatement(std::shared_ptr<Expression> c,
+                  std::vector<std::shared_ptr<Statement>> statements)
+    : Statement(), condition(c), body(statements)
   {
-    public:
-      RepeatStatement(std::shared_ptr<Expression> c,
-                     std::vector<std::shared_ptr<Statement>> statements)
-          : Statement()
-          , condition(c)
-          , body(statements)
-      {
-      }
-      cs6300::FlowGraph emit();
+  }
+  cs6300::FlowGraph emit();
 
-    private:
-      std::shared_ptr<Expression> condition;
-      std::vector<std::shared_ptr<Statement>> body;
-  };
+private:
+  std::shared_ptr<Expression> condition;
+  std::vector<std::shared_ptr<Statement>> body;
+};
 }
 #endif
