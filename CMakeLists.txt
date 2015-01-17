@@ -1,26 +1,30 @@
 cmake_minimum_required(VERSION 2.8)
 project(cpsl)
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    LIST(APPEND CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-    FIND_LIBRARY(FL_LIBRARY NAMES libfl fl DOC C:/Program Files (x86)/GnuWin32/lib/libfl.a)
-    set(WINDOWS_GNU "C:/Program Files (x86)/GnuWin32/include")
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+set(Boost_USE_STATIC_LIBS ON)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+  find_library(FL_LIBRARY NAMES libfl fl DOC C:/Program Files (x86)/GnuWin32/lib/libfl.a)
+  set(WINDOWS_GNU "C:/Program Files (x86)/GnuWin32/include")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 find_package(BISON)
 find_package(FLEX)
+find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
 
-BISON_TARGET(CpslParser FrontEnd/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
-FLEX_TARGET(CpslScanner FrontEnd/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
-ADD_FLEX_BISON_DEPENDENCY(CpslScanner CpslParser)
+bison_target(CpslParser FrontEnd/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
+flex_target(CpslScanner FrontEnd/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
+add_flex_bison_dependency(CpslScanner CpslParser)
 
 include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/AST_INC
-    ${CMAKE_CURRENT_SOURCE_DIR}/log
-    ${WINDOWS_GNU}
-    )
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/AST_INC
+  ${CMAKE_CURRENT_SOURCE_DIR}/log
+  ${WINDOWS_GNU}
+  ${Boost_INCLUDE_DIRS}
+)
 
 set(EXTRA_COMPILE_FLAGS "-g -std=c++0x")
 set(LCOV_FLAGS "--coverage")
@@ -30,10 +34,10 @@ set(cpsl_srcs main.cpp)
 source_group("" FILES ${cpsl_srcs})
 
 set(frontend_srcs
-FrontEnd/FrontEnd.hpp
-FrontEnd/FrontEnd.cpp
-${BISON_CpslParser_OUTPUTS}
-${FLEX_CpslScanner_OUTPUTS}
+  FrontEnd/FrontEnd.hpp
+  FrontEnd/FrontEnd.cpp
+  ${BISON_CpslParser_OUTPUTS}
+  ${FLEX_CpslScanner_OUTPUTS}
 )
 source_group("FrontEnd" FILES ${frontend_srcs})
 list(APPEND cpsl_srcs ${frontend_srcs})
@@ -59,8 +63,8 @@ set(ast_srcs
 )
 
 set(log_srcs
-    log/logger.cpp
-    log/ProcessLog.cpp
+  log/logger.cpp
+  log/ProcessLog.cpp
 )
 source_group("log" FILES ${log_srcs})
 list(APPEND cpsl_srcs ${log_srcs})
@@ -91,7 +95,7 @@ set(statement_srcs
   AST_INC/AST/Statements/While.hpp
   AST_INC/AST/Statements/Write.cpp
   AST_INC/AST/Statements/Write.hpp
-  )
+)
 source_group("FrontEnd/Statements" FILES ${statement_srcs})
 list(APPEND cpsl_srcs ${statement_srcs})
 
@@ -151,29 +155,29 @@ source_group("FrontEnd/Expressions" FILES ${expr_srcs})
 list(APPEND cpsl_srcs ${expr_srcs})
 
 set(backend_srcs
-BackEnd/BackEnd.hpp
-BackEnd/BackEnd.cpp
-BackEnd/Allocation.hpp
-BackEnd/Allocation.cpp
+  BackEnd/BackEnd.hpp
+  BackEnd/BackEnd.cpp
+  BackEnd/Allocation.hpp
+  BackEnd/Allocation.cpp
 )
 source_group("BackEnd" FILES ${backend_srcs})
 list(APPEND cpsl_srcs ${backend_srcs})
 
 set(optimization_srcs
-Optimizations/Optimizer.hpp
-Optimizations/Optimizer.cpp
-Optimizations/MaximizeBlocks/VisitedBlocks.hpp
-Optimizations/MaximizeBlocks/VisitedBlocks.cpp
-Optimizations/MaximizeBlocks/NumParents.hpp
-Optimizations/MaximizeBlocks/NumParents.cpp
-Optimizations/MaximizeBlocks/MaximizeBlocks.hpp
-Optimizations/MaximizeBlocks/MaximizeBlocks.cpp
-Optimizations/FlowGraph.h
-Optimizations/FlowGraph.cpp
+  Optimizations/Optimizer.hpp
+  Optimizations/Optimizer.cpp
+  Optimizations/MaximizeBlocks/VisitedBlocks.hpp
+  Optimizations/MaximizeBlocks/VisitedBlocks.cpp
+  Optimizations/MaximizeBlocks/NumParents.hpp
+  Optimizations/MaximizeBlocks/NumParents.cpp
+  Optimizations/MaximizeBlocks/MaximizeBlocks.hpp
+  Optimizations/MaximizeBlocks/MaximizeBlocks.cpp
+  Optimizations/FlowGraph.h
+  Optimizations/FlowGraph.cpp
 )
 source_group("Optimizations" FILES ${optimization_srcs})
 list(APPEND cpsl_srcs ${optimization_srcs})
 
 add_executable(cpsl ${cpsl_srcs})
 
-target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES})
+target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES} ${Boost_LIBRARIES})

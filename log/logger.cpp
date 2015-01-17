@@ -1,7 +1,7 @@
 #include "logger.h"
 #include "ProcessLog.hpp"
 
-#include <libgen.h>
+#include <boost/filesystem.hpp>
 #include <string>
 
 const char* cpsl_log::getLine() {
@@ -9,7 +9,7 @@ const char* cpsl_log::getLine() {
 }
 
 const char* cpsl_log::getFile() {
-    return basename(&ProcessLog::getInstance()->file()[0]);
+    return boost::filesystem::basename(&ProcessLog::getInstance()->file()[0]).c_str();
 }
 
 // Load configuration from file and configure all loggers
