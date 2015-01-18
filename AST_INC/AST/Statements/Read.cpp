@@ -33,3 +33,14 @@ cs6300::FlowGraph cs6300::Read::emit()
 
   return std::make_pair(block, block);
 }
+
+std::string cs6300::Read::ClassName() const
+{
+  return "Read";
+}
+
+std::vector<std::string> cs6300::Read::_ASTLines() const
+{
+  std::vector<std::string> lines;
+  return join(values, lines, id());
+}

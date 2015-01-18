@@ -22,10 +22,11 @@ int main(int argc, char* argv[])
     int opt;
     bool emitFlowGraph = false;
     bool emitOptimizedFlowGraph = false;
+    bool emitAST = false;
     std::string outFile = "";
     std::string inFile = "";
 
-    while ((opt = getopt (argc, argv, "Ffo:i:")) != -1)
+    while ((opt = getopt (argc, argv, "aFfo:i:")) != -1)
     {
       switch (opt)
       {
@@ -34,6 +35,9 @@ int main(int argc, char* argv[])
           break;
         case 'F':
           emitOptimizedFlowGraph = true;
+          break;
+        case 'a':
+          emitAST = true;
           break;
         case 'o':
           outFile = optarg;
@@ -74,6 +78,36 @@ int main(int argc, char* argv[])
     LOG(INFO) << "Compiling " << inFile << " to " << outFile;
 
     auto program = cs6300::parseCPSL(inFile);
+
+    if (emitAST)
+    {
+      std::string ast;
+      for(auto&s : program->main)
+      {
+        //TODO: Find out why some statements are NULL
+        if(!s) continue;
+
+        ast += "main -> " + s->id() + "\n";
+        for(auto& edge : s->ASTLines())
+        {
+            ast += edge + "\n";
+        }
+      }
+      for (auto&&f : program->functions)
+      {
+        for(auto&s : f.second->body)
+        {
+          if(!s) continue;
+          ast += f.first.name + " -> " + s->id() + "\n";
+          for(auto& edge : s->ASTLines())
+          {
+            ast += edge + "\n";
+          }
+        }
+      }
+      std::cout << "digraph G {\n" << "rank=same\n" << ast << "}" << std::endl;
+    }
+
     auto optimized = cs6300::optimizer(program);
     auto intermediate =
       std::make_shared<cs6300::IntermediateRepresentationProgram>(optimized);

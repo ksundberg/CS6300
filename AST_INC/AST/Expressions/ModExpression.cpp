@@ -32,3 +32,14 @@ bool cs6300::ModExpression  ::isConst() const
   return m_lhs->isConst() && m_rhs->isConst();
 }
 
+std::string cs6300::ModExpression::name() const
+{
+  return "\"%\"";
+}
+
+std::vector<std::string> cs6300::ModExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  join(m_lhs, lines, id());
+  return join(m_rhs, lines, id());
+}

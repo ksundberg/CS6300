@@ -1,8 +1,9 @@
 #include "CallExpression.hpp"
 
 cs6300::CallExpression::CallExpression(
-    int l, std::vector<std::shared_ptr<Expression>> args, std::shared_ptr<Type> t)
+    std::string n, int l, std::vector<std::shared_ptr<Expression>> args, std::shared_ptr<Type> t)
     : Expression()
+    , _name(n)
     , funcLabel(l)
     , actualArguments(args)
     , returnType(t)
@@ -50,3 +51,13 @@ int cs6300::CallExpression::value() const { return 0; }
 
 bool cs6300::CallExpression::isConst() const { return false; }
 
+std::string cs6300::CallExpression::name() const
+{
+  return "\"Call " + _name + "\"";
+}
+
+std::vector<std::string> cs6300::CallExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  return join(actualArguments, lines, id());
+}

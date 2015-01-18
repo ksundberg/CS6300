@@ -21,3 +21,13 @@ int cs6300::UnaryMinusExpression::value() const { return - m_expr->value(); }
 
 bool cs6300::UnaryMinusExpression::isConst() const { return m_expr->isConst(); }
 
+std::string cs6300::UnaryMinusExpression::name() const
+{
+  return "Neg";
+}
+
+std::vector<std::string> cs6300::UnaryMinusExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  return join(m_expr, lines, id());
+}

@@ -31,3 +31,14 @@ bool cs6300::EqExpression ::isConst() const
   return m_lhs->isConst() && m_rhs->isConst();
 }
 
+std::string cs6300::EqExpression::name() const
+{
+  return "\"=\"";
+}
+
+std::vector<std::string> cs6300::EqExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  join(m_lhs, lines, id());
+  return join(m_rhs, lines, id());
+}

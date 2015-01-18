@@ -96,9 +96,9 @@ std::string cs6300::flowGraphDot(cs6300::FlowGraph graph)
   for (auto&& v : allBlocks(graph))
   {
     if(v->branchTo)
-      edges.emplace_back("\t" + v->getLabel() + " -> " + v->branchTo->getLabel() + " [label=\"br\"];");
+      edges.emplace_back("\t" + v->getLabel() + " -> " + v->branchTo->getLabel() + " [label=br];");
     if(v->jumpTo)
-      edges.emplace_back("\t" + v->getLabel() + " -> " + v->jumpTo->getLabel() + " [label=\"j\"];");
+      edges.emplace_back("\t" + v->getLabel() + " -> " + v->jumpTo->getLabel() + " [label=j];");
   }
 
   std::string digraph =  "digraph G {";

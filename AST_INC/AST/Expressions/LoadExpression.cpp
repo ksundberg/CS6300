@@ -34,3 +34,14 @@ bool cs6300::LoadExpression::isConst() const
 {
   return lval->isConst();
 }
+
+std::string cs6300::LoadExpression::name() const
+{
+  return "Load";
+}
+
+std::vector<std::string> cs6300::LoadExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  return join(lval, lines, id());
+}

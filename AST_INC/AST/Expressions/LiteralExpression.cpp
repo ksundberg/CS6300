@@ -29,3 +29,21 @@ int cs6300::LiteralExpression::value() const { return m_value; }
 
 bool cs6300::LiteralExpression::isConst() const { return true; }
 
+std::string cs6300::LiteralExpression::name() const
+{
+  if(m_type == BuiltInType::getChar())
+  {
+    std::string c = std::string(1, char(value()));
+    if(value() == 10)
+      c = "\\\\n";
+
+    return "\"'" + c + "'\"";
+  }
+  else
+    return std::to_string(value());
+}
+
+std::vector<std::string> cs6300::LiteralExpression::ASTDot() const
+{
+  return {};
+}

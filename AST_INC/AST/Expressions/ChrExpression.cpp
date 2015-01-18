@@ -19,3 +19,13 @@ int cs6300::ChrExpression::value() const { return 0; }
 
 bool cs6300::ChrExpression::isConst() const { return false; }
 
+std::string cs6300::ChrExpression::name() const
+{
+  return "Chr";
+}
+
+std::vector<std::string> cs6300::ChrExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  return join(m_expr, lines, id());
+}

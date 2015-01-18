@@ -9,6 +9,16 @@ int cs6300::Expression::getLabel() const
   return label;
 }
 
+std::string cs6300::Expression::id() const
+{
+    return "Expression" + std::to_string(getLabel());
+}
+
+std::string cs6300::Expression::node() const
+{
+    return id() + " [label=" + name() + "]";
+}
+
 int cs6300::Expression::getNextLabel()
 {
   static int curLabel = 0;
@@ -38,4 +48,25 @@ cs6300::emitBinaryOp(cs6300::ThreeAddressInstruction::Type op,
                                         rhs->getLabel());
   return resultCode;
 
+}
+
+std::vector<std::string>& cs6300::join(const std::shared_ptr<cs6300::Expression>& expr,
+        std::vector<std::string>& dst,
+        std::string id,
+        std::string lbl)
+{
+    dst.emplace_back(expr->node());
+    if(lbl == "")
+        dst.emplace_back(id + " -> " + expr->id());
+    else
+        dst.emplace_back(id + " -> " + expr->id() + "[label=" + lbl + "]");
+    return copy(expr->ASTDot(), dst);
+}
+
+std::vector<std::string>& cs6300::join(const std::vector<std::shared_ptr<cs6300::Expression>>& exprs,
+        std::vector<std::string>& dst,
+        std::string id)
+{
+    for (auto& expr : exprs) join(expr, dst, id);
+    return dst;
 }
