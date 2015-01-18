@@ -49,6 +49,7 @@ public:
   }
   cs6300::FlowGraph main;
   std::map<cs6300::FunctionSignature, cs6300::FlowGraph> functions;
+  std::map<int, cs6300::FunctionSignature> functionIdMap;
 };
 }
 

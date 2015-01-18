@@ -24,3 +24,14 @@ cs6300::FlowGraph cs6300::ReturnStatement::emit()
 
   return std::make_pair(block, block);
 }
+
+std::string cs6300::ReturnStatement::ClassName() const
+{
+  return "Return";
+}
+
+std::vector<std::string> cs6300::ReturnStatement::_ASTLines() const
+{
+  std::vector<std::string> lines;
+  return join(value, lines, id());
+}

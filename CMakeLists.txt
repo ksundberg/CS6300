@@ -55,6 +55,7 @@ set(ast_srcs
   AST_INC/AST/Function.cpp
   AST_INC/AST/Function.hpp
   AST_INC/AST/LValue.hpp
+  AST_INC/AST/LValue.cpp
   AST_INC/AST/Program.hpp
   AST_INC/AST/StringTable.cpp
   AST_INC/AST/StringTable.hpp
@@ -204,14 +205,13 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 add_executable(cpsl ${main_srcs})
 add_executable(cpsl_test ${test_srcs})
 
-target_link_libraries(cpsl_common ${FLEX_LIBRARIES} ${BISON_LIBRARIES})
+target_link_libraries(cpsl_common ${FLEX_LIBRARIES} ${BISON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(cpsl cpsl_common)
 target_link_libraries(cpsl_test cpsl_common)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/log/log.conf DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/log)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tester/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/tester)
 
-target_link_libraries(cpsl ${FLEX_LIBRARIES} ${BISON_LIBRARIES} ${Boost_LIBRARIES})
 
 add_test(UnitTests cpsl_test)
 

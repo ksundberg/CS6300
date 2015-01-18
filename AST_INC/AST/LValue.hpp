@@ -9,47 +9,81 @@
 #include "AST/Expressions/MultExpression.hpp"
 #include "AST/Expressions/MemoryAccessExpression.hpp"
 #include "AST/SymbolTable.hpp"
+#include "logger.h"
+
 namespace cs6300
 {
 class LValue
 {
 public:
-  LValue(std::shared_ptr<SymbolTable> t) : m_table(t) {}
+  LValue(std::shared_ptr<SymbolTable> t) : m_table(t), _id(-1) {}
   ~LValue() = default;
   virtual std::shared_ptr<Expression> address() const = 0;
   virtual std::shared_ptr<Type> type() const = 0;
   virtual bool isConst() const = 0;
   virtual std::shared_ptr<Expression> value() const = 0;
+  virtual std::string name() const = 0;
+  virtual std::vector<std::string> ASTDot() const = 0;
+
+  /* We need a unique id for duplicate nodes in the graph */
+  std::string id() const
+  {
+    static int id_count = 0;
+    if (_id == -1) _id = ++id_count;
+
+    return "LValue" + std::to_string(_id);
+  }
+  std::string node() const { return id() + " [label=" + name() + "]"; }
 
 protected:
   std::shared_ptr<SymbolTable> m_table;
+  mutable int _id;
 };
+
+std::vector<std::string>& join(const std::shared_ptr<LValue>& lval,
+    std::vector<std::string>& dst, std::string id);
+
+std::vector<std::string>& join(const std::vector<std::shared_ptr<cs6300::LValue>>& lval,
+    std::vector<std::string>& dst, std::string id);
 
 class IdAccess : public LValue
 {
 public:
-  IdAccess(std::string n, std::shared_ptr<SymbolTable> t) : LValue(t), name(n)
+  IdAccess(std::string n, std::shared_ptr<SymbolTable> t) : LValue(t), _name(n)
   {
   }
   std::shared_ptr<Expression> address() const
   {
-    auto entry = m_table->lookupVariable(name);
+    auto entry = m_table->lookupVariable(_name);
     auto location = entry->m_memorylocation;
     auto offset = entry->memory_offset;
     return std::make_shared<MemoryAccessExpression>(location, offset);
   }
   std::shared_ptr<Type> type() const
   {
-    if (isConst()) return m_table->lookupConstant(name)->type();
-    return m_table->lookupVariable(name)->type;
+    if (isConst()) return m_table->lookupConstant(_name)->type();
+    return m_table->lookupVariable(_name)->type;
   }
-  bool isConst() const { return (m_table->lookupConstant(name) != nullptr); }
+  bool isConst() const { return (m_table->lookupConstant(_name) != nullptr); }
   std::shared_ptr<Expression> value() const
   {
-    return m_table->lookupConstant(name);
+    return m_table->lookupConstant(_name);
   }
-  std::string name;
+
+  std::string name() const
+  {
+    return "IdAccess";
+  }
+
+  std::vector<std::string> ASTDot() const
+  {
+    std::string nameid = id() + _name; //unique id for the lookup name
+    return {nameid + " [label=" + _name + "]", id() + " -> " + nameid};
+  }
+
+  std::string _name;
 };
+
 class MemberAccess : public LValue
 {
 public:
@@ -71,9 +105,16 @@ public:
   std::shared_ptr<Type> type() const { return m_table->lookupType(field); }
   bool isConst() const { return false; }
   std::shared_ptr<Expression> value() const { return 0; }
+  std::string name() const { return "MemberAccess"; }
+  std::vector<std::string> ASTDot() const
+  {
+      std::vector<std::string> lines;
+      return join(base, lines, id());
+  }
   std::shared_ptr<LValue> base;
   std::string field;
 };
+
 class ArrayAccess : public LValue
 {
 public:
@@ -99,6 +140,13 @@ public:
   }
   bool isConst() const { return expr->isConst(); }
   std::shared_ptr<Expression> value() const { return expr; }
+  std::string name() const { return "ArrayAccess"; }
+  std::vector<std::string> ASTDot() const
+  {
+    std::vector<std::string> lines;
+    join(base, lines, id());
+    return join(expr, lines, id());
+  }
   std::shared_ptr<LValue> base;
   std::shared_ptr<Expression> expr;
 };

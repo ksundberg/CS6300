@@ -16,3 +16,15 @@ cs6300::FlowGraph cs6300::Assignment::emit()
                                    0);
   return std::make_pair(block, block);
 }
+
+std::string cs6300::Assignment::ClassName() const
+{
+  return "Assign";
+}
+
+std::vector<std::string> cs6300::Assignment::_ASTLines() const
+{
+  std::vector<std::string> lines;
+  join(lval, lines, id());
+  return join(expr, lines, id());
+}

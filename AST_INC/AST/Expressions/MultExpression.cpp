@@ -1,14 +1,15 @@
 #include "MultExpression.hpp"
-cs6300::MultExpression::MultExpression(std::shared_ptr<Expression> lhs,
-                                       std::shared_ptr<Expression> rhs)
-  : m_lhs(lhs), m_rhs(rhs)
+cs6300::MultExpression::MultExpression (std::shared_ptr<Expression> lhs,
+                                               std::shared_ptr<Expression> rhs)
+  : m_lhs(lhs)
+  , m_rhs(rhs)
 {
 }
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::MultExpression::emit() const
 {
   return emitBinaryOp(
-    ThreeAddressInstruction::Multiply, getLabel(), m_lhs, m_rhs);
+      ThreeAddressInstruction::Multiply, getLabel(), m_lhs, m_rhs);
 }
 
 std::shared_ptr<cs6300::Type> cs6300::MultExpression::type() const
@@ -24,9 +25,21 @@ int cs6300::MultExpression::value() const
   if (!isConst()) return 0;
   return m_lhs->value() * m_rhs->value();
 }
-bool cs6300::MultExpression::isConst() const
+bool cs6300::MultExpression ::isConst() const
 {
   if (!m_lhs) return false;
   if (!m_rhs) return false;
   return m_lhs->isConst() && m_rhs->isConst();
+}
+
+std::string cs6300::MultExpression::name() const
+{
+  return "\"*\"";
+}
+
+std::vector<std::string> cs6300::MultExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  join(m_lhs, lines, id());
+  return join(m_rhs, lines, id());
 }

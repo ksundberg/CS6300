@@ -15,12 +15,17 @@ std::shared_ptr<cs6300::Type> cs6300::ChrExpression::type() const
   return BuiltInType::getChar();
 }
 
-int cs6300::ChrExpression::value() const
+int cs6300::ChrExpression::value() const { return 0; }
+
+bool cs6300::ChrExpression::isConst() const { return false; }
+
+std::string cs6300::ChrExpression::name() const
 {
-  return 0;
+  return "Chr";
 }
 
-bool cs6300::ChrExpression::isConst() const
+std::vector<std::string> cs6300::ChrExpression::ASTDot() const
 {
-  return false;
+  std::vector<std::string> lines;
+  return join(m_expr, lines, id());
 }

@@ -11,3 +11,17 @@ cs6300::FlowGraph cs6300::WhileStatement::emit()
   expr->branchOn = condition->getLabel();
   return std::make_pair(expr, exitBlock);
 }
+
+std::string cs6300::WhileStatement::ClassName() const
+{
+  return "While";
+}
+
+std::vector<std::string> cs6300::WhileStatement::_ASTLines() const
+{
+  std::string loopId = "Loop" + id();
+  std::vector<std::string> lines = {
+    loopId + " [label=stmts]", id() + " -> " + loopId + " [label=br]"};
+  join(condition, lines, id(), "cond");
+  return join(body, lines, loopId);
+}

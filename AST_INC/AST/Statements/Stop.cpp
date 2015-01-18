@@ -7,3 +7,13 @@ cs6300::FlowGraph cs6300::StopStatement::emit()
     ThreeAddressInstruction(ThreeAddressInstruction::Stop, 0, 0, 0));
   return std::make_pair(block, block);
 }
+
+std::string cs6300::StopStatement::ClassName() const
+{
+  return "Stop";
+}
+
+std::vector<std::string> cs6300::StopStatement::_ASTLines() const
+{
+  return {};
+}

@@ -61,3 +61,19 @@ cs6300::FlowGraph cs6300::Call::emit()
 
   return std::make_pair(block, block);
 }
+
+std::string cs6300::Call::ClassName() const
+{
+  return "Call";
+}
+
+std::string cs6300::Call::name() const
+{
+  return "\"Call " + _name + "\"";
+}
+
+std::vector<std::string> cs6300::Call::_ASTLines() const
+{
+  std::vector<std::string> lines;
+  return join(arguments, lines, id());
+}

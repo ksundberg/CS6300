@@ -46,3 +46,19 @@ cs6300::FlowGraph cs6300::ForStatement::emit()
 
   return std::make_pair(init.first, endFor);
 }
+
+std::string cs6300::ForStatement::ClassName() const
+{
+  return "For";
+}
+
+std::vector<std::string> cs6300::ForStatement::_ASTLines() const
+{
+  std::vector<std::string> lines;
+  auto var = std::make_shared<IdAccess>(loopVariable, table);
+  join(var, lines, id());
+  join(begin, lines, var->id(), "from");
+  std::string dStr = direction == TO ? "to" : "downto";
+  join(end, lines, var->id(), dStr);
+  return join(body, lines, id());
+}

@@ -24,6 +24,6 @@ void cpsl_log::init_log(int argc, char* argv[])
   el::Helpers::installCustomFormatSpecifier(
     el::CustomFormatSpecifier("%asm_file", cpsl_log::getFile));
 
-  el::Configurations conf("../log/log.conf");
+  el::Configurations conf("log/log.conf");
   el::Loggers::reconfigureAllLoggers(conf);
 }

@@ -10,19 +10,24 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::UnaryMinusExpression::emit() const
 {
   auto result = m_expr->emit();
   result->instructions.emplace_back(
-    ThreeAddressInstruction::UnaryMinus, getLabel(), m_expr->getLabel(), 0);
+      ThreeAddressInstruction::UnaryMinus, getLabel(), m_expr->getLabel(), 0);
   return result;
 }
 std::shared_ptr<cs6300::Type> cs6300::UnaryMinusExpression::type() const
 {
   return nullptr;
 }
-int cs6300::UnaryMinusExpression::value() const
+int cs6300::UnaryMinusExpression::value() const { return - m_expr->value(); }
+
+bool cs6300::UnaryMinusExpression::isConst() const { return m_expr->isConst(); }
+
+std::string cs6300::UnaryMinusExpression::name() const
 {
-  return -m_expr->value();
+  return "Neg";
 }
 
-bool cs6300::UnaryMinusExpression::isConst() const
+std::vector<std::string> cs6300::UnaryMinusExpression::ASTDot() const
 {
-  return m_expr->isConst();
+  std::vector<std::string> lines;
+  return join(m_expr, lines, id());
 }

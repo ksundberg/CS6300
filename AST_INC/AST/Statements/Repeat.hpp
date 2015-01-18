@@ -18,6 +18,10 @@ public:
   {
   }
   cs6300::FlowGraph emit();
+  std::string ClassName() const;
+
+protected:
+  std::vector<std::string> _ASTLines() const;
 
 private:
   std::shared_ptr<Expression> condition;

@@ -303,7 +303,7 @@ int cs6300::CallExpr(char* a, int b)
     }
 
   return state->expressions.add(
-    std::make_shared<cs6300::CallExpression>(label, args, type));
+    std::make_shared<cs6300::CallExpression>(a, label, args, type));
 }
 
 int cs6300::CallProc(char* name, int argsIndex)
@@ -336,7 +336,7 @@ int cs6300::CallProc(char* name, int argsIndex)
       break;
     }
 
-  return state->statements.add(std::make_shared<cs6300::Call>(label, args));
+  return state->statements.add(std::make_shared<cs6300::Call>(name, label, args));
 }
 
 int cs6300::CharExpr(char a)

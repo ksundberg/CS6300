@@ -19,6 +19,10 @@ public:
   void append(std::shared_ptr<LValue> v) { values.push_back(v); }
 
   cs6300::FlowGraph emit();
+  std::string ClassName() const;
+
+protected:
+  std::vector<std::string> _ASTLines() const;
 
 private:
   std::vector<std::shared_ptr<LValue>> values;

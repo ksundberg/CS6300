@@ -3,9 +3,6 @@
 
 #include <boost/program_options.hpp>
 
-#include "logger.h"
-INITIALIZE_EASYLOGGINGPP
-
 #include "BackEnd/BackEnd.hpp"
 #include "FrontEnd/FrontEnd.hpp"
 #include "Optimizations/FlowGraph.h"
@@ -24,6 +21,7 @@ int main(int argc, char* argv[])
   {
     bool emitFlowGraph = false;
     bool emitOptimizedFlowGraph = false;
+    bool emitAST = false;
     std::string outFile = "";
     std::string inFile = "";
 
@@ -31,7 +29,7 @@ int main(int argc, char* argv[])
     desc.add_options()("help,h", "produce help message")(
       "input,i", po::value<std::string>(), "input cpsl file")(
       "output,o", po::value<std::string>(), "output asm file")(
-      "flowgraph,f", "output flowgraph")(
+      "ast,a", "output ast digraph")("flowgraph,f", "output flowgraph")(
       "flowgraph-optimized,F", "output optimized flowgraph");
 
     po::positional_options_description positionalOptions;
@@ -52,6 +50,10 @@ int main(int argc, char* argv[])
       return EXIT_SUCCESS;
     }
 
+    if (vm.count("ast"))
+    {
+      emitAST = true;
+    }
     if (vm.count("flowgraph"))
     {
       emitFlowGraph = true;
@@ -82,10 +84,40 @@ int main(int argc, char* argv[])
     }
 
     LOG(INFO) << "Compiling " << inFile << " to " << outFile;
+    LOG(DEBUG) << "Compiling " << inFile << " to " << outFile;
 
     ProcessLog::getInstance()->set_infile(inFile);
 
     auto program = cs6300::parseCPSL(inFile);
+    if (emitAST)
+    {
+      std::string ast;
+      for (auto& s : program->main)
+      {
+        // TODO: Find out why some statements are NULL
+        if (!s) continue;
+
+        ast += "main -> " + s->id() + "\n";
+        for (auto& edge : s->ASTLines())
+        {
+          ast += edge + "\n";
+        }
+      }
+      for (auto&& f : program->functions)
+      {
+        for (auto& s : f.second->body)
+        {
+          if (!s) continue;
+          ast += f.first.name + " -> " + s->id() + "\n";
+          for (auto& edge : s->ASTLines())
+          {
+            ast += edge + "\n";
+          }
+        }
+      }
+      std::cout << "digraph G {\n"
+                << "rank=same\n" << ast << "}" << std::endl;
+    }
     auto optimized = cs6300::optimizer(program);
     auto intermediate =
       std::make_shared<cs6300::IntermediateRepresentationProgram>(optimized);
