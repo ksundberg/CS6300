@@ -10,20 +10,22 @@
 namespace cs6300
 {
 class WhileStatement : public Statement
+{
+public:
+  WhileStatement(std::shared_ptr<Expression> c,
+                 std::vector<std::shared_ptr<Statement>> statements)
+    : Statement(), condition(c), body(statements)
   {
-    public:
-      WhileStatement(std::shared_ptr<Expression> c,
-                     std::vector<std::shared_ptr<Statement>> statements)
-          : Statement()
-          , condition(c)
-          , body(statements)
-      {
-      }
-      cs6300::FlowGraph emit();
+  }
+  cs6300::FlowGraph emit();
+  std::string ClassName() const;
 
-    private:
-      std::shared_ptr<Expression> condition;
-      std::vector<std::shared_ptr<Statement>> body;
-  };
+protected:
+  std::vector<std::string> _ASTLines() const;
+
+private:
+  std::shared_ptr<Expression> condition;
+  std::vector<std::shared_ptr<Statement>> body;
+};
 }
 #endif

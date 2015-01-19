@@ -5,9 +5,9 @@
 
 namespace cpsl_log
 {
-  void init_log(int argc, char* argv[]);
-  const char* getLine();
-  const char* getFile();
+void init_log(int argc, char* argv[]);
+const char* getLine();
+const char* getFile();
 }
 
 #endif

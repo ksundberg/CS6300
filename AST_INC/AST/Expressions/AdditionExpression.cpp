@@ -30,3 +30,15 @@ bool cs6300::AdditionExpression::isConst() const
   if (!m_rhs) return false;
   return m_lhs->isConst() && m_rhs->isConst();
 }
+
+std::string cs6300::AdditionExpression::name() const
+{
+  return "\"+\"";
+}
+
+std::vector<std::string> cs6300::AdditionExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  join(m_lhs, lines, id());
+  return join(m_rhs, lines, id());
+}

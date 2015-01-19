@@ -34,3 +34,14 @@ cs6300::FlowGraph cs6300::Write::emit()
   }
   return std::make_pair(block, block);
 }
+
+std::string cs6300::Write::ClassName() const
+{
+  return "Write";
+}
+
+std::vector<std::string> cs6300::Write::_ASTLines() const
+{
+  std::vector<std::string> lines;
+  return join(values, lines, id());
+}

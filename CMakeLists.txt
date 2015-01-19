@@ -45,6 +45,7 @@ set(ast_srcs
   AST_INC/AST/Function.cpp
   AST_INC/AST/Function.hpp
   AST_INC/AST/LValue.hpp
+  AST_INC/AST/LValue.cpp
   AST_INC/AST/Program.hpp
   AST_INC/AST/StringTable.cpp
   AST_INC/AST/StringTable.hpp

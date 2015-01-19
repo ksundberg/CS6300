@@ -21,7 +21,13 @@ int cs6300::StringTable::add(std::string val)
   }
   auto label = getLabel();
   m_table[val] = label;
+  m_idtable[label] = val;
   return label;
+}
+
+std::string cs6300::StringTable::lookup(int id)
+{
+  return m_idtable[id];
 }
 
 std::map<std::string, int> cs6300::StringTable::getTable()

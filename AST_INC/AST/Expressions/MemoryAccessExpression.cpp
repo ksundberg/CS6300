@@ -33,3 +33,12 @@ bool cs6300::MemoryAccessExpression::isConst() const
 {
   return false;
 }
+std::string cs6300::MemoryAccessExpression::name() const
+{
+  return "Memory Access";
+}
+
+std::vector<std::string> cs6300::MemoryAccessExpression::ASTDot() const
+{
+  return {};
+}

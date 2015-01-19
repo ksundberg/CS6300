@@ -11,3 +11,15 @@ cs6300::FlowGraph cs6300::RepeatStatement::emit()
   expr->branchOn = condition->getLabel();
   return std::make_pair(b.first, exitBlock);
 }
+
+std::string cs6300::RepeatStatement::ClassName() const
+{
+  return "Repeat";
+}
+
+std::vector<std::string> cs6300::RepeatStatement::_ASTLines() const
+{
+  std::vector<std::string> lines;
+  join(condition, lines, id());
+  return join(body, lines, id());
+}

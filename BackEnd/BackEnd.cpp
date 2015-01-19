@@ -33,8 +33,7 @@ void emitMIPS(std::shared_ptr<cs6300::BasicBlock> block, std::ofstream& fout)
   emitMIPS(block->branchTo, fout);
   emitMIPS(block->jumpTo, fout);
 }
-void emitMIPS(cs6300::FlowGraph cfg,
-              std::ofstream& fout)
+void emitMIPS(cs6300::FlowGraph cfg, std::ofstream& fout)
 {
   seenBlocks.clear();
   emitMIPS(cfg.first, fout);
@@ -52,31 +51,31 @@ void writeStringTable(std::ofstream& fout)
 
 void pushRegister(std::string srcReg, std::ofstream& fout)
 {
-    fout << "\tsw " << srcReg << ", ($sp) # Push the " << srcReg << " register" <<std::endl;
-    fout << "\taddi $sp, $sp, -4" << std::endl;
+  fout << "\tsw " << srcReg << ", ($sp) # Push the " << srcReg << " register"
+       << std::endl;
+  fout << "\taddi $sp, $sp, -4" << std::endl;
 }
-void  popRegister(std::string dstReg, std::ofstream& fout)
+void popRegister(std::string dstReg, std::ofstream& fout)
 {
-   fout << "\taddi $sp, $sp, 4 # Pop the " << dstReg << " register" << std::endl;
-    fout << "\tlw " << dstReg << ", ($sp)" <<std::endl;
+  fout << "\taddi $sp, $sp, 4 # Pop the " << dstReg << " register" << std::endl;
+  fout << "\tlw " << dstReg << ", ($sp)" << std::endl;
 }
-
 
 void emitFunctionProlog(std::ofstream& fout)
 {
-    pushRegister("$ra", fout);
-    pushRegister("$fp", fout);
-    fout << "\tmove $fp, $sp      # Make the new stack pointer our current frame pointer" << std::endl;
+  pushRegister("$ra", fout);
+  pushRegister("$fp", fout);
+  fout << "\tmove $fp, $sp      # Make the new stack pointer our current frame "
+          "pointer" << std::endl;
 }
 
 void emitFunctionEpilog(std::ofstream& fout)
 {
-    fout << "\tmove $sp, $fp" << std::endl;
-    popRegister("$fp", fout);
-    popRegister("$ra", fout);
-    fout << "\tjr $ra" << std::endl;
+  fout << "\tmove $sp, $fp" << std::endl;
+  popRegister("$fp", fout);
+  popRegister("$ra", fout);
+  fout << "\tjr $ra" << std::endl;
 }
-
 
 void cs6300::writeMIPS(
   std::shared_ptr<IntermediateRepresentationProgram> program,
@@ -93,9 +92,9 @@ void cs6300::writeMIPS(
   {
     fout << "F" << f.first.getLabel() << ":" << std::endl;
     locRegAlloc(f.second);
-      emitFunctionProlog(fout);
+    emitFunctionProlog(fout);
     emitMIPS(f.second, fout);
-      emitFunctionEpilog(fout);
+    emitFunctionEpilog(fout);
   }
 
   fout << ".data" << std::endl;
