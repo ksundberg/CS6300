@@ -35,6 +35,6 @@ std::string cs6300::SuccessorExpression::name() const
 
 std::vector<std::string> cs6300::SuccessorExpression::ASTDot() const
 {
-    std::vector<std::string> lines;
-    return join(m_expr, lines, id());
+  std::vector<std::string> lines;
+  return join(m_expr, lines, id());
 }

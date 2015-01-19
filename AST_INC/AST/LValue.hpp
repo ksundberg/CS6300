@@ -41,10 +41,13 @@ protected:
 };
 
 std::vector<std::string>& join(const std::shared_ptr<LValue>& lval,
-    std::vector<std::string>& dst, std::string id);
+                               std::vector<std::string>& dst,
+                               std::string id);
 
-std::vector<std::string>& join(const std::vector<std::shared_ptr<cs6300::LValue>>& lval,
-    std::vector<std::string>& dst, std::string id);
+std::vector<std::string>& join(
+  const std::vector<std::shared_ptr<cs6300::LValue>>& lval,
+  std::vector<std::string>& dst,
+  std::string id);
 
 class IdAccess : public LValue
 {

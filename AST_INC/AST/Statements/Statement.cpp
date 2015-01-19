@@ -56,11 +56,12 @@ std::vector<std::string>& cs6300::join(
   std::vector<std::string>& dst,
   std::string id)
 {
-    int num = 0;
+  int num = 0;
   for (auto& s : statements)
   {
     if (!s) continue;
-    dst.emplace_back(id + " -> " + s->id() + "[label=" + std::to_string(++num) + "]");
+    dst.emplace_back(id + " -> " + s->id() + "[label=" + std::to_string(++num) +
+                     "]");
     copy(s->ASTLines(), dst);
   }
   return dst;

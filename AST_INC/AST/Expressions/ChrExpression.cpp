@@ -15,9 +15,15 @@ std::shared_ptr<cs6300::Type> cs6300::ChrExpression::type() const
   return BuiltInType::getChar();
 }
 
-int cs6300::ChrExpression::value() const { return 0; }
+int cs6300::ChrExpression::value() const
+{
+  return 0;
+}
 
-bool cs6300::ChrExpression::isConst() const { return false; }
+bool cs6300::ChrExpression::isConst() const
+{
+  return false;
+}
 
 std::string cs6300::ChrExpression::name() const
 {
