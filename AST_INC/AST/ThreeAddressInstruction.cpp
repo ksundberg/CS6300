@@ -29,7 +29,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tjal F" << i.src1;
     break;
   case cs6300::ThreeAddressInstruction::CopyArgument:
-    out << "#TODO copy arguments";
+    out << "sw $" << i.src1 << ", " << i.src2 << "($" << i.dest << ") #copying argument";
     break;
   case cs6300::ThreeAddressInstruction::Divide:
     out << "div $" << i.src1 << ", $" << i.src2 << std::endl;

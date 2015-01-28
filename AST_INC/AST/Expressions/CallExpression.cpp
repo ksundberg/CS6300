@@ -1,4 +1,6 @@
 #include "CallExpression.hpp"
+#include "AST/SymbolTable.hpp"
+#include "logger.h"
 
 cs6300::CallExpression::CallExpression(
     int l, std::vector<std::shared_ptr<Expression>> args, std::shared_ptr<Type> t)
@@ -16,16 +18,18 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::CallExpression::emit() const
   result->instructions.push_back(ThreeAddressInstruction(
     ThreeAddressInstruction::StoreFrame, 0, 0, 0));
 
+  int offset = 0;
   for(auto&& arg:actualArguments)
   {
     auto code = arg->emit();
     std::copy(code->instructions.begin(),
               code->instructions.end(),
               std::back_inserter(result->instructions));
+    offset += arg->type()->size();
     result->instructions.emplace_back(ThreeAddressInstruction::CopyArgument,
-                                      0 /*TODO:Placeholder for argument*/,
+                                      cs6300::STACK,
                                       arg->getLabel(),
-                                      0);
+                                      offset);
   }
 
   result->instructions.push_back(ThreeAddressInstruction(
