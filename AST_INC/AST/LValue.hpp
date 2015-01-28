@@ -55,6 +55,8 @@ public:
   std::shared_ptr<Expression> address() const
   {
     auto entry = m_table->lookupVariable(_name);
+    if(!entry)
+      LOG(FATAL) << "Invalid variable lookup " << _name << std::endl;
     auto location = entry->m_memorylocation;
     auto offset = entry->memory_offset;
     return std::make_shared<MemoryAccessExpression>(location, offset);
