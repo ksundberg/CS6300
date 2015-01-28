@@ -9,6 +9,9 @@
 #include "AST/Expressions/MultExpression.hpp"
 #include "AST/Expressions/MemoryAccessExpression.hpp"
 #include "AST/SymbolTable.hpp"
+
+#include "logger.h"
+
 namespace cs6300
 {
 class LValue
@@ -34,6 +37,9 @@ public:
   std::shared_ptr<Expression> address() const
   {
       auto entry =m_table->lookupVariable(name);
+      if(!entry)
+          LOG(FATAL) << "Invalid variable lookup " << name << std::endl;
+
       auto location =entry->m_memorylocation;
       auto offset = entry->memory_offset;
     return std::make_shared<MemoryAccessExpression>(

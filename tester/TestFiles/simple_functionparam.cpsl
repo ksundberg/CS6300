@@ -1,0 +1,12 @@
+function simpleFunctionArgument(a:integer) : integer;
+VAR
+  b:integer;
+BEGIN
+  b:=5;
+  write("Returning ",a," + ",b,'\n');
+  return a+b;
+END;
+
+BEGIN
+  write(simpleFunctionArgument(10));
+END.
