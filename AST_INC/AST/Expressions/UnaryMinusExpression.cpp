@@ -15,7 +15,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::UnaryMinusExpression::emit() const
 }
 std::shared_ptr<cs6300::Type> cs6300::UnaryMinusExpression::type() const
 {
-  return nullptr;
+  return m_expr->type();
 }
 int cs6300::UnaryMinusExpression::value() const { return - m_expr->value(); }
 

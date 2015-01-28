@@ -15,7 +15,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::PredecessorExpression::emit() const
 }
 std::shared_ptr<cs6300::Type> cs6300::PredecessorExpression::type() const
 {
-  return nullptr;
+  return m_expr->type();
 }
 int cs6300::PredecessorExpression::value() const
 {

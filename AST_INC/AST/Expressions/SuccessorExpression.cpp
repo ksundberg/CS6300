@@ -17,7 +17,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::SuccessorExpression::emit() const
 
 std::shared_ptr<cs6300::Type> cs6300::SuccessorExpression::type() const
 {
-  return nullptr;
+  return m_expr->type();
 }
 
 int cs6300::SuccessorExpression::value() const
