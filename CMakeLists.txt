@@ -32,7 +32,7 @@ include_directories(
 )
 
 set(EXTRA_COMPILE_FLAGS "-g -std=c++0x")
-set(LCOV_FLAGS "--coverage")
+#set(LCOV_FLAGS "--coverage")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_COMPILE_FLAGS} ${LCOV_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LCOV_FLAGS}")
 

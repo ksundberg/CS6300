@@ -6,6 +6,14 @@
 
 namespace cs6300
 {
+
+enum MemoryLocation
+{
+    GLOBAL = 28,
+    STACK = 29,
+    FRAME = 30
+};
+
 class ThreeAddressInstruction
 {
 public:

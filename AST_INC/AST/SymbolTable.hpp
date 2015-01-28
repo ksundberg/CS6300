@@ -2,18 +2,12 @@
 #define CS6300_SYMBOL_TABLE_HPP
 
 #include "Symbol.hpp"
+#include "ThreeAddressInstruction.hpp"
 #include <memory>
 #include <map>
 
 namespace cs6300
 {
-enum MemoryLocation
-{
-  GLOBAL = 28,
-  STACK = 29,
-  FRAME = 30
-}; // TODO These memory location labels should be moved to Backend Mips
-   // generation
 
 class Type;
 class Expression;
