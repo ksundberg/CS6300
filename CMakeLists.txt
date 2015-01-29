@@ -212,7 +212,6 @@ target_link_libraries(cpsl_test cpsl_common)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/log/log.conf DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/log)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tester/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/tester)
 
-
 add_test(UnitTests cpsl_test)
 
 find_program(BASH_PROGRAM bash)

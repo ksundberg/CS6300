@@ -10,9 +10,24 @@ const char* cpsl_log::getLine()
   return std::to_string(ProcessLog::getInstance()->line()).c_str();
 }
 
-const char* cpsl_log::getFile() {
+const char* cpsl_log::getFile()
+{
     return boost::filesystem::basename(&ProcessLog::getInstance()->file()[0]).c_str();
 }
+
+const std::string defaultLogFile = "log/log.conf";
+const std::string defaultLogConfig = R"(* GLOBAL:
+    FORMAT               =  "%datetime{%H:%m:%s} [%fbase:%line|%asm_file:%asm_lineno] %msg"
+    FILENAME             =  "cpsl.log"
+    ENABLED              =  true
+    TO_FILE              =  true
+    TO_STANDARD_OUTPUT   =  false
+    MILLISECONDS_WIDTH   =  6
+    PERFORMANCE_TRACKING =  true
+    MAX_LOG_FILE_SIZE    =  2097152 ## 2MB
+    LOG_FLUSH_THRESHOLD  =  1 ## Flush after every log
+* DEBUG:
+    FORMAT               = "%datetime{%H:%m:%s} [%fbase:%line|%asm_file:%asm_lineno] %msg")";
 
 // Load configuration from file and configure all loggers
 void cpsl_log::init_log(int argc, char* argv[])
@@ -24,6 +39,15 @@ void cpsl_log::init_log(int argc, char* argv[])
   el::Helpers::installCustomFormatSpecifier(
     el::CustomFormatSpecifier("%asm_file", cpsl_log::getFile));
 
-  el::Configurations conf("log/log.conf");
+  el::Configurations conf;
+  if(boost::filesystem::exists(defaultLogFile))
+  {
+    conf.parseFromFile(defaultLogFile);
+  }
+  else
+  {
+    conf.parseFromText(defaultLogConfig);
+  }
+  el::Loggers::setDefaultConfigurations(conf);
   el::Loggers::reconfigureAllLoggers(conf);
 }
