@@ -1,5 +1,6 @@
 #include "ThreeAddressInstruction.hpp"
 #include "SymbolTable.hpp"
+#include "logger.h"
 
 cs6300::ThreeAddressInstruction::ThreeAddressInstruction(Type t,
                                                          int d,
@@ -7,6 +8,17 @@ cs6300::ThreeAddressInstruction::ThreeAddressInstruction(Type t,
                                                          int s2)
   : op(t), dest(d), src1(s1), src2(s2)
 {
+}
+
+cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c)
+  : op(Comment), dest(0), src1(0), src2(0), comment(c)
+{
+}
+
+cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c, std::string line, std::string file)
+  : op(Comment), dest(0), src1(0), src2(0), comment(c)
+{
+    comment += "(" + file + ":" + line + ")";
 }
 
 std::ostream& cs6300::operator<<(std::ostream& out,
@@ -27,6 +39,9 @@ std::ostream& cs6300::operator<<(std::ostream& out,
   case cs6300::ThreeAddressInstruction::CallFunction:
     //    out << "move $fp, $sp" << std::endl;
     out << "\tjal F" << i.src1;
+    break;
+  case cs6300::ThreeAddressInstruction::Comment:
+    out << "# " << i.comment;
     break;
   case cs6300::ThreeAddressInstruction::CopyArgument:
     out << "sw $" << i.src1 << ", " << i.src2 << "($" << i.dest << ") #copying argument";
@@ -118,12 +133,12 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::StoreFrame:
-    out << "sw $fp, -4($sp)" << std::endl;
+    out << "sw $fp, -4($sp) #store frame" << std::endl;
     out << "\tsw $ra, -8($sp)" << std::endl;
     out << "\taddi $sp, $sp, -8";
     break;
   case cs6300::ThreeAddressInstruction::StoreMemory:
-    out << "sw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
+    out << "sw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ") #store memory";
     break;
   case cs6300::ThreeAddressInstruction::StoreParameter:
     out << "sw $" << i.dest << ", " << i.src2

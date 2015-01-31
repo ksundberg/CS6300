@@ -5,6 +5,7 @@
 cs6300::FlowGraph cs6300::Write::emit()
 {
   auto block = std::make_shared<BasicBlock>();
+  block->instructions.push_back(ThreeAddressInstruction("Begin Write", file, line));
   for (auto&& val : values)
   {
     auto b = val->emit();
@@ -32,6 +33,8 @@ cs6300::FlowGraph cs6300::Write::emit()
         ThreeAddressInstruction::WriteStr, 0, val->value(), 0));
     }
   }
+
+  block->instructions.push_back(ThreeAddressInstruction("End Write", file, line));
   return std::make_pair(block, block);
 }
 

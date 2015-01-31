@@ -58,6 +58,7 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
     m.used.insert(tal.src1);
     break;
   case ThreeAddressInstruction::WriteStr: // none
+  case ThreeAddressInstruction::Comment:
     break;
   default:
     if (tal.dest) m.dead.insert(tal.dest);
@@ -92,6 +93,7 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
       if (i.src1 && m.count(i.src1)) i.src1 = m[i.src1];
       break;
     case ThreeAddressInstruction::WriteStr: // none
+    case ThreeAddressInstruction::Comment:
       break;
     default:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];

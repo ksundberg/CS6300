@@ -24,6 +24,7 @@ public:
     And,
     CallFunction,
     CopyArgument,
+    Comment,
     Divide,
     IsEqual,
     IsGreater,
@@ -55,10 +56,13 @@ public:
     WriteStr
   };
   ThreeAddressInstruction(Type op, int dest, int src1, int src2);
+  ThreeAddressInstruction(std::string comment);
+  ThreeAddressInstruction(std::string comment, std::string file, std::string line);
   Type op;
   int dest;
   int src1;
   int src2;
+  std::string comment;
 };
 std::ostream& operator<<(std::ostream&, ThreeAddressInstruction);
 
