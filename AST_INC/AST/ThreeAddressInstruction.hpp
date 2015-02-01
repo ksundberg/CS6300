@@ -9,9 +9,9 @@ namespace cs6300
 
 enum MemoryLocation
 {
-    GLOBAL = 28,
-    STACK = 29,
-    FRAME = 30
+  GLOBAL = 28,
+  STACK = 29,
+  FRAME = 30
 };
 
 class ThreeAddressInstruction
@@ -57,12 +57,15 @@ public:
   };
   ThreeAddressInstruction(Type op, int dest, int src1, int src2);
   ThreeAddressInstruction(std::string comment);
-  ThreeAddressInstruction(std::string comment, std::string file, std::string line);
+  ThreeAddressInstruction(std::string comment,
+                          std::string file,
+                          std::string line);
   Type op;
   int dest;
   int src1;
   int src2;
   std::string comment;
+  static bool Verbose;
 };
 std::ostream& operator<<(std::ostream&, ThreeAddressInstruction);
 

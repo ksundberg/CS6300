@@ -5,6 +5,7 @@
 #include <memory>
 #include "AST/Expressions/Expression.hpp"
 #include "AST/Expressions/AdditionExpression.hpp"
+#include "AST/Expressions/SubtractExpression.hpp"
 #include "AST/Expressions/LiteralExpression.hpp"
 #include "AST/Expressions/MultExpression.hpp"
 #include "AST/Expressions/MemoryAccessExpression.hpp"
@@ -41,10 +42,13 @@ protected:
 };
 
 std::vector<std::string>& join(const std::shared_ptr<LValue>& lval,
-    std::vector<std::string>& dst, std::string id);
+                               std::vector<std::string>& dst,
+                               std::string id);
 
-std::vector<std::string>& join(const std::vector<std::shared_ptr<cs6300::LValue>>& lval,
-    std::vector<std::string>& dst, std::string id);
+std::vector<std::string>& join(
+  const std::vector<std::shared_ptr<cs6300::LValue>>& lval,
+  std::vector<std::string>& dst,
+  std::string id);
 
 class IdAccess : public LValue
 {
@@ -54,12 +58,16 @@ public:
   }
   std::shared_ptr<Expression> address() const
   {
+    if (addr) return addr;
+
     auto entry = m_table->lookupVariable(_name);
-    if(!entry)
-      LOG(FATAL) << "Invalid variable lookup " << _name << std::endl;
+    if (!entry) LOG(FATAL) << "Invalid variable lookup " << _name << std::endl;
     auto location = entry->m_memorylocation;
     auto offset = entry->memory_offset;
-    return std::make_shared<MemoryAccessExpression>(location, offset);
+
+    addr.reset(new MemoryAccessExpression(location, offset));
+
+    return addr;
   }
   std::shared_ptr<Type> type() const
   {
@@ -72,18 +80,18 @@ public:
     return m_table->lookupConstant(_name);
   }
 
-  std::string name() const
-  {
-    return "IdAccess";
-  }
+  std::string name() const { return "IdAccess"; }
 
   std::vector<std::string> ASTDot() const
   {
-    std::string nameid = id() + _name; //unique id for the lookup name
+    std::string nameid = id() + _name; // unique id for the lookup name
     return {nameid + " [label=" + _name + "]", id() + " -> " + nameid};
   }
 
   std::string _name;
+
+private:
+  mutable std::shared_ptr<Expression> addr;
 };
 
 class MemberAccess : public LValue
@@ -110,8 +118,8 @@ public:
   std::string name() const { return "MemberAccess"; }
   std::vector<std::string> ASTDot() const
   {
-      std::vector<std::string> lines;
-      return join(base, lines, id());
+    std::vector<std::string> lines;
+    return join(base, lines, id());
   }
   std::shared_ptr<LValue> base;
   std::string field;
@@ -123,24 +131,47 @@ public:
   ArrayAccess(std::shared_ptr<LValue> base,
               std::shared_ptr<Expression> e,
               std::shared_ptr<SymbolTable> t)
-    : LValue(t), base(base), expr(e)
+    : LValue(t), base(base), expr(e), addr(NULL)
   {
   }
   std::shared_ptr<Expression> address() const
   {
-    auto baseAddr = base->address();
+    if (addr) return addr;
 
-    auto t = std::dynamic_pointer_cast<ArrayType>(base->type());
-    auto size = std::make_shared<LiteralExpression>(t->baseType->size());
-    auto offset = std::make_shared<MultExpression>(size, expr);
-    return std::make_shared<AdditionExpression>(baseAddr, offset);
+    auto baseAddr = base->address();
+    auto type = std::dynamic_pointer_cast<ArrayType>(base->type());
+
+    if (expr->isConst())
+    {
+      int _offset = type->baseType->size() * (expr->value() - type->lowerbound);
+      if (_offset)
+      {
+        auto offset = std::make_shared<LiteralExpression>(_offset);
+        auto addrexpr = new AdditionExpression(baseAddr, offset);
+        addr.reset(addrexpr);
+      }
+      else
+      {
+        addr = baseAddr;
+      }
+    }
+    else
+    {
+      auto lower = std::make_shared<LiteralExpression>(type->lowerbound);
+      auto idx = std::make_shared<SubtractExpression>(expr, lower);
+
+      auto size = std::make_shared<LiteralExpression>(type->baseType->size());
+      auto offset = std::make_shared<MultExpression>(size, idx);
+      addr.reset(new AdditionExpression(baseAddr, offset));
+    }
+    return addr;
   }
   std::shared_ptr<Type> type() const
   {
-    auto t = std::dynamic_pointer_cast<ArrayType>(base->type());
-    return t->baseType;
+    auto type = std::dynamic_pointer_cast<ArrayType>(base->type());
+    return type->baseType;
   }
-  bool isConst() const { return expr->isConst(); }
+  bool isConst() const { return false; }
   std::shared_ptr<Expression> value() const { return expr; }
   std::string name() const { return "ArrayAccess"; }
   std::vector<std::string> ASTDot() const
@@ -151,6 +182,9 @@ public:
   }
   std::shared_ptr<LValue> base;
   std::shared_ptr<Expression> expr;
+
+private:
+  mutable std::shared_ptr<Expression> addr;
 };
 }
 

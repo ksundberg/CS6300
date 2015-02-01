@@ -1,27 +1,36 @@
 #include "FlowGraph.h"
 
-// I should probably just add this as a property of basic block but I am paranoid about code merges.
-std::map<std::shared_ptr<cs6300::BasicBlock>, std::vector<std::shared_ptr<cs6300::BasicBlock>>> cs6300::buildParentMap(std::shared_ptr<cs6300::BasicBlock> flowGraph)
+// I should probably just add this as a property of basic block but I am
+// paranoid about code merges.
+std::map<std::shared_ptr<cs6300::BasicBlock>,
+         std::vector<std::shared_ptr<cs6300::BasicBlock>>>
+cs6300::buildParentMap(std::shared_ptr<cs6300::BasicBlock> flowGraph)
 {
-  std::map<std::shared_ptr<cs6300::BasicBlock>, std::vector<std::shared_ptr<cs6300::BasicBlock>>> parentMap;
-  traverseFlowGraph(flowGraph, [&parentMap](std::shared_ptr<cs6300::BasicBlock> block)->bool
+  std::map<std::shared_ptr<cs6300::BasicBlock>,
+           std::vector<std::shared_ptr<cs6300::BasicBlock>>> parentMap;
+  traverseFlowGraph(
+    flowGraph,
+    [&parentMap](std::shared_ptr<cs6300::BasicBlock> block) -> bool
+    {
+      if (block->jumpTo != nullptr)
       {
-      if (block->jumpTo != nullptr) {
-      parentMap[block->jumpTo].push_back(block);
+        parentMap[block->jumpTo].push_back(block);
       }
 
-      if (block->branchTo != nullptr) {
-      parentMap[block->branchTo].push_back(block);
+      if (block->branchTo != nullptr)
+      {
+        parentMap[block->branchTo].push_back(block);
       }
       return true;
 
-      });
+    });
 
   return parentMap;
 }
 
-
-void cs6300::traverseFlowGraph(std::shared_ptr<cs6300::BasicBlock> sourceBlock, std::function<bool(std::shared_ptr<cs6300::BasicBlock>)> action)
+void cs6300::traverseFlowGraph(
+  std::shared_ptr<cs6300::BasicBlock> sourceBlock,
+  std::function<bool(std::shared_ptr<cs6300::BasicBlock>)> action)
 {
   auto searchBlock = sourceBlock;
   std::set<std::shared_ptr<cs6300::BasicBlock>> seenList;
@@ -29,31 +38,36 @@ void cs6300::traverseFlowGraph(std::shared_ptr<cs6300::BasicBlock> sourceBlock, 
 
   visitStack.push_back(nullptr);
 
-  while (searchBlock != nullptr) {
+  while (searchBlock != nullptr)
+  {
 
-    if (seenList.find(searchBlock) == seenList.end()) {
-      if (!action(searchBlock))
-        continue;
+    if (seenList.find(searchBlock) == seenList.end())
+    {
+      if (!action(searchBlock)) continue;
       seenList.insert(searchBlock);
       visitStack.push_back(searchBlock);
     }
 
-
-    if (searchBlock->jumpTo != nullptr && seenList.find(searchBlock->jumpTo) == seenList.end()) {
+    if (searchBlock->jumpTo != nullptr &&
+        seenList.find(searchBlock->jumpTo) == seenList.end())
+    {
       searchBlock = searchBlock->jumpTo;
-    } else if (searchBlock->branchTo != nullptr && seenList.find(searchBlock->branchTo) == seenList.end()) {
+    }
+    else if (searchBlock->branchTo != nullptr &&
+             seenList.find(searchBlock->branchTo) == seenList.end())
+    {
       searchBlock = searchBlock->branchTo;
-    } else {
+    }
+    else
+    {
       searchBlock = visitStack.back();
       visitStack.pop_back();
     }
-
-
   }
 }
 
 std::set<std::shared_ptr<cs6300::BasicBlock>> cs6300::allBlocks(
-    cs6300::FlowGraph graph)
+  cs6300::FlowGraph graph)
 {
   std::set<std::shared_ptr<cs6300::BasicBlock>> all;
   std::vector<std::shared_ptr<cs6300::BasicBlock>> todo;
@@ -80,7 +94,7 @@ std::set<std::shared_ptr<cs6300::BasicBlock>> cs6300::allBlocks(
         at->branchTo->parents.insert(at);
         todo.emplace_back(at->branchTo);
       }
-      if(at->jumpTo)
+      if (at->jumpTo)
       {
         at->jumpTo->parents.insert(at);
       }
@@ -95,15 +109,17 @@ std::string cs6300::flowGraphDot(cs6300::FlowGraph graph)
   std::vector<std::string> edges;
   for (auto&& v : allBlocks(graph))
   {
-    if(v->branchTo)
-      edges.emplace_back("\t" + v->getLabel() + " -> " + v->branchTo->getLabel() + " [label=br];");
-    if(v->jumpTo)
-      edges.emplace_back("\t" + v->getLabel() + " -> " + v->jumpTo->getLabel() + " [label=j];");
+    if (v->branchTo)
+      edges.emplace_back("\t" + v->getLabel() + " -> " +
+                         v->branchTo->getLabel() + " [label=br];");
+    if (v->jumpTo)
+      edges.emplace_back("\t" + v->getLabel() + " -> " + v->jumpTo->getLabel() +
+                         " [label=j];");
   }
 
-  std::string digraph =  "digraph G {";
+  std::string digraph = "digraph G {";
 
-  for(auto& s : edges)
+  for (auto& s : edges)
     digraph += s + "\n";
 
   return digraph + "\n}";

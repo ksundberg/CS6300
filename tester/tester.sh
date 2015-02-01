@@ -39,7 +39,7 @@ for file in ${files}; do
         continue
     fi
 
-    ${CPSLDIR}${BINARY} -o ${ASM}${file} ${TESTDIR}${file}
+    ${CPSLDIR}${BINARY} -c -o ${ASM}${file} -i ${TESTDIR}${file}
 
     if [ $? -ne 0 ]; then
         echo "Error running: ${CPSLDIR}${BINARY} -o ${ASM}${file} ${TESTDIR}${file}"

@@ -20,5 +20,5 @@ int cs6300::RecordType::size()
 
 int cs6300::ArrayType::size()
 {
-  return (upperbound - lowerbound) * baseType->size();
+  return (upperbound - lowerbound + 1) * baseType->size();
 }

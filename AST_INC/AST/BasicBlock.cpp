@@ -41,6 +41,7 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
     CallFunction: // CallFunction should have no allocation
     break;
   case ThreeAddressInstruction::LoadMemory:
+  case ThreeAddressInstruction::LoadLabel:
     m.dead.insert(tal.dest);
     m.used.insert(tal.src1);
     break;
@@ -88,6 +89,7 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
     case ThreeAddressInstruction::StoreParameter:
     case ThreeAddressInstruction::CopyArgument:
     case ThreeAddressInstruction::AddValue:
+    case ThreeAddressInstruction::LoadLabel:
     case ThreeAddressInstruction::LoadMemory:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       if (i.src1 && m.count(i.src1)) i.src1 = m[i.src1];

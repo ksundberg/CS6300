@@ -13,3 +13,4 @@ parser.hpp
 scanner.cpp
 tags
 cscope*
+cpsl.log

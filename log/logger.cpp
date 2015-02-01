@@ -12,7 +12,8 @@ const char* cpsl_log::getLine()
 
 const char* cpsl_log::getFile()
 {
-    return boost::filesystem::basename(&ProcessLog::getInstance()->file()[0]).c_str();
+  return boost::filesystem::basename(&ProcessLog::getInstance()->file()[0])
+    .c_str();
 }
 
 const std::string defaultLogFile = "log/log.conf";
@@ -40,7 +41,7 @@ void cpsl_log::init_log(int argc, char* argv[])
     el::CustomFormatSpecifier("%asm_file", cpsl_log::getFile));
 
   el::Configurations conf;
-  if(boost::filesystem::exists(defaultLogFile))
+  if (boost::filesystem::exists(defaultLogFile))
   {
     conf.parseFromFile(defaultLogFile);
   }

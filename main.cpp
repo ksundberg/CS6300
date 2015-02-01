@@ -29,7 +29,9 @@ int main(int argc, char* argv[])
     desc.add_options()("help,h", "produce help message")(
       "input,i", po::value<std::string>(), "input cpsl file")(
       "output,o", po::value<std::string>(), "output asm file")(
-      "ast,a", "output ast digraph")("flowgraph,f", "output flowgraph")(
+      "comments,c", "output assembly comments")(
+      "flowgraph,f", "output flowgraph")("ast,a", "output ast digraph")(
+      "flowgraph,f", "output flowgraph")(
       "flowgraph-optimized,F", "output optimized flowgraph");
 
     po::positional_options_description positionalOptions;
@@ -50,6 +52,10 @@ int main(int argc, char* argv[])
       return EXIT_SUCCESS;
     }
 
+    if (vm.count("comments"))
+    {
+      cs6300::ThreeAddressInstruction::Verbose = true;
+    }
     if (vm.count("ast"))
     {
       emitAST = true;
@@ -134,7 +140,6 @@ int main(int argc, char* argv[])
     /* Print out optimized flowgraph */
     if (emitOptimizedFlowGraph)
       std::cout << cs6300::flowGraphDot(intermediate->main);
-
     cs6300::writeMIPS(intermediate, outFile);
   }
   catch (std::exception& e)

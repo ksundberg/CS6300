@@ -2,6 +2,8 @@
 #include "SymbolTable.hpp"
 #include "logger.h"
 
+bool cs6300::ThreeAddressInstruction::Verbose = false;
+
 cs6300::ThreeAddressInstruction::ThreeAddressInstruction(Type t,
                                                          int d,
                                                          int s1,
@@ -15,15 +17,21 @@ cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c)
 {
 }
 
-cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c, std::string line, std::string file)
+cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c,
+                                                         std::string line,
+                                                         std::string file)
   : op(Comment), dest(0), src1(0), src2(0), comment(c)
 {
-    comment += "(" + file + ":" + line + ")";
+  comment += "(" + file + ":" + line + ")";
 }
 
 std::ostream& cs6300::operator<<(std::ostream& out,
                                  cs6300::ThreeAddressInstruction i)
 {
+  if (i.op == cs6300::ThreeAddressInstruction::Comment &&
+      !ThreeAddressInstruction::Verbose)
+    return out;
+
   out << "\t";
   switch (i.op)
   {
@@ -44,7 +52,8 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "# " << i.comment;
     break;
   case cs6300::ThreeAddressInstruction::CopyArgument:
-    out << "sw $" << i.src1 << ", " << i.src2 << "($" << i.dest << ") #copying argument";
+    out << "sw $" << i.src1 << ", " << i.src2 << "($" << i.dest
+        << ") #copying argument";
     break;
   case cs6300::ThreeAddressInstruction::Divide:
     out << "div $" << i.src1 << ", $" << i.src2 << std::endl;
@@ -69,7 +78,8 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "sne $" << i.dest << ", $" << i.src1 << ", $" << i.src2;
     break;
   case cs6300::ThreeAddressInstruction::LoadLabel:
-    out << "#TODO load label";
+    out << "addi $" << i.dest << ", $" << i.src1 << ", 0";
+    out << " # Load a label";
     break;
   case cs6300::ThreeAddressInstruction::LoadMemory:
     out << "lw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
@@ -82,6 +92,9 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     else if (i.src1 == cs6300::FRAME)
       out << "addi $" << i.dest << ", $fp, " << i.src2 + 12
           << " # Load a parameter";
+    else
+      out << "addi $" << i.dest << ", $" << i.src1 << ", " << i.src2
+          << " # Load memory offset";
 
     break;
 
@@ -138,7 +151,8 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\taddi $sp, $sp, -8";
     break;
   case cs6300::ThreeAddressInstruction::StoreMemory:
-    out << "sw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ") #store memory";
+    out << "sw $" << i.dest << ", " << i.src2 << "($" << i.src1
+        << ") #store memory";
     break;
   case cs6300::ThreeAddressInstruction::StoreParameter:
     out << "sw $" << i.dest << ", " << i.src2

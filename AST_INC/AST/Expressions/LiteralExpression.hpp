@@ -12,8 +12,8 @@ public:
   std::shared_ptr<Type> type() const;
   int value() const;
   bool isConst() const;
-  std::string name()const;
-  std::vector<std::string> ASTDot()const;
+  std::string name() const;
+  std::vector<std::string> ASTDot() const;
 
 private:
   std::shared_ptr<Type> m_type;
@@ -21,4 +21,3 @@ private:
 };
 }
 #endif
-
