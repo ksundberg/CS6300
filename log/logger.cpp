@@ -28,7 +28,11 @@ const std::string defaultLogConfig = R"(* GLOBAL:
     MAX_LOG_FILE_SIZE    =  2097152 ## 2MB
     LOG_FLUSH_THRESHOLD  =  1 ## Flush after every log
 * DEBUG:
-    FORMAT               = "%datetime{%H:%m:%s} [%fbase:%line|%asm_file:%asm_lineno] %msg")";
+    FORMAT               =  "%datetime{%H:%m:%s} [%fbase:%line|%asm_file:%asm_lineno] %msg"
+* ERROR:
+    TO_STANDARD_OUTPUT   =  true
+* FATAL:
+    TO_STANDARD_OUTPUT   =  true)";
 
 // Load configuration from file and configure all loggers
 void cpsl_log::init_log(int argc, char* argv[])
