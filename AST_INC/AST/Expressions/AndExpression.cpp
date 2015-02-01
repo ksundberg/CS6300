@@ -15,10 +15,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::AndExpression::emit() const
 
 std::shared_ptr<cs6300::Type> cs6300::AndExpression::type() const
 {
-  if (!m_lhs) return nullptr;
-  if (!m_rhs) return nullptr;
-  if (m_lhs->type() != m_rhs->type()) return nullptr;
-  return m_lhs->type();
+  return BuiltInType::getBool();
 }
 
 int cs6300::AndExpression::value() const

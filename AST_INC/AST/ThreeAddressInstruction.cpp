@@ -167,6 +167,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     break;
   case cs6300::ThreeAddressInstruction::WriteBool:
     out << "li $v0, 1" << std::endl;
+    out << "\tsne $" << i.src1 << ", $" << i.src1 << ", $zero" << std::endl;
     out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall";
     break;

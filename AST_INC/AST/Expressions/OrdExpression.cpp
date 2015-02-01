@@ -7,8 +7,7 @@ cs6300::OrdExpression::OrdExpression(std::shared_ptr<Expression> expr)
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::OrdExpression::emit() const
 {
-  // No code associated with Ord, it just changes type
-  return std::make_shared<cs6300::BasicBlock>();
+  return m_expr->emit();
 }
 
 std::shared_ptr<cs6300::Type> cs6300::OrdExpression::type() const
@@ -18,12 +17,17 @@ std::shared_ptr<cs6300::Type> cs6300::OrdExpression::type() const
 
 int cs6300::OrdExpression::value() const
 {
-  return 0;
+  return m_expr->value();
 }
 
 bool cs6300::OrdExpression::isConst() const
 {
-  return false;
+  return m_expr->isConst();
+}
+
+int cs6300::OrdExpression::getLabel() const
+{
+  return m_expr->getLabel();
 }
 
 std::string cs6300::OrdExpression::name() const

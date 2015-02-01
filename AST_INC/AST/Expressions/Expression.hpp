@@ -21,7 +21,7 @@ public:
   virtual bool isConst() const = 0;
   virtual std::string name() const = 0;
   virtual std::vector<std::string> ASTDot() const = 0;
-  int getLabel() const;
+  virtual int getLabel() const;
   std::string id() const;
   virtual std::string node() const;
   static int getNextLabel();

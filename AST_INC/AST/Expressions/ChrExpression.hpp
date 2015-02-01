@@ -13,6 +13,7 @@ public:
   bool isConst() const;
   std::string name() const;
   std::vector<std::string> ASTDot() const;
+  int getLabel() const;
 
 private:
   std::shared_ptr<Expression> m_expr;

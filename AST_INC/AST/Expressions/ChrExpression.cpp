@@ -6,8 +6,7 @@ cs6300::ChrExpression::ChrExpression(std::shared_ptr<Expression> expr)
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::ChrExpression::emit() const
 {
-  // No code associated with Ord, it just changes type
-  return std::make_shared<cs6300::BasicBlock>();
+  return m_expr->emit();
 }
 
 std::shared_ptr<cs6300::Type> cs6300::ChrExpression::type() const
@@ -17,12 +16,17 @@ std::shared_ptr<cs6300::Type> cs6300::ChrExpression::type() const
 
 int cs6300::ChrExpression::value() const
 {
-  return 0;
+  return m_expr->value();
 }
 
 bool cs6300::ChrExpression::isConst() const
 {
-  return false;
+  return m_expr->isConst();
+}
+
+int cs6300::ChrExpression::getLabel() const
+{
+  return m_expr->getLabel();
 }
 
 std::string cs6300::ChrExpression::name() const
