@@ -38,6 +38,7 @@ public:
   cs6300::MemoryLocation getMemoryLocation() { return m_memorylocation; }
 
   std::shared_ptr<SymbolTable> getParent() { return m_parent; }
+  int stackSpace() { return m_memory_offset; };
 
 private:
   cs6300::MemoryLocation m_memorylocation;

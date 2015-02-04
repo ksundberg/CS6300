@@ -49,31 +49,8 @@ void writeStringTable(std::ofstream& fout)
   }
 }
 
-void pushRegister(std::string srcReg, std::ofstream& fout)
-{
-  fout << "\tsw " << srcReg << ", ($sp) # Push the " << srcReg << " register"
-       << std::endl;
-  fout << "\taddi $sp, $sp, -4" << std::endl;
-}
-void popRegister(std::string dstReg, std::ofstream& fout)
-{
-  fout << "\taddi $sp, $sp, 4 # Pop the " << dstReg << " register" << std::endl;
-  fout << "\tlw " << dstReg << ", ($sp)" << std::endl;
-}
-
-void emitFunctionProlog(std::ofstream& fout)
-{
-  pushRegister("$ra", fout);
-  pushRegister("$fp", fout);
-  fout << "\tmove $fp, $sp      # Make the new stack pointer our current frame "
-          "pointer" << std::endl;
-}
-
 void emitFunctionEpilog(std::ofstream& fout)
 {
-  fout << "\tmove $sp, $fp" << std::endl;
-  popRegister("$fp", fout);
-  popRegister("$ra", fout);
   fout << "\tjr $ra" << std::endl;
 }
 
@@ -92,7 +69,6 @@ void cs6300::writeMIPS(
   {
     fout << "F" << f.first.getLabel() << ":" << std::endl;
     locRegAlloc(f.second);
-    emitFunctionProlog(fout);
     emitMIPS(f.second, fout);
     emitFunctionEpilog(fout);
   }

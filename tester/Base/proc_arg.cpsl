@@ -1,0 +1,16 @@
+in a:
+in a 2 13
+2d=41467
+in b a 13
+in c 6 32
+after c a 13
+after b 2 13
+in a:
+in a 2 14
+2d=41567
+in b a 14
+in c 6 32
+after c a 14
+after b 2 14
+in foo 14a
+finish

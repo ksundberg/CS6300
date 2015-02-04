@@ -1,0 +1,57 @@
+const
+    ALEN = 5;
+
+type
+    ctype = array[2:ALEN] of char;
+
+VAR c : ctype;
+
+FUNCTION a(a,b,c,d : char) : ctype;
+var r : ctype;
+
+BEGIN
+    r[2] := a;
+    r[3] := b;
+    r[4] := c;
+    r[5] := d;
+    return r;
+END;
+
+function b() : ctype;
+var r : ctype;
+BEGIN
+    r[2] := '1';
+    r[3] := '2';
+    r[4] := '3';
+    r[5] := '4';
+    return r;
+END;
+
+function b(r : ctype) : ctype;
+BEGIN
+    r[2] := '1';
+    r[3] := '2';
+    r[4] := '3';
+    r[5] := '4';
+return r;
+END;
+
+begin
+
+c := b();
+write(c[2],' ',c[3],' ',c[4],' ',c[5],'\n');
+c := b(c);
+write(c[2],' ',c[3],' ',c[4],' ',c[5],'\n');
+
+c[2] := '2';
+c[3] := '3';
+c[4] := '4';
+c[5] := '5';
+
+write(c[2],' ',c[3],' ',c[4],' ',c[5],'\n');
+c := a( 'a' ,'b' ,'c' ,'d') ;
+write(c[2],' ',c[3],' ',c[4],' ',c[5],'\n');
+c := a( 'e' ,'f' ,'g' ,'h') ;
+write(c[2],' ',c[3],' ',c[4],' ',c[5]);
+
+end.

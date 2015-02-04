@@ -1,0 +1,15 @@
+Hi
+Calling printGlobal. It should print 55...
+Global a=55
+The print procedure will say hi: Hi
+B: 20 C: 13
+a: 55
+add(12,3)=15
+
+factorial(1) = 1
+factorial(2) = 2
+factorial(3) = 6
+factorial(4) = 24
+factorial(5) = 120
+
+Lots of args = 8

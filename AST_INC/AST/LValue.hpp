@@ -58,21 +58,25 @@ public:
   }
   std::shared_ptr<Expression> address() const
   {
-    if (addr) return addr;
-
     auto entry = m_table->lookupVariable(_name);
     if (!entry) LOG(FATAL) << "Invalid variable lookup " << _name << std::endl;
     auto location = entry->m_memorylocation;
     auto offset = entry->memory_offset;
 
-    addr.reset(new MemoryAccessExpression(location, offset));
+    if (location !=
+        cs6300::GLOBAL) // on the stack memory starts on the negative side
+      offset += entry->type->size();
 
-    return addr;
+    return std::make_shared<MemoryAccessExpression>(location, offset);
   }
   std::shared_ptr<Type> type() const
   {
     if (isConst()) return m_table->lookupConstant(_name)->type();
-    return m_table->lookupVariable(_name)->type;
+    auto v = m_table->lookupVariable(_name);
+    if(!v)
+        LOG(FATAL) << "Unable to lookup variable " << _name;
+
+    return v->type;
   }
   bool isConst() const { return (m_table->lookupConstant(_name) != nullptr); }
   std::shared_ptr<Expression> value() const
@@ -89,9 +93,6 @@ public:
   }
 
   std::string _name;
-
-private:
-  mutable std::shared_ptr<Expression> addr;
 };
 
 class MemberAccess : public LValue
@@ -131,15 +132,14 @@ public:
   ArrayAccess(std::shared_ptr<LValue> base,
               std::shared_ptr<Expression> e,
               std::shared_ptr<SymbolTable> t)
-    : LValue(t), base(base), expr(e), addr(NULL)
+    : LValue(t), base(base), expr(e)
   {
   }
   std::shared_ptr<Expression> address() const
   {
-    if (addr) return addr;
-
     auto baseAddr = base->address();
     auto type = std::dynamic_pointer_cast<ArrayType>(base->type());
+    if (!type) LOG(FATAL) << "Programming Error";
 
     if (expr->isConst())
     {
@@ -147,12 +147,11 @@ public:
       if (_offset)
       {
         auto offset = std::make_shared<LiteralExpression>(_offset);
-        auto addrexpr = new AdditionExpression(baseAddr, offset);
-        addr.reset(addrexpr);
+        return std::make_shared<AdditionExpression>(baseAddr, offset);
       }
       else
       {
-        addr = baseAddr;
+        return baseAddr;
       }
     }
     else
@@ -162,9 +161,8 @@ public:
 
       auto size = std::make_shared<LiteralExpression>(type->baseType->size());
       auto offset = std::make_shared<MultExpression>(size, idx);
-      addr.reset(new AdditionExpression(baseAddr, offset));
+      return std::make_shared<AdditionExpression>(baseAddr, offset);
     }
-    return addr;
   }
   std::shared_ptr<Type> type() const
   {
@@ -182,9 +180,6 @@ public:
   }
   std::shared_ptr<LValue> base;
   std::shared_ptr<Expression> expr;
-
-private:
-  mutable std::shared_ptr<Expression> addr;
 };
 }
 

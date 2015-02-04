@@ -5,17 +5,24 @@ cs6300::CallExpression::CallExpression(
   std::string n,
   int l,
   std::vector<std::shared_ptr<Expression>> args,
-  std::shared_ptr<Type> t)
-  : Expression(), _name(n), funcLabel(l), actualArguments(args), returnType(t)
+  std::shared_ptr<Type> t,
+  std::shared_ptr<SymbolTable> symbols)
+  : Expression()
+  , _name(n)
+  , funcLabel(l)
+  , actualArguments(args)
+  , returnType(t)
+  , symbolTable(symbols)
 {
 }
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::CallExpression::emit() const
 {
   auto result = std::make_shared<BasicBlock>();
+  int stack_offset = symbolTable->stackSpace();
 
   result->instructions.push_back(
-    ThreeAddressInstruction(ThreeAddressInstruction::StoreFrame, 0, 0, 0));
+    ThreeAddressInstruction(ThreeAddressInstruction::StoreFrame, 0, stack_offset, 0));
 
   int offset = 0;
   for (auto&& arg : actualArguments)
@@ -24,23 +31,49 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::CallExpression::emit() const
     std::copy(code->instructions.begin(),
               code->instructions.end(),
               std::back_inserter(result->instructions));
+
     offset -= arg->type()->size();
-    result->instructions.emplace_back(
-      ThreeAddressInstruction::CopyArgument, 30, arg->getLabel(), offset);
+    if (std::dynamic_pointer_cast<ArrayType>(arg->type()))
+    {
+      auto tlabel = Expression::getNextLabel();
+      result->instructions.emplace_back(ThreeAddressInstruction(
+        "Deep copying. Size " + std::to_string(arg->type()->size())));
+
+      int max = arg->type()->size() / 4;
+      for (int i = 0; i < max; i++)
+      {
+        result->instructions.emplace_back(
+          ThreeAddressInstruction::LoadMemory, tlabel, arg->getLabel(), i * 4);
+
+        result->instructions.emplace_back(ThreeAddressInstruction::CopyArgument,
+                                          cs6300::STACK,
+                                          tlabel,
+                                          offset + i * 4);
+      }
+    }
+    else
+    {
+      result->instructions.emplace_back(ThreeAddressInstruction::CopyArgument,
+                                        cs6300::STACK,
+                                        arg->getLabel(),
+                                        offset);
+    }
   }
 
-  result->instructions.push_back(ThreeAddressInstruction(
-    ThreeAddressInstruction::CallFunction, 0, funcLabel, 0)); // set fp and jump
+  result->instructions.push_back(
+    ThreeAddressInstruction(ThreeAddressInstruction::CallFunction,
+                            0,
+                            funcLabel,
+                            offset)); // set fp and jump
+
+  result->instructions.push_back(
+    ThreeAddressInstruction(ThreeAddressInstruction::RestoreFrame, 0, stack_offset, 0));
+
   result->instructions.push_back(
     ThreeAddressInstruction(ThreeAddressInstruction::Return,
                             getLabel(),
                             0,
                             0)); // get return value into register
-
-  // TODO: move sp back according to arguments size
-
-  result->instructions.push_back(
-    ThreeAddressInstruction(ThreeAddressInstruction::RestoreFrame, 0, 0, 0));
 
   return result;
 }

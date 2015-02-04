@@ -288,11 +288,15 @@ int cs6300::CallExpr(char* a, int b)
       sigArgs.push_back(std::make_pair<std::string, std::shared_ptr<Type>>(
         "", (*pArgs)[i]->type()));
   auto functionSig = FunctionSignature(a, sigArgs, nullptr);
+
   int label = -1;
   std::shared_ptr<Type> type = nullptr;
+  std::shared_ptr<Function> func;
+  bool found = false;
   for (auto iter : program->functions)
     if (iter.first == functionSig)
     { // find matching signature and get label
+        found = true;
       label = iter.first.getLabel();
       type = iter.first.returnType;
       auto val = iter.second;
@@ -302,8 +306,11 @@ int cs6300::CallExpr(char* a, int b)
       break;
     }
 
-  return state->expressions.add(
-    std::make_shared<cs6300::CallExpression>(a, label, args, type));
+  if(!found)
+      LOG(FATAL) << "Unable to find function " << a;
+
+  return state->expressions.add(std::make_shared<cs6300::CallExpression>(
+    a, label, args, type, state->getSymTable()));
 }
 
 int cs6300::CallProc(char* name, int argsIndex)
@@ -325,9 +332,11 @@ int cs6300::CallProc(char* name, int argsIndex)
         "", (*a)[i]->type()));
   auto functionSig = FunctionSignature(name, sigArgs, nullptr);
   int label = -1;
+  bool found = false;
   for (auto iter : program->functions)
     if (iter.first == functionSig)
     { // find matching signature and get label
+        found = true;
       label = iter.first.getLabel();
       auto val = iter.second;
       program->functions.erase(
@@ -336,8 +345,11 @@ int cs6300::CallProc(char* name, int argsIndex)
       break;
     }
 
+    if(!found)
+        LOG(FATAL) << "Unable to find function " << name;
+
   return state->statements.add(
-    std::make_shared<cs6300::Call>(name, label, args));
+    std::make_shared<cs6300::Call>(name, label, args, state->getSymTable()));
 }
 
 int cs6300::CharExpr(char a)
@@ -612,6 +624,8 @@ int cs6300::Signature(char* ident, int params, int type)
   if (parameters)
   {
     std::copy(parameters->begin(), parameters->end(), std::back_inserter(a));
+    for (auto&& param : *parameters)
+        state->getSymTable()->addParameter(param.first, param.second);
   }
   auto sig = std::make_shared<cs6300::FunctionSignature>(ident, a, returnType);
   delete (ident);

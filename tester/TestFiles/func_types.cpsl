@@ -1,0 +1,34 @@
+function retb() : boolean; forward;
+
+function i(a : integer) : integer;
+BEGIN
+  return a;
+END;
+
+function b(a : boolean) : boolean;
+BEGIN
+  return a;
+END;
+
+function c(a : char) : char;
+BEGIN
+  if a = 'c' then;
+    return chr(retb());
+  else
+    return a;
+  end
+END;
+
+function retb() : boolean;
+BEGIN
+   return true;
+END;
+
+BEGIN
+ write(i(4),'\n');
+ write(c('a'),'\n');
+ write(c('b'),'\n');
+ write(c('c'),'\n');
+ write(b(true),'\n');
+ write(b(false),'\n');
+END.

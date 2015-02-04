@@ -45,8 +45,10 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "and $" << i.dest << ", $" << i.src1 << ", $" << i.src2;
     break;
   case cs6300::ThreeAddressInstruction::CallFunction:
-    //    out << "move $fp, $sp" << std::endl;
-    out << "\tjal F" << i.src1;
+    out << "move $fp, $sp" << std::endl;
+    out << "\taddi $sp, $sp, " << i.src2 << std::endl;
+    out << "\tjal F" << i.src1 << std::endl;
+    out << "\taddi $sp, $sp, " << -i.src2 << std::endl;
     break;
   case cs6300::ThreeAddressInstruction::Comment:
     out << "# " << i.comment;
@@ -78,8 +80,11 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "sne $" << i.dest << ", $" << i.src1 << ", $" << i.src2;
     break;
   case cs6300::ThreeAddressInstruction::LoadLabel:
-    out << "addi $" << i.dest << ", $" << i.src1 << ", 0";
-    out << " # Load a label";
+    if (i.dest != i.src1)
+    {
+      out << "addi $" << i.dest << ", $" << i.src1 << ", 0";
+      out << " # Load a label";
+    }
     break;
   case cs6300::ThreeAddressInstruction::LoadMemory:
     out << "lw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
@@ -88,13 +93,12 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     if (i.src1 == cs6300::GLOBAL)
       out << "addi $" << i.dest << ", $gp, " << i.src2 << " # Load a global";
     else if (i.src1 == cs6300::STACK)
-      out << "addi $" << i.dest << ", $fp, -" << i.src2 << " # Load a variable";
+      out << "addi $" << i.dest << ", $sp, " << -i.src2 << " # Load a variable";
     else if (i.src1 == cs6300::FRAME)
-      out << "addi $" << i.dest << ", $fp, " << i.src2 + 12
+      out << "addi $" << i.dest << ", $fp, " << -i.src2
           << " # Load a parameter";
     else
-      out << "addi $" << i.dest << ", $" << i.src1 << ", " << i.src2
-          << " # Load memory offset";
+      LOG(FATAL) << "Programming error";
 
     break;
 
@@ -126,9 +130,10 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tmove $" << i.dest << ", $v0";
     break;
   case cs6300::ThreeAddressInstruction::RestoreFrame:
-    out << "addi $sp, $sp, 8" << std::endl;
+    out << "addi $sp, $sp, 8 # restore frame" << std::endl;
     out << "\tlw $ra, -8($sp)" << std::endl;
-    out << "\tlw $fp, -4($sp)";
+    out << "\tlw $fp, -4($sp)" << std::endl;
+    out << "\taddi $sp, $sp, " << i.src1 << " #vars";
     break;
   case cs6300::ThreeAddressInstruction::Return:
     if (i.src1)
@@ -146,7 +151,8 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::StoreFrame:
-    out << "sw $fp, -4($sp) #store frame" << std::endl;
+    out << "addi $sp, $sp, " << -i.src1 << " # vars" << std::endl;
+    out << "\tsw $fp, -4($sp) #store frame" << std::endl;
     out << "\tsw $ra, -8($sp)" << std::endl;
     out << "\taddi $sp, $sp, -8";
     break;

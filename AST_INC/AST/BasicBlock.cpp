@@ -39,6 +39,11 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
   {
   case ThreeAddressInstruction::
     CallFunction: // CallFunction should have no allocation
+  case ThreeAddressInstruction::StoreFrame:
+  case ThreeAddressInstruction::RestoreFrame:
+    break;
+  case ThreeAddressInstruction::CopyArgument:
+    m.used.insert(tal.src1);
     break;
   case ThreeAddressInstruction::LoadMemory:
   case ThreeAddressInstruction::LoadLabel:
@@ -78,6 +83,8 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
     {
     case ThreeAddressInstruction::
       CallFunction: // CallFunction should have no allocation
+    case ThreeAddressInstruction::StoreFrame:
+    case ThreeAddressInstruction::RestoreFrame:
       break;
     case ThreeAddressInstruction::LoadMemoryOffset:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
@@ -85,9 +92,11 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
     case ThreeAddressInstruction::LoadValue: // LoadValue has constants
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       break;
+    case ThreeAddressInstruction::CopyArgument:
+      if (i.src1 && m.count(i.src1)) i.src1 = m[i.src1];
+      break;
     case ThreeAddressInstruction::StoreMemory:
     case ThreeAddressInstruction::StoreParameter:
-    case ThreeAddressInstruction::CopyArgument:
     case ThreeAddressInstruction::AddValue:
     case ThreeAddressInstruction::LoadLabel:
     case ThreeAddressInstruction::LoadMemory:

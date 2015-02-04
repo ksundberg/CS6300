@@ -10,6 +10,11 @@ cs6300::LiteralExpression::LiteralExpression(int a)
 {
 }
 
+cs6300::LiteralExpression::LiteralExpression(bool b)
+  : m_type(BuiltInType::getBool()), m_value(b)
+{
+}
+
 std::shared_ptr<cs6300::BasicBlock> cs6300::LiteralExpression::emit() const
 {
   auto result = std::make_shared<BasicBlock>();

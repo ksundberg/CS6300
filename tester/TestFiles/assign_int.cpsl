@@ -1,0 +1,17 @@
+const
+  ALEN = 5;
+
+VAR i : integer;
+    i2 : integer;
+
+begin
+
+i := 42;
+i2 := i;
+
+write(i, ' ', i2, '\n');
+
+i := 12;
+write(i, ' ', i2, '\n');
+
+end.

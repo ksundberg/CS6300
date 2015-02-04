@@ -8,6 +8,7 @@ class LiteralExpression : public Expression
 public:
   LiteralExpression(char a);
   LiteralExpression(int a);
+  LiteralExpression(bool b);
   std::shared_ptr<BasicBlock> emit() const;
   std::shared_ptr<Type> type() const;
   int value() const;

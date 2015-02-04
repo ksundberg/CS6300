@@ -1,0 +1,17 @@
+const
+  ALEN = 5;
+
+VAR c : char;
+    c2 : char;
+
+begin
+
+c := 'x';
+c2 := c;
+
+write(c, ' ', c2, '\n');
+
+c := 'y';
+write(c, ' ', c2, '\n');
+
+end.
