@@ -51,7 +51,8 @@ BEGIN
   a := 5;
   b := 15;
   write("a&b=",a&b,'\n');
-  write("~2=",~2,'\n');
+  write("~-5=",~-5,'\n');
+  write("~5=",~5,'\n');
   write("Setting A to 5:");
   a := 5;
   write("\nSetting B to 8:");

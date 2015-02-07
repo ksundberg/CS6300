@@ -1,8 +1,15 @@
 #include "AdditionExpression.hpp"
+#include "LiteralExpression.hpp"
 
 cs6300::AdditionExpression::AdditionExpression(std::shared_ptr<Expression> lhs,
                                                std::shared_ptr<Expression> rhs)
   : m_lhs(lhs), m_rhs(rhs)
+{
+}
+
+cs6300::AdditionExpression::AdditionExpression(std::shared_ptr<Expression> lhs,
+                                               int rhs)
+  : m_lhs(lhs), m_rhs(std::make_shared<LiteralExpression>(rhs))
 {
 }
 

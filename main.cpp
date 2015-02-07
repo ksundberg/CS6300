@@ -90,7 +90,6 @@ int main(int argc, char* argv[])
     }
 
     LOG(INFO) << "Compiling " << inFile << " to " << outFile;
-    LOG(DEBUG) << "Compiling " << inFile << " to " << outFile;
 
     ProcessLog::getInstance()->set_infile(inFile);
 

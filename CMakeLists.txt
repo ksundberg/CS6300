@@ -59,7 +59,6 @@ set(ast_srcs
   AST_INC/AST/Program.hpp
   AST_INC/AST/StringTable.cpp
   AST_INC/AST/StringTable.hpp
-  AST_INC/AST/Symbol.cpp
   AST_INC/AST/Symbol.hpp
   AST_INC/AST/SymbolTable.cpp
   AST_INC/AST/SymbolTable.hpp
@@ -196,7 +195,7 @@ set(test_srcs ${unittests}
 
 
 set(CMAKE_INSTALL_RPATH ".")
-add_library(cpsl_common SHARED ${cpsl_srcs})
+add_library(cpsl_common STATIC ${cpsl_srcs})
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set_target_properties(cpsl_common PROPERTIES MACOSX_RPATH "@loader_path/../lib")

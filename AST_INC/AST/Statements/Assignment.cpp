@@ -23,7 +23,8 @@ cs6300::FlowGraph cs6300::Assignment::emit()
   block->instructions.emplace_back(
     ThreeAddressInstruction("end addrblock", file, line));
 
-  if (!std::dynamic_pointer_cast<ArrayType>(lval->type()))
+  if (!(std::dynamic_pointer_cast<ArrayType>(lval->type()) ||
+        std::dynamic_pointer_cast<RecordType>(lval->type())))
   {
     block->instructions.emplace_back(ThreeAddressInstruction::StoreMemory,
                                      expr->getLabel(),

@@ -1,0 +1,49 @@
+type
+ rt = record
+        a : integer;
+        b : char;
+ end;
+
+VAR r : rt;
+    a : rt;
+
+
+FUNCTION recurseFoo(x : rt; i : integer) : rt; forward;
+FUNCTION recurseFoo(x : rt; i : integer) : rt;
+BEGIN
+  if i = 0
+  then
+    return x;
+  end;
+
+  x.a := succ(x.a);
+  x.b := succ(x.b);
+
+  $write(i, ' ', x.a, ' ', x.b,'\n');
+  return recurseFoo(x, pred(i));
+END;
+
+FUNCTION retGlobal() : rt;
+    var l : rt;
+BEGIN
+    l.a := 144;
+    a.b := 'g';
+    return a;
+END;
+
+begin
+
+a.a := 1;
+a.b := 'a';
+
+r := recurseFoo(a, 0);
+write(r.a,' ',r.b,'\n');
+r := recurseFoo(a, 1);
+write(r.a,' ',r.b,'\n');
+r := recurseFoo(a, 2);
+write(r.a,' ',r.b,'\n');
+r := recurseFoo(a, 3);
+write(r.a,' ',r.b,'\n');
+a := retGlobal();
+write(a.a,' ',a.b);
+end.

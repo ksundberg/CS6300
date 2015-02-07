@@ -14,6 +14,10 @@ enum MemoryLocation
   FRAME = 30
 };
 
+#define START_REGISTER 8
+#define END_REGISTER 26
+#define REGISTERS (END_REGISTER - START_REGISTER)
+
 class ThreeAddressInstruction
 {
 public:

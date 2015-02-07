@@ -5,21 +5,25 @@
 cs6300::FlowGraph cs6300::Call::emit()
 {
   auto result = std::make_shared<BasicBlock>();
-  int stack_offset = symbolTable->stackSpace();
 
-  result->instructions.push_back(ThreeAddressInstruction(
-    ThreeAddressInstruction::StoreFrame, 0, stack_offset, 0));
-
-  int offset = 0;
   for (auto&& arg : arguments)
   {
     auto code = arg->emit();
     std::copy(code->instructions.begin(),
               code->instructions.end(),
               std::back_inserter(result->instructions));
+  }
 
+  int stack_offset = -symbolTable->stackSpace();
+  result->instructions.push_back(ThreeAddressInstruction(
+    ThreeAddressInstruction::StoreFrame, 0, stack_offset, 0));
+
+  int offset = 0;
+  for (auto&& arg : arguments)
+  {
     offset -= arg->type()->size();
-    if (std::dynamic_pointer_cast<ArrayType>(arg->type()))
+    if (std::dynamic_pointer_cast<ArrayType>(arg->type()) ||
+        std::dynamic_pointer_cast<RecordType>(arg->type()))
     {
       auto tlabel = Expression::getNextLabel();
       result->instructions.emplace_back(ThreeAddressInstruction(

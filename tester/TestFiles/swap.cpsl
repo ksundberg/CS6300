@@ -1,0 +1,104 @@
+const
+    ALEN = 35;
+type
+    ntype = array[1:ALEN] of char;
+    rtype = record
+      age : integer;
+      name : ntype;
+     end;
+    atype = array[1:ALEN] of rtype;
+    matrix = array[1:5] of ntype;
+
+VAR table : atype;
+    i : integer;
+    j : integer;
+    mat : matrix;
+
+procedure printname(n : ntype);
+BEGIN
+    write(n[1],n[2],n[3],n[4],n[5]);
+END;
+
+procedure printrec(r : rtype);
+BEGIN
+  printname(r.name);
+  write(" is age ",r.age,'\n');
+END;
+
+procedure swap(i,j : integer);
+var t : rtype;
+BEGIN
+    $write("swapping ",table[i].age," with ",table[j].age,'\n');
+    t := table[i];
+    table[i] := table[j];
+    table[j] := t;
+END;
+
+procedure sortage();
+var i,j : integer;
+    x,y,z : matrix;
+BEGIN
+    for i:=1 to ALEN do
+        for j:=i+1 to ALEN do;
+          if table[i].age < table[j].age then
+              swap(i,j);
+          end;
+        end;
+    end;
+END;
+
+procedure rsortage();
+var i,j : integer;
+    t : rtype;
+BEGIN
+    for i:=1 to ALEN do
+        for j:=i+1 to ALEN do;
+        if table[i].age > table[j].age then
+            $write("swapping ",table[i].age," with ",table[j].age,'\n');
+            t := table[i];
+            table[i] := table[j];
+            table[j] := t;
+            end;
+        end;
+    end;
+END;
+
+procedure printtable();
+var i : integer;
+BEGIN
+    for i:=1 to ALEN do
+        printrec(table[i]);
+    end;
+END;
+
+BEGIN
+
+table[1].age := 2;
+table[1].name[1] := 'c';
+table[1].name[2] := 'h';
+table[1].name[3] := 'a';
+table[1].name[4] := 'd';
+table[1].name[5] := 'r';
+for j:=2 to ALEN do
+    for i:=1 to ALEN do
+      table[j].name[i] := chr((table[j-1].name[(j+i%ALEN)+1]+1)%20+'a');
+    end;
+    table[j].age := (j*j)%30;
+end;
+
+printtable();
+write("sorting!\n");
+sortage();
+printtable();
+write("reverse swapping!\n");
+rsortage();
+printtable();
+
+for i:=1 to 5 do
+    mat[i] := table[i].name;
+    write("mat[",i,"]=");
+    printname(mat[i]);
+    write('\n');
+end;
+
+end.

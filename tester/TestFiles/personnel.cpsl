@@ -1,0 +1,141 @@
+$ Program to sort personnel data
+
+const
+TABLEN = 20;
+NAMELEN = 24;
+
+type
+ntype = array[1:NAMELEN] of char;
+ptype = record
+age : integer;
+name : ntype;
+end;
+
+var
+table : array[1:TABLEN] of ptype;
+persons : integer;
+
+function exchname (var a,b:ntype) : boolean;
+var
+i:integer;
+begin
+for i := 1 to NAMELEN do
+if a[i] > b[i]
+then return true;
+elseif a[i] < b[i]
+then return false;
+end;
+end;
+return false;
+end;
+
+function exchange (a,b: integer) : boolean;
+begin
+  return a > b;
+end;
+
+function nameread(j : integer) : ntype;
+var
+  a:ntype;
+  i:integer;
+begin
+  for i:=1 to NAMELEN do
+    a[i] := ' ';
+  end;
+
+  for i:=1 to persons do
+    $write("setting ",i," to ",chr(j+i+'a'),'\n');
+    a[i] := chr(j+i+'a');
+  end;
+
+  write("returning '",a[1],a[2],a[3],"'...\n");
+
+  return a;
+end;
+
+function personread (n : integer) : ptype;
+var
+  p:ptype;
+begin
+  p.age := n;
+  p.name := nameread(n);
+  write("got: '",p.name[1],p.name[2],p.name[3],"'...\n");
+  return p;
+end;
+
+procedure tableread ();
+var
+n:integer;
+begin
+for n:=1 to persons do
+table[n] := personread(n);
+end;
+end;
+
+procedure personswap (var a,b : integer);
+var
+  t:ptype;
+begin
+  write("swapping: ",a,' ',b,'\n');
+  t := table[a];
+  table[a] := table[b];
+  table[b] := t;
+end;
+
+procedure printtable();
+var
+i,n:integer;
+begin
+write("#\tage\tName\n");
+write("---------------------\n");
+for n := 1 to persons do
+write(n, ":\t", table[n].age, '\t');
+for i := 1 to NAMELEN do
+write(table[n].name[i]);
+end;
+write("\n");
+end;
+end;
+
+procedure agesort();
+var
+  n,m:integer;
+begin
+  for m := persons downto 1 do
+    for n:=1 to m-1 do
+      if exchange(table[n+1].age,table[n].age)
+        then personswap(n,n+1);
+      end;
+    end;
+  end;
+end;
+
+procedure namesort ();
+var
+  n,m:integer;
+begin
+  for m := persons downto 1 do
+    for n:=1 to m-1 do
+      if exchname(table[n].name,table[n+1].name) then 
+        personswap(n,n+1);
+      end;
+      write("n,m is ",n,",",m,'\n');
+    end;
+  end;
+end;
+
+begin
+persons := 4;
+if persons >= TABLEN then 
+write("Too many persons (", persons, ").  Limit is ", TABLEN, '\n');
+stop;
+end;
+tableread();
+printtable();
+write("\n\tSorted by age:\n\n");
+agesort();
+printtable();
+write("\n\tSorted by name:\n\n");
+namesort();
+printtable();
+end.

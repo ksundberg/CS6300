@@ -23,17 +23,6 @@ std::shared_ptr<cs6300::Symbol> cs6300::SymbolTable::lookupVariable(
   return nullptr;
 }
 
-std::shared_ptr<cs6300::Symbol> cs6300::SymbolTable::lookupRecordVariable(
-  std::string id, std::shared_ptr<Type> type)
-{
-  std::stringstream idStrm;
-  idStrm << id << type;
-  auto found = m_variables.find(idStrm.str());
-  if (found != m_variables.end()) return found->second;
-  if (m_parent) return m_parent->lookupRecordVariable(id, type);
-  return nullptr;
-}
-
 std::shared_ptr<cs6300::Expression> cs6300::SymbolTable::lookupConstant(
   std::string id)
 {
@@ -68,24 +57,11 @@ void cs6300::SymbolTable::addVariable(std::string id,
   auto found = m_variables.find(id);
   if (found == m_variables.end())
   {
+    LOG(DEBUG) << "adding variable " << id << "::" << type->name();
     m_variables[id] =
       std::make_shared<Symbol>(id, type, m_memory_offset, m_memorylocation);
+    m_memory_offset += type->size();
   }
-  m_memory_offset += type->size();
-}
-
-void cs6300::SymbolTable::addRecordVariable(std::string id,
-                                            std::shared_ptr<Type> type)
-{
-  std::stringstream idStrm;
-  idStrm << id << type;
-  auto found = m_variables.find(idStrm.str());
-  if (found == m_variables.end())
-  {
-    m_variables[idStrm.str()] =
-      std::make_shared<Symbol>(id, type, m_memory_offset, m_memorylocation);
-  }
-  m_memory_offset += type->size();
 }
 
 void cs6300::SymbolTable::addParameter(std::string id,
@@ -94,7 +70,8 @@ void cs6300::SymbolTable::addParameter(std::string id,
   auto found = m_variables.find(id);
   if (found == m_variables.end())
   {
+    LOG(DEBUG) << "adding parameter " << id << "::" << type->name();
     m_variables[id] = std::make_shared<Symbol>(id, type, m_param_offset, FRAME);
+    m_param_offset += type->size();
   }
-  m_param_offset += type->size();
 }

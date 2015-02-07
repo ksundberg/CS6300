@@ -48,7 +48,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "move $fp, $sp" << std::endl;
     out << "\taddi $sp, $sp, " << i.src2 << std::endl;
     out << "\tjal F" << i.src1 << std::endl;
-    out << "\taddi $sp, $sp, " << -i.src2 << std::endl;
+    out << "\taddi $sp, $sp, " << -i.src2;
     break;
   case cs6300::ThreeAddressInstruction::Comment:
     out << "# " << i.comment;
@@ -99,9 +99,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
           << " # Load a parameter";
     else
       LOG(FATAL) << "Programming error";
-
     break;
-
   case cs6300::ThreeAddressInstruction::LoadValue:
     out << "li $" << i.dest << ", " << i.src1;
     break;
@@ -114,7 +112,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tmflo $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::Not:
-    out << "#TODO: not";
+    out << "not $" << i.dest << ", $" << i.src1;
     break;
   case cs6300::ThreeAddressInstruction::Or:
     out << "or $" << i.dest << ", $" << i.src1 << ", $" << i.src2;
@@ -130,16 +128,27 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tmove $" << i.dest << ", $v0";
     break;
   case cs6300::ThreeAddressInstruction::RestoreFrame:
-    out << "addi $sp, $sp, 8 # restore frame" << std::endl;
-    out << "\tlw $ra, -8($sp)" << std::endl;
-    out << "\tlw $fp, -4($sp)" << std::endl;
-    out << "\taddi $sp, $sp, " << i.src1 << " #vars";
-    break;
+  {
+    // load registers
+    static const int registers = 0; // REGISTERS
+    out << "addi $sp, $sp, " << (registers + 2) * 4 << " # restore frame"
+        << std::endl;
+
+    for (int i = registers; i >= 0; i--)
+      out << "\tlw $" << i + START_REGISTER << ", -" << i * 4 + 12 << "($sp)"
+          << std::endl;
+
+    // load $ra and $fp
+    out << "\tlw $ra, " << -8 << "($sp)" << std::endl;
+    out << "\tlw $fp, " << -4 << "($sp)" << std::endl;
+    out << "\taddi $sp, $sp, " << -i.src1 << " #vars";
+  }
+  break;
   case cs6300::ThreeAddressInstruction::Return:
     if (i.src1)
     {
       out << "move $v1, $" << i.src1 << std::endl;
-      out << "\tjr $ra";
+      out << "jr $ra";
     }
     else if (i.dest)
       out << "move $" << i.dest << ", $v1";
@@ -151,11 +160,18 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tsyscall";
     break;
   case cs6300::ThreeAddressInstruction::StoreFrame:
-    out << "addi $sp, $sp, " << -i.src1 << " # vars" << std::endl;
-    out << "\tsw $fp, -4($sp) #store frame" << std::endl;
-    out << "\tsw $ra, -8($sp)" << std::endl;
-    out << "\taddi $sp, $sp, -8";
-    break;
+  {
+    // spill registers
+    static const int registers = 0; // REGISTERS
+    out << "addi $sp, $sp, " << i.src1 << " # vars" << std::endl;
+    out << "\tsw $fp, " << -4 << "($sp) #store frame" << std::endl;
+    out << "\tsw $ra, " << -8 << "($sp)" << std::endl;
+    for (int i = 0; i < registers; i++)
+      out << "\tsw $" << i + START_REGISTER << ", -" << i * 4 + 12 << "($sp)"
+          << std::endl;
+    out << "\taddi $sp, $sp, -" << (registers + 2) * 4;
+  }
+  break;
   case cs6300::ThreeAddressInstruction::StoreMemory:
     out << "sw $" << i.dest << ", " << i.src2 << "($" << i.src1
         << ") #store memory";

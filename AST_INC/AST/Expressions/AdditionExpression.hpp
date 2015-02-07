@@ -7,6 +7,7 @@ class AdditionExpression : public Expression
 {
 public:
   AdditionExpression(std::shared_ptr<Expression>, std::shared_ptr<Expression>);
+  AdditionExpression(std::shared_ptr<Expression>, int);
   std::shared_ptr<BasicBlock> emit() const;
   std::shared_ptr<Type> type() const;
   int value() const;

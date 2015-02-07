@@ -49,11 +49,6 @@ void writeStringTable(std::ofstream& fout)
   }
 }
 
-void emitFunctionEpilog(std::ofstream& fout)
-{
-  fout << "\tjr $ra" << std::endl;
-}
-
 void cs6300::writeMIPS(
   std::shared_ptr<IntermediateRepresentationProgram> program,
   std::string filename)
@@ -70,7 +65,6 @@ void cs6300::writeMIPS(
     fout << "F" << f.first.getLabel() << ":" << std::endl;
     locRegAlloc(f.second);
     emitMIPS(f.second, fout);
-    emitFunctionEpilog(fout);
   }
 
   fout << ".data" << std::endl;

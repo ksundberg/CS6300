@@ -26,8 +26,8 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::LoadExpression::emit() const
             addrexpr->instructions.end(),
             std::back_inserter(block->instructions));
   block->instructions.emplace_back("end addrexpr");
-  if (!(std::dynamic_pointer_cast<ArrayType>(lval->type()) &&
-        std::dynamic_pointer_cast<IdAccess>(lval)))
+  if (!(std::dynamic_pointer_cast<ArrayType>(lval->type()) ||
+        std::dynamic_pointer_cast<RecordType>(lval->type())))
   {
     block->instructions.emplace_back(
       ThreeAddressInstruction::LoadMemory, getLabel(), address->getLabel(), 0);

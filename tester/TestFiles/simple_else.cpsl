@@ -32,4 +32,11 @@ else
   write(i, " is between 15 and 12");
 end;
 
+i := 4;
+if i = 4 then
+  write("is 4");
+else
+  write("not 4");
+end;
+
 END.

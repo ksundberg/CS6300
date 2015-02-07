@@ -73,8 +73,7 @@ public:
   {
     if (isConst()) return m_table->lookupConstant(_name)->type();
     auto v = m_table->lookupVariable(_name);
-    if(!v)
-        LOG(FATAL) << "Unable to lookup variable " << _name;
+    if (!v) LOG(FATAL) << "Unable to lookup variable " << _name;
 
     return v->type;
   }
@@ -101,19 +100,33 @@ public:
   MemberAccess(std::shared_ptr<LValue> base,
                std::string field,
                std::shared_ptr<SymbolTable> t)
-    : LValue(t), base(base), field(field)
+    : LValue(t), base(base), field(field), _type()
   {
   }
   std::shared_ptr<Expression> address() const
   {
-    int offset = 0;
-    auto pSymbol = m_table->lookupRecordVariable(field, base->type());
-    if (pSymbol) offset = pSymbol->memory_offset;
+    LOG(DEBUG) << "In MemberAccess::address(" << base->name() << ", " << field
+               << ")";
 
-    return std::make_shared<MemoryAccessExpression>(
-      pSymbol->m_memorylocation, offset);
+    auto baseaddr = base->address();
+    if (!baseaddr)
+      LOG(FATAL) << "Unable to load base address " << field << " "
+                 << base->name();
+    return std::make_shared<AdditionExpression>(baseaddr, offset(field));
   }
-  std::shared_ptr<Type> type() const { return m_table->lookupType(field); }
+  std::shared_ptr<RecordType> btype() const
+  {
+    return std::dynamic_pointer_cast<RecordType>(base->type());
+  }
+  std::shared_ptr<Type> type() const
+  {
+    if (!_type)
+    {
+      _type = btype()->type(field);
+    }
+    return _type;
+  }
+  int offset(std::string id) const { return btype()->offset(id); }
   bool isConst() const { return false; }
   std::shared_ptr<Expression> value() const { return 0; }
   std::string name() const { return "MemberAccess"; }
@@ -124,6 +137,7 @@ public:
   }
   std::shared_ptr<LValue> base;
   std::string field;
+  mutable std::shared_ptr<Type> _type;
 };
 
 class ArrayAccess : public LValue

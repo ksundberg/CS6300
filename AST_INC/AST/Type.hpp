@@ -5,12 +5,15 @@
 #include <memory>
 #include <string>
 
+#include "Type.hpp"
+
 namespace cs6300
 {
 class Type
 {
 public:
   virtual int size() = 0;
+  virtual std::string name() = 0;
   virtual ~Type() = default;
 };
 
@@ -18,29 +21,41 @@ class IntType : public Type
 {
 public:
   int size() { return 4; }
+  std::string name() { return "int"; }
 };
 class CharType : public Type
 {
 public:
   int size() { return 4; }
+  std::string name() { return "char"; }
 };
 class BoolType : public Type
 {
 public:
   int size() { return 4; }
+  std::string name() { return "bool"; }
 };
 class StringType : public Type
 {
 public:
   int size() { return 0; }
+  std::string name() { return "string"; }
 };
 
 class RecordType : public Type
 {
 public:
-  RecordType() : Type(), fields() {}
+  RecordType() : Type(), fields(), field_offset(), _offset(0) {}
   int size();
+  std::string name() { return "record"; }
+  void addMember(std::string, std::shared_ptr<Type>);
+  std::shared_ptr<cs6300::Type> type(std::string) const;
+  int offset(std::string) const;
   std::map<std::string, std::shared_ptr<Type>> fields;
+  std::map<std::string, int> field_offset;
+
+private:
+  int _offset;
 };
 
 class ArrayType : public Type
@@ -51,6 +66,7 @@ public:
   {
   }
   int size();
+  std::string name() { return "array"; }
   std::shared_ptr<Type> baseType;
   int lowerbound;
   int upperbound;

@@ -219,7 +219,7 @@ int cs6300::AddField(int listIndex, int typeIndex)
   auto newType = std::make_shared<cs6300::RecordType>();
   for (auto&& id : *list)
   {
-    newType->fields[id] = type;
+    newType->addMember(id, type);
     currentRecordFields[id] = type;
   }
   return state->types.add(newType);
@@ -296,7 +296,7 @@ int cs6300::CallExpr(char* a, int b)
   for (auto iter : program->functions)
     if (iter.first == functionSig)
     { // find matching signature and get label
-        found = true;
+      found = true;
       label = iter.first.getLabel();
       type = iter.first.returnType;
       auto val = iter.second;
@@ -306,8 +306,7 @@ int cs6300::CallExpr(char* a, int b)
       break;
     }
 
-  if(!found)
-      LOG(FATAL) << "Unable to find function " << a;
+  if (!found) LOG(FATAL) << "Unable to find function " << a;
 
   return state->expressions.add(std::make_shared<cs6300::CallExpression>(
     a, label, args, type, state->getSymTable()));
@@ -336,7 +335,7 @@ int cs6300::CallProc(char* name, int argsIndex)
   for (auto iter : program->functions)
     if (iter.first == functionSig)
     { // find matching signature and get label
-        found = true;
+      found = true;
       label = iter.first.getLabel();
       auto val = iter.second;
       program->functions.erase(
@@ -345,8 +344,7 @@ int cs6300::CallProc(char* name, int argsIndex)
       break;
     }
 
-    if(!found)
-        LOG(FATAL) << "Unable to find function " << name;
+  if (!found) LOG(FATAL) << "Unable to find function " << name;
 
   return state->statements.add(
     std::make_shared<cs6300::Call>(name, label, args, state->getSymTable()));
@@ -389,8 +387,7 @@ int cs6300::FieldList(int typeIndex, int field)
       currentRecordFields.end(),
       [&](std::pair<std::string, std::shared_ptr<cs6300::Type>> recFieldPair)
       {
-        pRecord->fields[recFieldPair.first] = recFieldPair.second;
-        state->getSymTable()->addRecordVariable(recFieldPair.first, pRecord);
+        pRecord->addMember(recFieldPair.first, recFieldPair.second);
       });
     return state->types.add(pRecord);
   }
@@ -404,7 +401,7 @@ int cs6300::FieldList(int typeIndex, int field)
     if (!fields) return -1;
     for (auto&& f : fields->fields)
     {
-      type->fields.insert(f);
+      type->addMember(f.first, f.second);
     }
     return typeIndex;
   }
@@ -625,7 +622,7 @@ int cs6300::Signature(char* ident, int params, int type)
   {
     std::copy(parameters->begin(), parameters->end(), std::back_inserter(a));
     for (auto&& param : *parameters)
-        state->getSymTable()->addParameter(param.first, param.second);
+      state->getSymTable()->addParameter(param.first, param.second);
   }
   auto sig = std::make_shared<cs6300::FunctionSignature>(ident, a, returnType);
   delete (ident);
@@ -730,6 +727,7 @@ void cs6300::AddFunction(int signature, int body)
     state->getSymTable()->addParameter(param.first, param.second);
   }
   auto b = state->statementLists.get(body);
+  b->push_back(std::make_shared<cs6300::ReturnStatement>(nullptr));
   auto program = state->getProgram();
   program->functions[*sig] =
     std::make_shared<cs6300::Function>(sig, *b, state->getSymTable());

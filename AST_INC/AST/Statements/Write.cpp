@@ -18,20 +18,24 @@ cs6300::FlowGraph cs6300::Write::emit()
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteInt, 0, val->getLabel(), 0));
     }
-    if (val->type() == BuiltInType::getChar())
+    else if (val->type() == BuiltInType::getChar())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteChar, 0, val->getLabel(), 0));
     }
-    if (val->type() == BuiltInType::getBool())
+    else if (val->type() == BuiltInType::getBool())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteBool, 0, val->getLabel(), 0));
     }
-    if (val->type() == BuiltInType::getStr())
+    else if (val->type() == BuiltInType::getStr())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteStr, 0, val->value(), 0));
+    }
+    else
+    {
+      LOG(FATAL) << "Unsupported print type " << val->type();
     }
   }
 
