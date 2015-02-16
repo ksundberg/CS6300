@@ -1,0 +1,33 @@
+type ntype = array[1:2] of char;
+     ptype = record
+       age : integer;
+       name : ntype;
+     end;
+
+var r : ntype;
+    a : ptype;
+    i : integer;
+
+function nameread() : ntype;
+var a:ntype;
+begin
+  a[1] := 'a';
+  a[2] := 'b';
+  return a;
+end;
+
+function personread () : ptype;
+var p:ptype;
+begin
+  p.age := 2;
+  p.name := nameread();
+  write(p.age,'\n');
+  return p;
+end;
+
+begin
+  r := nameread();
+  write(r[1],' ',r[2],'\n');
+  a := personread();
+  write(a.age,' ',a.name[1],' ',a.name[2]);
+end.

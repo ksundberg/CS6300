@@ -5,6 +5,8 @@
 cs6300::FlowGraph cs6300::Write::emit()
 {
   auto block = std::make_shared<BasicBlock>();
+  block->instructions.push_back(
+    ThreeAddressInstruction("Begin Write", file, line));
   for (auto&& val : values)
   {
     auto b = val->emit();
@@ -16,21 +18,38 @@ cs6300::FlowGraph cs6300::Write::emit()
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteInt, 0, val->getLabel(), 0));
     }
-    if (val->type() == BuiltInType::getChar())
+    else if (val->type() == BuiltInType::getChar())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteChar, 0, val->getLabel(), 0));
     }
-    if (val->type() == BuiltInType::getBool())
+    else if (val->type() == BuiltInType::getBool())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteBool, 0, val->getLabel(), 0));
     }
-    if (val->type() == BuiltInType::getStr())
+    else if (val->type() == BuiltInType::getStr())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteStr, 0, val->value(), 0));
     }
+    else
+    {
+      LOG(FATAL) << "Unsupported print type " << val->type();
+    }
   }
+
+  block->instructions.push_back(ThreeAddressInstruction("End Write"));
   return std::make_pair(block, block);
+}
+
+std::string cs6300::Write::ClassName() const
+{
+  return "Write";
+}
+
+std::vector<std::string> cs6300::Write::_ASTLines() const
+{
+  std::vector<std::string> lines;
+  return join(values, lines, id());
 }

@@ -1,0 +1,26 @@
+const
+  ALEN = 5;
+
+type
+ ctype = array[2:ALEN] of char;
+
+VAR c : ctype;
+
+FUNCTION a(a : ctype; b : integer) : CHAR;
+BEGIN
+    a[2] := 'q';
+    return a[b];
+END;
+
+begin
+
+c[2] := 'c';
+c[3] := 'd';
+c[4] := 'e';
+c[5] := 'f';
+
+write(a(c,3),'\n');
+write(a(c,2),' ',a(c,3),' ',a(c,4),' ',a(c,5),'\n');
+write(c[2],' ',c[3],' ',c[4],' ',c[5]);
+
+end.

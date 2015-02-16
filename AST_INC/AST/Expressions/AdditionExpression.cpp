@@ -1,8 +1,15 @@
 #include "AdditionExpression.hpp"
+#include "LiteralExpression.hpp"
 
 cs6300::AdditionExpression::AdditionExpression(std::shared_ptr<Expression> lhs,
                                                std::shared_ptr<Expression> rhs)
   : m_lhs(lhs), m_rhs(rhs)
+{
+}
+
+cs6300::AdditionExpression::AdditionExpression(std::shared_ptr<Expression> lhs,
+                                               int rhs)
+  : m_lhs(lhs), m_rhs(std::make_shared<LiteralExpression>(rhs))
 {
 }
 
@@ -29,4 +36,16 @@ bool cs6300::AdditionExpression::isConst() const
   if (!m_lhs) return false;
   if (!m_rhs) return false;
   return m_lhs->isConst() && m_rhs->isConst();
+}
+
+std::string cs6300::AdditionExpression::name() const
+{
+  return "\"+\"";
+}
+
+std::vector<std::string> cs6300::AdditionExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  join(m_lhs, lines, id());
+  return join(m_rhs, lines, id());
 }

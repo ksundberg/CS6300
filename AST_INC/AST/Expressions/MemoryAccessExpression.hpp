@@ -12,6 +12,8 @@ public:
   std::shared_ptr<BasicBlock> emit() const;
   std::shared_ptr<Type> type() const;
   bool isConst() const;
+  std::string name() const;
+  std::vector<std::string> ASTDot() const;
   int value() const;
   int offset() const;
 

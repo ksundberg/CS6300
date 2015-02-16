@@ -1,0 +1,31 @@
+type
+ rt = record
+        a : integer;
+        b : char;
+ end;
+ rt_array = array[1:4] of rt;
+
+VAR 
+    myArray : rt_array;
+    n : integer;
+    s : integer;
+
+function getRt(a : integer; b : char) : rt;
+var r : rt;
+
+BEGIN
+    r.a := a;
+    r.b := b;
+    return r;
+END;
+
+begin
+s := 4;
+for n:=1 to s do
+    myArray[n] := getRt(n,chr(pred('a'+n)));
+    write(myArray[n].a,' ',myArray[n].b,'\n');
+end;
+
+myArray[n] := getRt(1,'a');
+write(myArray[n].a,"->",myArray[n].b);
+end.

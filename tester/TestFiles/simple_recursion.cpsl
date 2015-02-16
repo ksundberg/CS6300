@@ -1,0 +1,24 @@
+procedure count2(f,v : integer); forward;
+procedure count(f,v : integer);
+BEGIN
+  if f = v then
+    write("(count)",f,"=",v,'\n');
+  else
+    write("(count) at ",f,' ',v,'\n');
+    count2(f,v+1);
+  end;
+END;
+
+procedure count2(f,v : integer);
+BEGIN
+  if f = v then
+    write("(count2)",f,"=",v,'\n');
+  else
+    write("(count2) at ",f,' ',v,'\n');
+    count(f,v+1);
+  end;
+END;
+
+BEGIN
+  count(50,0);
+END.

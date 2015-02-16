@@ -1,0 +1,74 @@
+const
+    ALEN = 5;
+
+type
+    ctype = array[2:ALEN] of char;
+
+VAR c : ctype;
+    c2 : ctype;
+
+FUNCTION nested() : ctype; forward;
+FUNCTION a(a,b,c,d : char) : ctype;
+var r : ctype;
+BEGIN
+    r := nested();
+    r[2] := a;
+    write("nested: ",r[2],' ',r[3],' ',r[4],' ',r[5],'\n');
+    return r;
+END;
+
+FUNCTION nested() : ctype;
+var r : ctype;
+BEGIN
+    r[2] := 'e';
+    r[3] := 'f';
+    r[4] := 'g';
+    r[5] := 'h';
+    write("in nested: ",r[2],' ',r[3],' ',r[4],' ',r[5],'\n');
+    return r;
+END;
+
+FUNCTION retGlobal() : ctype;
+var l : ctype;
+BEGIN
+  l[2] := 'w';
+  c[2] := l[2];
+  return c;
+END;
+
+FUNCTION recurse(c : ctype; i : integer) : ctype; forward;
+FUNCTION recurse(c : ctype; i : integer) : ctype;
+var a : integer;
+BEGIN
+    if i=0 then
+        return c;
+    end;
+
+    for a := 2 to 5 do
+        c[a] := succ(c[a]);
+    end;
+
+    return recurse(c, pred(i));
+END;
+
+BEGIN
+
+c := nested();
+write("global nested: ",c[2],' ',c[3],' ',c[4],' ',c[5],'\n');
+
+c[2] := '2';
+c[3] := '3';
+c[4] := '4';
+c[5] := '5';
+
+write(c[2],' ',c[3],' ',c[4],' ',c[5],'\n');
+c := a('a','b','c','d');
+write(c[2],' ',c[3],' ',c[4],' ',c[5],'\n');
+
+c := recurse(c, 10);
+write(c[2],' ',c[3],' ',c[4],' ',c[5],'\n');
+
+c2 := retGlobal();
+write(c2[2],' ',c2[3],' ',c2[4],' ',c2[5]);
+
+end.

@@ -6,37 +6,32 @@ on_die()
   exit 1;
 }
 
-cd `dirname "$0"`
+cd `dirname "${0}"`
 
 TESTDIR=TestFiles/ #test files directory (where all test.cpsl files are)
 RESULTS=Result/ #results folder (where to store cpsl run results for comparison)
 BASE=Base/ #base folder name (contains results to compare against)
 
-CPSLDIR=../build/ #where cpsl compiler binary lives
+CPSLDIR=${CPSLDIR:-../} #where cpsl compiler binary lives
 BINARY=cpsl #binary name
 ASM=asm/ #tmp directory for asm files for mars to run
 
-MARSDIR=~/src/mars/
+MARSDIR=${MARSDIR:-./}
 MARSJAR=Mars4_4.jar
 
-if [ -z $1 ]; then
-  pushd . >> /dev/null
-  cd ${TESTDIR}
-  files=`ls *.cpsl`
-  popd >>/dev/null
-else
-  files=$1
-fi
+files=`ls ${TESTDIR}${1}*.cpsl`
 
 #create these directories if they don't exist already
-mkdir -p $ASM $RESULTS
+mkdir -p ${ASM} ${RESULTS}
 
 trap on_die SIGINT
 trap on_die TERM
 
 ret=0
 
-for file in $files; do
+for file in ${files}; do
+
+    file=$(basename ${file})
 
     if [[ ! -f ${TESTDIR}${file} ]]; then
         echo "File '${file}' not found"
@@ -44,7 +39,7 @@ for file in $files; do
         continue
     fi
 
-    ${CPSLDIR}${BINARY} -o ${ASM}${file} ${TESTDIR}${file}
+    ${CPSLDIR}${BINARY} -c -o ${ASM}${file} -i ${TESTDIR}${file}
 
     if [ $? -ne 0 ]; then
         echo "Error running: ${CPSLDIR}${BINARY} -o ${ASM}${file} ${TESTDIR}${file}"
@@ -85,9 +80,9 @@ for file in $files; do
 
     if [ $? -ne 0 ]; then
         echo "  diff ${RESULTS}${file} ${BASE}${file}"
-        echo $diff
+        echo ${diff}
         echo
     fi
 done
 rm -f stderr.txt
-exit $ret
+exit ${ret}

@@ -1,0 +1,8 @@
+in nested: e f g h
+global nested: e f g h
+2 3 4 5
+in nested: e f g h
+nested: a f g h
+a f g h
+k p q r
+w p q r

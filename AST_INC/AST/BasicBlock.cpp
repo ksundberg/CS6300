@@ -22,7 +22,6 @@ void cs6300::BasicBlock::initSets()
     m.dead.insert(t.dead.begin(), t.dead.end());
   }
 
-
   std::vector<int> t;
   std::set_difference(m.used.begin(),
                       m.used.end(),
@@ -38,9 +37,16 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
   cs6300::RegisterScope m;
   switch (tal.op)
   {
-  case ThreeAddressInstruction::CallFunction: // CallFunction should have no allocation
+  case ThreeAddressInstruction::
+    CallFunction: // CallFunction should have no allocation
+  case ThreeAddressInstruction::StoreFrame:
+  case ThreeAddressInstruction::RestoreFrame:
+    break;
+  case ThreeAddressInstruction::CopyArgument:
+    m.used.insert(tal.src1);
     break;
   case ThreeAddressInstruction::LoadMemory:
+  case ThreeAddressInstruction::LoadLabel:
     m.dead.insert(tal.dest);
     m.used.insert(tal.src1);
     break;
@@ -58,6 +64,7 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
     m.used.insert(tal.src1);
     break;
   case ThreeAddressInstruction::WriteStr: // none
+  case ThreeAddressInstruction::Comment:
     break;
   default:
     if (tal.dest) m.dead.insert(tal.dest);
@@ -74,7 +81,10 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
   {
     switch (i.op)
     {
-    case ThreeAddressInstruction::CallFunction: // CallFunction should have no allocation
+    case ThreeAddressInstruction::
+      CallFunction: // CallFunction should have no allocation
+    case ThreeAddressInstruction::StoreFrame:
+    case ThreeAddressInstruction::RestoreFrame:
       break;
     case ThreeAddressInstruction::LoadMemoryOffset:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
@@ -82,14 +92,19 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
     case ThreeAddressInstruction::LoadValue: // LoadValue has constants
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       break;
+    case ThreeAddressInstruction::CopyArgument:
+      if (i.src1 && m.count(i.src1)) i.src1 = m[i.src1];
+      break;
     case ThreeAddressInstruction::StoreMemory:
     case ThreeAddressInstruction::StoreParameter:
     case ThreeAddressInstruction::AddValue:
+    case ThreeAddressInstruction::LoadLabel:
     case ThreeAddressInstruction::LoadMemory:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       if (i.src1 && m.count(i.src1)) i.src1 = m[i.src1];
       break;
     case ThreeAddressInstruction::WriteStr: // none
+    case ThreeAddressInstruction::Comment:
       break;
     default:
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
@@ -99,8 +114,8 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
       if (i.src2 && m.count(i.src2)) i.src2 = m[i.src2];
     }
   }
-  if(branchTo && m.count(branchOn))
+  if (branchTo && m.count(branchOn))
   {
-      branchOn = m[branchOn];
+    branchOn = m[branchOn];
   }
 }

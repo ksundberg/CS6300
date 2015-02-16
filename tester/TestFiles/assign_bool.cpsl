@@ -1,0 +1,17 @@
+const
+  ALEN = 5;
+
+VAR b : boolean;
+    b2 : boolean;
+
+begin
+
+b := false;
+b2 := b;
+
+write(b, ' ', b2, '\n');
+
+b := true;
+write(b, ' ', b2, '\n');
+
+end.

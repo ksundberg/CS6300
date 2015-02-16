@@ -356,5 +356,5 @@ LValue : LValue DOTSY IDENTSY {$$ = cs6300::LoadMember($1,$3);}
 
 void yyerror(const char* msg)
 {
-  LOG(ERROR) << msg;
+  LOG(FATAL) << msg;
 }

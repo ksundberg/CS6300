@@ -1,0 +1,51 @@
+const
+  ALEN = 5;
+  BLEN = 3;
+
+type rt = record
+      a : integer;
+      b : char;
+     end;
+     r2t = record
+      a : rt;
+      b : rt;
+     end;
+     ia = array[1:4] of rt;
+
+VAR r : rt;
+    t : rt;
+    r2 : r2t;
+    i : integer;
+    j : integer;
+    i1 : ia;
+
+begin
+
+r.a := 2;
+r.b := 'a';
+write(r.a, r.b,'\n');
+
+t := r; $2,'a'
+t.a := 3; $3,'a'
+write(r.a, "!=", t.a,'\n');
+
+t.b := 'b'; $3,'b'
+r2.a := t; $3,'b'
+write(r.a, ' ',r.b,'\n'); $2,'a'
+r := r2.a;
+write(r.a, ' ',r.b,'\n');
+
+r2.a.a := 4;
+r2.a.b := 'd';
+write(r2.a.a,' ',r2.a.b,'\n');
+
+i1[1].a := 2;
+i1[1].b := 'b';
+i1[2] := r2.a;$3,'b'
+i1[3].a := 8;
+i1[3].b := '8';
+
+write(i1[1].a,' ', i1[1].b,'\n');
+write(i1[2].a,' ', i1[2].b,'\n');
+write(i1[3].a,' ', i1[3].b,'\n');
+end.

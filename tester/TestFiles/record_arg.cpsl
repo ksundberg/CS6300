@@ -1,0 +1,30 @@
+type
+ rt = record
+        a : integer;
+        b : char;
+ end;
+
+VAR r : rt;
+    t : rt;
+
+PROCEDURE printrt(a : rt);
+BEGIN
+    write(a.a,' ',a.b,'\n');
+END;
+
+FUNCTION retr(r :rt) : rt;
+BEGIN
+    return r;
+END;
+
+begin
+
+r.a := 2;
+r.b := 'a';
+printrt(r);
+r.a := 4;
+r.b := 'c';
+printrt(r);
+t := retr(r);
+printrt(t);
+end.

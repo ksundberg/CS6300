@@ -17,11 +17,13 @@ public:
     return m_instance;
   }
   int add(std::string);
+  std::string lookup(int);
   std::map<std::string, int> getTable();
 
 private:
   static std::shared_ptr<StringTable> m_instance;
   std::map<std::string, int> m_table;
+  std::map<int, std::string> m_idtable;
 };
 }
 #endif

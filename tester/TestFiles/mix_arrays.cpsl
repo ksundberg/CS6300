@@ -1,0 +1,44 @@
+CONST
+  ARRAYSTART = 0;
+  ARRAYEND = 10;
+
+TYPE
+    rtype = record
+        x : integer;
+        y : integer;
+    end;
+    integerarray = array[0:10] of integer;
+    rtypearray = array[1:10] of rtype;
+
+VAR
+    a : integerarray;
+    b : integerarray;
+
+function getArray() : integerarray;
+VAR
+    returnarray : integerarray;
+BEGIN
+    for n:=0 to 10 do
+        returnarray[n] := n * 2;
+    END;
+    return returnarray;
+END;
+
+BEGIN
+    for n:=0 to 10 do
+        write("n:",n, "\n");
+        a[n] := n*5;
+        b[n] := n*3;
+    END;
+
+    for n:=0 to 10 do
+        write("a[",n,"]:", a[n],"\n");
+        write("b[",n,"]:", b[n],"\n\n");
+    END;
+
+    a := getArray();
+    for n:=0 to 10 do
+        write("a[",n,"]:", a[n],"\n");
+    END;
+
+END.

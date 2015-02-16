@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
-#include <unistd.h>
+
+#include <boost/program_options.hpp>
 
 #include "BackEnd/BackEnd.hpp"
 #include "FrontEnd/FrontEnd.hpp"
@@ -9,9 +10,8 @@
 #include "BackEnd/BackEnd.hpp"
 #include "ProcessLog.hpp"
 
-// Logging header
+namespace po = boost::program_options;
 #include "logger.h"
-INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char* argv[])
 {
@@ -19,68 +19,116 @@ int main(int argc, char* argv[])
 
   try
   {
-    int opt;
     bool emitFlowGraph = false;
     bool emitOptimizedFlowGraph = false;
+    bool emitAST = false;
     std::string outFile = "";
     std::string inFile = "";
 
-    while ((opt = getopt (argc, argv, "Ffo:i:")) != -1)
+    po::options_description desc("Allowed options");
+    desc.add_options()("help,h", "produce help message")(
+      "input,i", po::value<std::string>(), "input cpsl file")(
+      "output,o", po::value<std::string>(), "output asm file")(
+      "comments,c", "output assembly comments")(
+      "flowgraph,f", "output flowgraph")("ast,a", "output ast digraph")(
+      "flowgraph,f", "output flowgraph")(
+      "flowgraph-optimized,F", "output optimized flowgraph");
+
+    po::positional_options_description positionalOptions;
+    positionalOptions.add("input", 1);
+    positionalOptions.add("output", 1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv)
+                .options(desc)
+                .positional(positionalOptions)
+                .run(),
+              vm);
+    po::notify(vm);
+
+    if (vm.count("help"))
     {
-      switch (opt)
-      {
-        case 'f':
-          emitFlowGraph = true;
-          break;
-        case 'F':
-          emitOptimizedFlowGraph = true;
-          break;
-        case 'o':
-          outFile = optarg;
-          break;
-        case 'i':
-          inFile = optarg;
-          break;
-        case '?':
-          std::cerr << "Unknown option character '" << char(optopt) << "'" << std::endl;
-          return EXIT_FAILURE;
-        default:
-          // All options must precede filenames
-          break;
-      }
+      std::cout << desc << "\n";
+      return EXIT_SUCCESS;
     }
 
-    if(emitFlowGraph && emitOptimizedFlowGraph)
+    if (vm.count("comments"))
+    {
+      cs6300::ThreeAddressInstruction::Verbose = true;
+    }
+    if (vm.count("ast"))
+    {
+      emitAST = true;
+    }
+    if (vm.count("flowgraph"))
+    {
+      emitFlowGraph = true;
+    }
+    if (vm.count("flowgraph-optimized"))
+    {
+      emitOptimizedFlowGraph = true;
+    }
+    if (vm.count("output"))
+    {
+      outFile = vm["output"].as<std::string>();
+    }
+    else
+    {
+      outFile = "out.asm";
+    }
+    if (vm.count("input"))
+    {
+      inFile = vm["input"].as<std::string>();
+    }
+    else
+    {
+      inFile = "in.cpsl";
+    }
+    if (emitFlowGraph && emitOptimizedFlowGraph)
     {
       std::cerr << "Warning: generating multiple flow graphs" << std::endl;
     }
 
-    if(inFile == "")
-    {
-      if(argc > 1 && argv[argc-1][0] != '-')
-      {
-        inFile = argv[argc-1];
-      }
-      else
-      {
-        inFile = "in.cpsl";
-      }
-    }
-
-    if(outFile == "") outFile = "out.asm";
     LOG(INFO) << "Compiling " << inFile << " to " << outFile;
 
     ProcessLog::getInstance()->set_infile(inFile);
-    LOG(INFO) << "Compiling " << inFile << " to " << outFile;
 
     auto program = cs6300::parseCPSL(inFile);
+    if (emitAST)
+    {
+      std::string ast;
+      for (auto& s : program->main)
+      {
+        // TODO: Find out why some statements are NULL
+        if (!s) continue;
+
+        ast += "main -> " + s->id() + "\n";
+        for (auto& edge : s->ASTLines())
+        {
+          ast += edge + "\n";
+        }
+      }
+      for (auto&& f : program->functions)
+      {
+        for (auto& s : f.second->body)
+        {
+          if (!s) continue;
+          ast += f.first.name + " -> " + s->id() + "\n";
+          for (auto& edge : s->ASTLines())
+          {
+            ast += edge + "\n";
+          }
+        }
+      }
+      std::cout << "digraph G {\n"
+                << "rank=same\n" << ast << "}" << std::endl;
+    }
     auto optimized = cs6300::optimizer(program);
     auto intermediate =
       std::make_shared<cs6300::IntermediateRepresentationProgram>(optimized);
 
     /* Print out flowgraph */
-    if(emitFlowGraph)
-      std::cout << cs6300::flowGraphDot(intermediate->main);
+    if (emitFlowGraph) std::cout << cs6300::flowGraphDot(intermediate->main);
 
     intermediate->main = cs6300::optimizer(intermediate->main);
     for (auto&& f : intermediate->functions)
@@ -89,9 +137,8 @@ int main(int argc, char* argv[])
     }
 
     /* Print out optimized flowgraph */
-    if(emitOptimizedFlowGraph)
+    if (emitOptimizedFlowGraph)
       std::cout << cs6300::flowGraphDot(intermediate->main);
-
     cs6300::writeMIPS(intermediate, outFile);
   }
   catch (std::exception& e)

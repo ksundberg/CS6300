@@ -6,6 +6,8 @@
 #include "SymbolTable.hpp"
 #include "Function.hpp"
 #include "Type.hpp"
+#include "AST/Expressions/LiteralExpression.hpp"
+
 namespace cs6300
 {
 
@@ -29,6 +31,11 @@ public:
     table->addType(std::string("CHAR"), BuiltInType::getChar());
     table->addType(std::string("string"), BuiltInType::getStr());
     table->addType(std::string("STRING"), BuiltInType::getStr());
+
+    table->addConstant("true", std::make_shared<LiteralExpression>(true));
+    table->addConstant("TRUE", std::make_shared<LiteralExpression>(true));
+    table->addConstant("false", std::make_shared<LiteralExpression>(false));
+    table->addConstant("FALSE", std::make_shared<LiteralExpression>(false));
     return table;
   }
   std::shared_ptr<SymbolTable> symbols;
@@ -49,6 +56,7 @@ public:
   }
   cs6300::FlowGraph main;
   std::map<cs6300::FunctionSignature, cs6300::FlowGraph> functions;
+  std::map<int, cs6300::FunctionSignature> functionIdMap;
 };
 }
 

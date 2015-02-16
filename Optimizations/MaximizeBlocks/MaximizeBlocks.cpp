@@ -1,8 +1,8 @@
 #include <algorithm>
 
 #include "MaximizeBlocks.hpp"
-#include "../../AST_INC/AST/BasicBlock.hpp"
-#include "../../AST_INC/AST/ThreeAddressInstruction.hpp"
+#include "AST/BasicBlock.hpp"
+#include "AST/ThreeAddressInstruction.hpp"
 #include "VisitedBlocks.hpp"
 #include "NumParents.hpp"
 
@@ -13,33 +13,39 @@ void cs6300::maximizeBlocks(cs6300::FlowGraph original)
   cs6300::traverse(original.second);
 }
 
-void cs6300::traverse(std::shared_ptr<BasicBlock> block){
+void cs6300::traverse(std::shared_ptr<BasicBlock> block)
+{
   auto vb = VisitedBlocks::instance();
   auto np = NumParents::instance();
 
-  if(vb->isVisited(block)){
+  if (vb->isVisited(block))
+  {
     return;
   }
 
-  if(block->branchTo != nullptr){
+  if (block->branchTo != nullptr)
+  {
     // add parents on the way down...
     np->addParent(block->branchTo);
     traverse(block->branchTo);
   }
-  if(block->jumpTo != nullptr){
+  if (block->jumpTo != nullptr)
+  {
     // add parents on the way down...
     np->addParent(block->jumpTo);
     traverse(block->jumpTo);
   }
   // determine if they can be merged on the way back up...
-  if(block->jumpTo != nullptr && block->branchTo == nullptr && np->getNumParents(block->jumpTo) == 1){
+  if (block->jumpTo != nullptr && block->branchTo == nullptr &&
+      np->getNumParents(block->jumpTo) == 1)
+  {
     // merge jumpTo to this block
-    for(auto inst : block->jumpTo->instructions){
+    for (auto inst : block->jumpTo->instructions)
+    {
       block->instructions.push_back(inst);
     }
     block->branchTo = block->jumpTo->branchTo;
     block->branchOn = block->jumpTo->branchOn;
     block->jumpTo = block->jumpTo->jumpTo;
   }
-
 }

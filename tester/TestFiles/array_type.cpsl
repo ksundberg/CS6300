@@ -1,0 +1,51 @@
+const
+  ALEN = 5;
+  BLEN = 3;
+
+type
+ ctype = array[2:ALEN] of char;
+ itype = array[1:BLEN] of integer;
+ btype = array[-4:-1] of boolean;
+
+VAR c : ctype;
+    c2 : ctype;
+    i : itype;
+    b : btype;
+    r : integer;
+    q : integer;
+
+begin
+
+c[2] := 'c';
+c[3] := 'd';
+c[4] := 'e';
+c[5] := 'f';
+
+c2 := c;
+
+c[2] := 'z';
+c[3] := 'y';
+c[4] := 'x';
+c[5] := 'w';
+
+c2[3] := c[5];
+
+r := 1;
+i[r] := 70;
+r := 2;
+q := 71;
+i[r] := q;
+q := 72;
+i[3] := q;
+
+b[-4] := true;
+b[-3] := true;
+b[-2] := false;
+b[-1] := false;
+
+write(c[r], c[succ(r)], c[succ(succ(r))], c[succ(succ(succ(r)))], '\n');
+write(c2[r], c2[succ(r)], c2[succ(succ(r))], c2[succ(succ(succ(r)))], '\n');
+write(i[pred(r)], i[r], i[r+1], '\n');
+write(b[r-6], b[r-5], b[-2+0], b[-1+1-1+1-1]); 
+
+end.

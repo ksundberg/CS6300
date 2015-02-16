@@ -3,26 +3,35 @@
 
 #include "Statement.hpp"
 #include "AST/Expressions/Expression.hpp"
+#include "AST/SymbolTable.hpp"
 
 #include <string>
 #include <vector>
 
 namespace cs6300
 {
-  class Call : public Statement
+class Call : public Statement
+{
+public:
+  Call(std::string n,
+       int l,
+       std::vector<std::shared_ptr<Expression>> args,
+       std::shared_ptr<SymbolTable> symbols)
+    : Statement(), _name(n), label(l), arguments(args), symbolTable(symbols)
   {
-    public:
-      Call(int l, std::vector<std::shared_ptr<Expression>> args)
-          : Statement()
-          , label(l)
-          , arguments(args)
-      {
-      }
-      cs6300::FlowGraph emit();
+  }
+  cs6300::FlowGraph emit();
+  std::string ClassName() const;
+  std::string name() const;
 
-    private:
-      int label;
-      std::vector<std::shared_ptr<Expression>> arguments;
-  };
+protected:
+  std::vector<std::string> _ASTLines() const;
+
+private:
+  int label;
+  std::string _name;
+  std::vector<std::shared_ptr<Expression>> arguments;
+  std::shared_ptr<SymbolTable> symbolTable;
+};
 }
 #endif

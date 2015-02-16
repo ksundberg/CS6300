@@ -3,9 +3,6 @@
 namespace cs6300
 {
 
-#define START_REGISTER 8
-#define END_REGISTER 26
-
 struct RegisterScope
 {
   std::set<int> dead;

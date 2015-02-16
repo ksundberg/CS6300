@@ -15,7 +15,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::PredecessorExpression::emit() const
 }
 std::shared_ptr<cs6300::Type> cs6300::PredecessorExpression::type() const
 {
-  return nullptr;
+  return m_expr->type();
 }
 int cs6300::PredecessorExpression::value() const
 {
@@ -24,4 +24,14 @@ int cs6300::PredecessorExpression::value() const
 bool cs6300::PredecessorExpression::isConst() const
 {
   return m_expr->isConst();
+}
+std::string cs6300::PredecessorExpression::name() const
+{
+  return "Pred";
+}
+
+std::vector<std::string> cs6300::PredecessorExpression::ASTDot() const
+{
+  std::vector<std::string> lines;
+  return join(m_expr, lines, id());
 }

@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "StringExpression.hpp"
 #include "AST/StringTable.hpp"
 
@@ -24,4 +26,16 @@ int cs6300::StringExpression::value() const
 bool cs6300::StringExpression::isConst() const
 {
   return true;
+}
+std::string cs6300::StringExpression::name() const
+{
+  std::string name = StringTable::instance()->lookup(m_label);
+  name.erase(0, 1);                  // erase first quotation
+  name.erase(name.size() - 1);       // erase last quotation
+  return "\"\\\"" + name + "\\\"\""; // return properly escaped quotations
+}
+
+std::vector<std::string> cs6300::StringExpression::ASTDot() const
+{
+  return {};
 }

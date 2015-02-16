@@ -1,0 +1,50 @@
+returning 'cde'...
+got: 'cde'...
+returning 'def'...
+got: 'def'...
+returning 'efg'...
+got: 'efg'...
+returning 'fgh'...
+got: 'fgh'...
+#	age	Name
+---------------------
+1:	1	cdef                    
+2:	2	defg                    
+3:	3	efgh                    
+4:	4	fghi                    
+
+	Sorted by age:
+
+swapping: 1 2
+swapping: 2 3
+swapping: 3 4
+swapping: 1 2
+swapping: 2 3
+swapping: 1 2
+#	age	Name
+---------------------
+1:	4	fghi                    
+2:	3	efgh                    
+3:	2	defg                    
+4:	1	cdef                    
+
+	Sorted by name:
+
+swapping: 1 2
+n,m is 1,4
+swapping: 2 3
+n,m is 2,4
+swapping: 3 4
+n,m is 3,4
+swapping: 1 2
+n,m is 1,3
+swapping: 2 3
+n,m is 2,3
+swapping: 1 2
+n,m is 1,2
+#	age	Name
+---------------------
+1:	1	cdef                    
+2:	2	defg                    
+3:	3	efgh                    
+4:	4	fghi                    

@@ -5,43 +5,68 @@
 #include <memory>
 #include <string>
 
+#include "Type.hpp"
+
 namespace cs6300
 {
 class Type
 {
-  public:
+public:
   virtual int size() = 0;
-  virtual ~Type()=default;
+  virtual std::string name() = 0;
+  virtual ~Type() = default;
 };
 
-class IntType:public Type {public: int size(){return 4;} };
-class CharType:public Type {public: int size(){return 4;} };
-class BoolType:public Type {public: int size(){return 4;} };
-class StringType:public Type {public: int size(){return 0;} };
+class IntType : public Type
+{
+public:
+  int size() { return 4; }
+  std::string name() { return "int"; }
+};
+class CharType : public Type
+{
+public:
+  int size() { return 4; }
+  std::string name() { return "char"; }
+};
+class BoolType : public Type
+{
+public:
+  int size() { return 4; }
+  std::string name() { return "bool"; }
+};
+class StringType : public Type
+{
+public:
+  int size() { return 0; }
+  std::string name() { return "string"; }
+};
 
 class RecordType : public Type
 {
-  public:
-    RecordType()
-        : Type()
-        , fields()
-    {
-    }
+public:
+  RecordType() : Type(), fields(), field_offset(), _offset(0) {}
   int size();
-  std::map<std::string,std::shared_ptr<Type>> fields;
+  std::string name() { return "record"; }
+  void addMember(std::string, std::shared_ptr<Type>);
+  std::shared_ptr<cs6300::Type> type(std::string) const;
+  int offset(std::string) const;
+  std::map<std::string, std::shared_ptr<Type>> fields;
+  std::map<std::string, int> field_offset;
+
+private:
+  int _offset;
 };
 
 class ArrayType : public Type
 {
-  public:
-    ArrayType(int lb, int ub, std::shared_ptr<Type> t)
-        : Type()
-        , baseType(t)
-        , lowerbound(lb)
-        , upperbound(ub)
-    {
-    }
+public:
+  ArrayType(int lb, int ub, std::shared_ptr<Type> t)
+    : Type(), baseType(t), lowerbound(lb), upperbound(ub)
+  {
+  }
   int size();
+  std::string name() { return "array"; }
   std::shared_ptr<Type> baseType;
   int lowerbound;
   int upperbound;
@@ -70,6 +95,7 @@ public:
     if (!m_str) m_str = std::make_shared<StringType>();
     return m_str;
   }
+
 private:
   static std::shared_ptr<Type> m_char;
   static std::shared_ptr<Type> m_int;
@@ -78,4 +104,3 @@ private:
 };
 }
 #endif
-
