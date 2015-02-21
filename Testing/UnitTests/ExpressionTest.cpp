@@ -1,5 +1,7 @@
 #include "catch.hpp"
+#include "AST/Expressions/AdditionExpression.hpp"
 #include "AST/Expressions/LiteralExpression.hpp"
+#include "AST/Expressions/MemoryAccessExpression.hpp"
 
 TEST_CASE("LiteralExpression", "[expression]")
 {
@@ -7,7 +9,7 @@ TEST_CASE("LiteralExpression", "[expression]")
   cs6300::LiteralExpression int_exp(42);
   cs6300::LiteralExpression bool_exp(false);
 
-  SECTION("all literal expressions are constant")
+  SECTION("constants are correct")
   {
     REQUIRE(char_exp.isConst());
     REQUIRE(int_exp.isConst());
@@ -69,5 +71,80 @@ TEST_CASE("LiteralExpression", "[expression]")
     REQUIRE(tal.op == cs6300::ThreeAddressInstruction::LoadValue);
     REQUIRE(tal.src1 == false);
     REQUIRE(tal.src2 == 0);
+  }
+}
+
+TEST_CASE("AdditionExpression", "[expression]")
+{
+  cs6300::AdditionExpression lit_exp(
+    std::make_shared<cs6300::LiteralExpression>(4),
+    std::make_shared<cs6300::LiteralExpression>(20));
+  cs6300::AdditionExpression lit_int(
+    std::make_shared<cs6300::LiteralExpression>(4), -10);
+  cs6300::AdditionExpression mem_lit(
+    std::make_shared<cs6300::MemoryAccessExpression>(1, 2),
+    std::make_shared<cs6300::LiteralExpression>(20));
+  cs6300::AdditionExpression mem_int(
+    std::make_shared<cs6300::MemoryAccessExpression>(1, 2), -10);
+
+  SECTION("constants are correct")
+  {
+    REQUIRE(lit_exp.isConst());
+    REQUIRE(lit_int.isConst());
+    REQUIRE(!mem_lit.isConst());
+    REQUIRE(!mem_int.isConst());
+  }
+
+  SECTION("constructed with correct type")
+  {
+    REQUIRE(lit_exp.type() == cs6300::BuiltInType::getInt());
+    REQUIRE(lit_int.type() == cs6300::BuiltInType::getInt());
+    REQUIRE(mem_lit.type() == nullptr);
+    REQUIRE(mem_int.type() == nullptr);
+  }
+
+  SECTION("values are correct")
+  {
+    REQUIRE(lit_exp.value() == 24);
+    REQUIRE(lit_int.value() == -6);
+    REQUIRE(mem_lit.value() == 0);
+    REQUIRE(mem_int.value() == 0);
+  }
+
+  SECTION("names are correct")
+  {
+    REQUIRE(lit_exp.name() == R"("+")");
+    REQUIRE(lit_int.name() == R"("+")");
+    REQUIRE(mem_lit.name() == R"("+")");
+    REQUIRE(mem_int.name() == R"("+")");
+  }
+
+  SECTION("emit has correct blocks")
+  {
+    std::shared_ptr<cs6300::BasicBlock> blocks;
+
+    blocks = lit_exp.emit();
+    REQUIRE(blocks.get() != nullptr);
+    REQUIRE(blocks->instructions.size() == 3);
+    auto tal = blocks->instructions[2];
+    REQUIRE(tal.op == cs6300::ThreeAddressInstruction::Add);
+
+    blocks = lit_int.emit();
+    REQUIRE(blocks.get() != nullptr);
+    REQUIRE(blocks->instructions.size() == 3);
+    tal = blocks->instructions[2];
+    REQUIRE(tal.op == cs6300::ThreeAddressInstruction::Add);
+
+    blocks = mem_lit.emit();
+    REQUIRE(blocks.get() != nullptr);
+    REQUIRE(blocks->instructions.size() == 3);
+    tal = blocks->instructions[2];
+    REQUIRE(tal.op == cs6300::ThreeAddressInstruction::Add);
+
+    blocks = mem_int.emit();
+    REQUIRE(blocks.get() != nullptr);
+    REQUIRE(blocks->instructions.size() == 3);
+    tal = blocks->instructions[2];
+    REQUIRE(tal.op == cs6300::ThreeAddressInstruction::Add);
   }
 }
