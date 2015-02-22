@@ -189,6 +189,7 @@ list(APPEND cpsl_srcs ${unittests})
 file(GLOB unittests Testing/UnitTests/*.cpp)
 set(test_srcs ${unittests}
     Testing/main.cpp
+    Testing/ProgramFactory.cpp
     ${BISON_CpslParser_OUTPUTS}
     ${FLEX_CpslScanner_OUTPUTS}
     )

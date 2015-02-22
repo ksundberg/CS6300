@@ -5,12 +5,9 @@
 #include "Allocation.hpp"
 #include <fstream>
 
-namespace
-{
-
 std::set<std::shared_ptr<cs6300::BasicBlock>> seenBlocks;
 
-void emitMIPS(std::shared_ptr<cs6300::BasicBlock> block, std::ofstream& fout)
+void cs6300::emitMIPS(std::shared_ptr<cs6300::BasicBlock> block, std::ostream& fout)
 {
 
   if (!block || (seenBlocks.find(block) != seenBlocks.end())) return;
@@ -33,14 +30,13 @@ void emitMIPS(std::shared_ptr<cs6300::BasicBlock> block, std::ofstream& fout)
   emitMIPS(block->branchTo, fout);
   emitMIPS(block->jumpTo, fout);
 }
-void emitMIPS(cs6300::FlowGraph cfg, std::ofstream& fout)
+void cs6300::emitMIPS(cs6300::FlowGraph cfg, std::ostream& fout)
 {
   seenBlocks.clear();
   emitMIPS(cfg.first, fout);
 }
-}
 
-void writeStringTable(std::ofstream& fout)
+void writeStringTable(std::ostream& fout)
 {
   auto string_table = cs6300::StringTable::instance()->getTable();
   for (auto s : string_table)
