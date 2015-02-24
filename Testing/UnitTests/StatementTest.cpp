@@ -9,7 +9,7 @@ TEST_CASE("Statements", "[statement]")
 
   SECTION("Assignment Statement")
   {
-    std::string s = factory.id("b").assign("b", 14).str();
+    std::string s = factory.literal("b", 14).id("a").assign("a", "b").str();
     std::string exp = R"(BB1:
 j BB2
 BB2:
@@ -23,9 +23,9 @@ sw $1, 0($2) #store memory
   SECTION("Call Statement")
   {
     std::string s = factory.call("fname", 14).str();
-    std::string exp = R"(BB3:
-j BB4
-BB4:
+    std::string exp = R"(BB1:
+j BB2
+BB2:
 addi $sp, $sp, 0 # vars
 sw $fp, -4($sp) #store frame
 sw $ra, -8($sp)
@@ -42,14 +42,12 @@ addi $sp, $sp, 0 #vars
 )";
     REQUIRE(s == exp);
 
-    std::vector<std::shared_ptr<cs6300::Expression>> args = {
-      std::make_shared<cs6300::LiteralExpression>(5),
-      std::make_shared<cs6300::LiteralExpression>(10),
-      std::make_shared<cs6300::LiteralExpression>(70)};
-    s = factory.call("fname", 35, args).str();
-    exp = R"(BB5:
-j BB6
-BB6:
+    ProgramFactory args;
+    args.literal("a", 5).literal("b", 10).literal("c", 70);
+    s = factory.call("fname", 35, args.expressions()).str();
+    exp = R"(BB1:
+j BB2
+BB2:
 li $1, 5
 li $2, 10
 li $3, 70
@@ -79,66 +77,66 @@ addi $sp, $sp, 0 #vars
     std::string s = factory.id("a")
                       .for_("a", 5, 50, cs6300::ForStatement::TO, innerFor.stms)
                       .str();
-    std::string exp = R"(BB7:
-j BB8
-BB8:
+    std::string exp = R"(BB1:
+j BB2
+BB2:
 li $1, 5
 addi $2, $gp, 0 # Load a global
 sw $1, 0($2) #store memory
-j BB9
-BB9:
+j BB3
+BB3:
 li $4, 50
 addi $5, $gp, 0 # Load a global
 lw $6, 0($5)
 slt $3, $4, $6
-bne $3, $zero, BB10
-j BB11
-BB10:
-BB11:
-j BB12
-BB12:
+bne $3, $zero, BB4
+j BB5
+BB4:
+BB5:
+j BB6
+BB6:
 addi $7, $gp, 0 # Load a global
 lw $8, 0($7)
 addi $9, $8, 1
 addi $10, $gp, 0 # Load a global
 sw $9, 0($10) #store memory
-j BB9
+j BB3
 )";
     REQUIRE(s == exp);
 
-    innerFor.id("b").assign("b", 800);
+    innerFor.literal("b", 800).id("a").assign("a", "b");
     s = factory.id("a")
           .for_("a", 60, 100, cs6300::ForStatement::DOWNTO, innerFor.stms)
           .str();
-    exp = R"(BB13:
-j BB14
-BB14:
+    exp = R"(BB1:
+j BB2
+BB2:
 li $1, 60
 addi $2, $gp, 0 # Load a global
 sw $1, 0($2) #store memory
-j BB15
-BB15:
+j BB3
+BB3:
 addi $4, $gp, 0 # Load a global
 lw $5, 0($4)
 li $6, 100
 slt $3, $5, $6
-bne $3, $zero, BB16
-j BB17
-BB16:
-BB17:
-j BB18
-BB18:
+bne $3, $zero, BB4
+j BB5
+BB4:
+BB5:
+j BB6
+BB6:
 li $11, 800
 addi $12, $gp, 0 # Load a global
 sw $11, 0($12) #store memory
-j BB19
-BB19:
+j BB7
+BB7:
 addi $7, $gp, 0 # Load a global
 lw $8, 0($7)
 addi $9, $8, -1
 addi $10, $gp, 0 # Load a global
 sw $9, 0($10) #store memory
-j BB15
+j BB3
 )";
     REQUIRE(s == exp);
   }

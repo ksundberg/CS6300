@@ -7,7 +7,8 @@
 
 std::set<std::shared_ptr<cs6300::BasicBlock>> seenBlocks;
 
-void cs6300::emitMIPS(std::shared_ptr<cs6300::BasicBlock> block, std::ostream& fout)
+void cs6300::emitMIPS(std::shared_ptr<cs6300::BasicBlock> block,
+                      std::ostream& fout)
 {
 
   if (!block || (seenBlocks.find(block) != seenBlocks.end())) return;

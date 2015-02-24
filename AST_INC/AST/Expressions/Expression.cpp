@@ -22,10 +22,10 @@ std::string cs6300::Expression::node() const
 int cs6300::Expression::getNextLabel(bool reset)
 {
   static int curLabel = 0;
-  if(reset)
+  if (reset)
   {
-      curLabel = 0;
-      return 0;
+    curLabel = 0;
+    return 0;
   }
   return ++curLabel;
 }
