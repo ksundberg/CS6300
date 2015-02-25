@@ -7,6 +7,13 @@
 #include "AST/Statements/Statement.hpp"
 
 #include "AST/Statements/For.hpp"
+#include "AST/Statements/If.hpp"
+#include "AST/Statements/Read.hpp"
+#include "AST/Statements/Repeat.hpp"
+#include "AST/Statements/Return.hpp"
+#include "AST/Statements/Stop.hpp"
+#include "AST/Statements/While.hpp"
+#include "AST/Statements/Write.hpp"
 
 #include "AST/Expressions/AndExpression.hpp"
 #include "AST/Expressions/CallExpression.hpp"
@@ -53,15 +60,27 @@ public:
       std::vector<std::shared_ptr<cs6300::Expression>>());
   ProgramFactory& for_(
     const std::string& var,
-    int start,
-    int end,
+    const std::string& start,
+    const std::string& end,
     cs6300::ForStatement::Direction d,
-    const std::vector<std::shared_ptr<cs6300::Statement>>& statementList);
-  ProgramFactory& load(const std::string& name, const std::string& id);
-  ProgramFactory& memaccess(const std::string& name,
-                            int memory_value,
-                            int value_offset);
+    const std::vector<std::shared_ptr<cs6300::Statement>>& statementList =
+      std::vector<std::shared_ptr<cs6300::Statement>>());
+  ProgramFactory& if_(
+    const std::vector<
+      std::pair<std::string, std::vector<std::shared_ptr<cs6300::Statement>>>>&
+      clauses,
+    std::vector<std::shared_ptr<cs6300::Statement>> elseClause =
+      std::vector<std::shared_ptr<cs6300::Statement>>());
+  ProgramFactory& repeat(const std::string& name,
+                         std::vector<std::shared_ptr<cs6300::Statement>>);
+  ProgramFactory& while_(const std::string& name,
+                         std::vector<std::shared_ptr<cs6300::Statement>>);
+  ProgramFactory& stop();
+  ProgramFactory& return_(const std::string& name);
+  ProgramFactory& read(const std::vector<std::string>& lvals);
+  ProgramFactory& write(const std::vector<std::string>& exprs);
 
+  // Expressions
   ProgramFactory& literal(const std::string& name, int val);
   ProgramFactory& literal(const std::string& name, char val);
   ProgramFactory& literal(const std::string& name, bool val);
@@ -84,17 +103,22 @@ public:
   ProgramFactory& pred(const std::string& name, const std::string& exp);
   ProgramFactory& succ(const std::string& name, const std::string& exp);
   ProgramFactory& string(const std::string& name, const std::string& exp);
+  ProgramFactory& load(const std::string& name, const std::string& id);
+  ProgramFactory& memaccess(const std::string& name,
+                            int memory_value,
+                            int value_offset);
 
+  std::shared_ptr<cs6300::Statement> pop();
   std::string str();
   std::string exprstr(const std::string& name);
   std::vector<std::shared_ptr<cs6300::Expression>> expressions() const;
+  std::vector<std::shared_ptr<cs6300::Statement>> statements() const;
   void reset();
-
-  std::vector<std::shared_ptr<cs6300::Statement>> stms;
 
 private:
   std::shared_ptr<cs6300::SymbolTable> table;
   std::map<std::string, std::shared_ptr<cs6300::Expression>> exprs;
+  std::vector<std::shared_ptr<cs6300::Statement>> stms;
 };
 
 #endif //__Program_Factory_H_

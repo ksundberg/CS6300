@@ -46,24 +46,88 @@ ProgramFactory& ProgramFactory::callexpr(
 
 ProgramFactory& ProgramFactory::for_(
   const std::string& var,
-  int start,
-  int end,
+  const std::string& start,
+  const std::string& end,
   cs6300::ForStatement::Direction d,
   const std::vector<std::shared_ptr<cs6300::Statement>>& statementList)
 {
   stms.emplace_back(std::make_shared<cs6300::ForStatement>(
-    var,
-    std::make_shared<cs6300::LiteralExpression>(start),
-    std::make_shared<cs6300::LiteralExpression>(end),
-    d,
-    statementList,
-    table));
+    var, exprs[start], exprs[end], d, statementList, table));
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::if_(
+  const std::vector<
+    std::pair<std::string, std::vector<std::shared_ptr<cs6300::Statement>>>>&
+    strClauses,
+  std::vector<std::shared_ptr<cs6300::Statement>> elseClause)
+{
+  std::vector<cs6300::IfStatement::clause_t> clauses;
+  for (const auto& clause : strClauses)
+    clauses.push_back({exprs[clause.first], clause.second});
+
+  stms.emplace_back(std::make_shared<cs6300::IfStatement>(clauses, elseClause));
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::repeat(
+  const std::string& name,
+  std::vector<std::shared_ptr<cs6300::Statement>> innerStms)
+{
+  stms.emplace_back(
+    std::make_shared<cs6300::RepeatStatement>(exprs[name], innerStms));
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::while_(
+  const std::string& name,
+  std::vector<std::shared_ptr<cs6300::Statement>> innerStms)
+{
+  stms.emplace_back(
+    std::make_shared<cs6300::WhileStatement>(exprs[name], innerStms));
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::stop()
+{
+  stms.emplace_back(std::make_shared<cs6300::StopStatement>());
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::return_(const std::string& name)
+{
+  stms.emplace_back(std::make_shared<cs6300::ReturnStatement>(exprs[name]));
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::read(const std::vector<std::string>& ids)
+{
+  std::vector<std::shared_ptr<cs6300::LValue>> lvals;
+  for (auto&& id : ids)
+    lvals.push_back(std::make_shared<cs6300::IdAccess>(id, table));
+  auto readstm = std::make_shared<cs6300::Read>(lvals[0]);
+  for (int i = 1; i < lvals.size(); i++)
+    readstm->append(lvals[i]);
+  stms.emplace_back(readstm);
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::write(const std::vector<std::string>& strExprs)
+{
+  std::vector<std::shared_ptr<cs6300::Expression>> exprs_;
+  for (auto&& expr : strExprs)
+    exprs_.push_back(exprs[expr]);
+  auto writestm = std::make_shared<cs6300::Write>(exprs_[0]);
+  for (int i = 1; i < exprs_.size(); i++)
+    writestm->append(exprs_[i]);
+  stms.emplace_back(writestm);
   return *this;
 }
 
 ProgramFactory& ProgramFactory::load(const std::string& name,
                                      const std::string& id)
 {
+
   exprs[name] = std::make_shared<cs6300::LoadExpression>(
     std::make_shared<cs6300::IdAccess>(id, table));
   return *this;
@@ -126,31 +190,38 @@ ProgramFactory& ProgramFactory::neg(const std::string& name,
 }
 
 ProgramFactory& ProgramFactory::not_(const std::string& name,
-                                    const std::string& exp)
+                                     const std::string& exp)
 {
   exprs[name] = std::make_shared<cs6300::NotExpression>(exprs[exp]);
   return *this;
 }
 
 ProgramFactory& ProgramFactory::pred(const std::string& name,
-                                    const std::string& exp)
+                                     const std::string& exp)
 {
   exprs[name] = std::make_shared<cs6300::PredecessorExpression>(exprs[exp]);
   return *this;
 }
 
 ProgramFactory& ProgramFactory::succ(const std::string& name,
-                                    const std::string& exp)
+                                     const std::string& exp)
 {
   exprs[name] = std::make_shared<cs6300::SuccessorExpression>(exprs[exp]);
   return *this;
 }
 
 ProgramFactory& ProgramFactory::string(const std::string& name,
-                                    const std::string& exp)
+                                       const std::string& exp)
 {
   exprs[name] = std::make_shared<cs6300::StringExpression>(exp.c_str());
   return *this;
+}
+
+std::shared_ptr<cs6300::Statement> ProgramFactory::pop()
+{
+  auto ret = stms.back();
+  stms.pop_back();
+  return ret;
 }
 
 std::string ProgramFactory::str()
@@ -190,6 +261,12 @@ std::vector<std::shared_ptr<cs6300::Expression>> ProgramFactory::expressions()
   for (auto exp : exprs)
     _exprs.push_back(exp.second);
   return _exprs;
+}
+
+std::vector<std::shared_ptr<cs6300::Statement>> ProgramFactory::statements()
+  const
+{
+  return stms;
 }
 
 void ProgramFactory::reset()
