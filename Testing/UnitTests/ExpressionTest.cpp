@@ -434,3 +434,137 @@ sub $2, $zero, $1
     REQUIRE(s == exp);
   }
 }
+
+TEST_CASE("CallExpression", "[expression]")
+{
+  ProgramFactory factory;
+  SECTION("Call empty")
+  {
+    auto s = factory.id("a").callexpr("call", "a", 32).exprstr("call");
+
+    auto exp = R"(BB1:
+addi $sp, $sp, 0 # vars
+sw $fp, -4($sp) #store frame
+sw $ra, -8($sp)
+addi $sp, $sp, -8
+move $fp, $sp
+addi $sp, $sp, 0
+jal F32
+addi $sp, $sp, 0
+addi $sp, $sp, 8 # restore frame
+lw $8, -12($sp)
+lw $ra, -8($sp)
+lw $fp, -4($sp)
+addi $sp, $sp, 0 #vars
+move $1, $v1
+)";
+    REQUIRE(s == exp);
+  }
+}
+
+TEST_CASE("LoadExpression", "[expression]")
+{
+  ProgramFactory factory;
+  SECTION("Load empty")
+  {
+    auto s = factory.id("a").load("load", "a").exprstr("load");
+
+    auto exp = R"(BB1:
+addi $1, $gp, 0 # Load a global
+lw $2, 0($1)
+)";
+    REQUIRE(s == exp);
+  }
+}
+
+TEST_CASE("MemoryAccessExpression", "[expression]")
+{
+  ProgramFactory factory;
+  SECTION("Global Memory Access")
+  {
+    auto s = factory.memaccess("x", cs6300::GLOBAL, 35).exprstr("x");
+
+    auto exp = R"(BB1:
+addi $1, $gp, 35 # Load a global
+)";
+    REQUIRE(s == exp);
+  }
+
+  SECTION("Stack Memory Access")
+  {
+    auto s = factory.memaccess("x", cs6300::STACK, 35).exprstr("x");
+
+    auto exp = R"(BB1:
+addi $1, $sp, -35 # Load a variable
+)";
+    REQUIRE(s == exp);
+  }
+
+  SECTION("Frame Memory Access")
+  {
+    auto s = factory.memaccess("x", cs6300::FRAME, 35).exprstr("x");
+
+    auto exp = R"(BB1:
+addi $1, $fp, -35 # Load a parameter
+)";
+    REQUIRE(s == exp);
+  }
+}
+
+TEST_CASE("NotExpression", "[expression]")
+{
+  ProgramFactory factory;
+  SECTION("Not")
+  {
+    auto s = factory.literal("a", 15).not_("not", "a").exprstr("not");
+
+    auto exp = R"(BB1:
+li $1, 15
+not $2, $1
+)";
+    REQUIRE(s == exp);
+  }
+}
+
+TEST_CASE("PredecessorExpression", "[expression]")
+{
+  ProgramFactory factory;
+  SECTION("Predecessor")
+  {
+    auto s = factory.literal("a", 15).pred("pred", "a").exprstr("pred");
+
+    auto exp = R"(BB1:
+li $1, 15
+addi $2, $1, -1
+)";
+    REQUIRE(s == exp);
+  }
+}
+
+TEST_CASE("SuccessorExpression", "[expression]")
+{
+  ProgramFactory factory;
+  SECTION("Successor")
+  {
+    auto s = factory.literal("a", 15).succ("succ", "a").exprstr("succ");
+
+    auto exp = R"(BB1:
+li $1, 15
+addi $2, $1, 1
+)";
+    REQUIRE(s == exp);
+  }
+}
+
+TEST_CASE("StringExpression", "[expression]")
+{
+  ProgramFactory factory;
+  SECTION("String")
+  {
+    auto s = factory.string("str", "I am a string!").exprstr("str");
+
+    auto exp = R"(BB1:
+)";
+    REQUIRE(s == exp);
+  }
+}

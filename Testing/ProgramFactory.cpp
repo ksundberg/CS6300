@@ -25,20 +25,31 @@ ProgramFactory& ProgramFactory::assign(std::string lhs, std::string rhs)
 }
 
 ProgramFactory& ProgramFactory::call(
-  std::string name,
+  const std::string& name,
   int label,
-  std::vector<std::shared_ptr<cs6300::Expression>> args)
+  const std::vector<std::shared_ptr<cs6300::Expression>>& args)
 {
   stms.emplace_back(std::make_shared<cs6300::Call>(name, label, args, table));
   return *this;
 }
 
+ProgramFactory& ProgramFactory::callexpr(
+  const std::string& name,
+  const std::string& id,
+  int label,
+  std::vector<std::shared_ptr<cs6300::Expression>> args)
+{
+  exprs[name] = std::make_shared<cs6300::CallExpression>(
+    id, label, args, cs6300::BuiltInType::getInt(), table);
+  return *this;
+}
+
 ProgramFactory& ProgramFactory::for_(
-  std::string var,
+  const std::string& var,
   int start,
   int end,
   cs6300::ForStatement::Direction d,
-  std::vector<std::shared_ptr<cs6300::Statement>> statementList)
+  const std::vector<std::shared_ptr<cs6300::Statement>>& statementList)
 {
   stms.emplace_back(std::make_shared<cs6300::ForStatement>(
     var,
@@ -50,19 +61,36 @@ ProgramFactory& ProgramFactory::for_(
   return *this;
 }
 
-ProgramFactory& ProgramFactory::literal(std::string name, int val)
+ProgramFactory& ProgramFactory::load(const std::string& name,
+                                     const std::string& id)
+{
+  exprs[name] = std::make_shared<cs6300::LoadExpression>(
+    std::make_shared<cs6300::IdAccess>(id, table));
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::memaccess(const std::string& name,
+                                          int memory_value,
+                                          int value_offset)
+{
+  exprs[name] = std::make_shared<cs6300::MemoryAccessExpression>(
+    memory_value, value_offset);
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::literal(const std::string& name, int val)
 {
   exprs[name] = std::make_shared<cs6300::LiteralExpression>(val);
   return *this;
 }
 
-ProgramFactory& ProgramFactory::literal(std::string name, char val)
+ProgramFactory& ProgramFactory::literal(const std::string& name, char val)
 {
   exprs[name] = std::make_shared<cs6300::LiteralExpression>(val);
   return *this;
 }
 
-ProgramFactory& ProgramFactory::literal(std::string name, bool val)
+ProgramFactory& ProgramFactory::literal(const std::string& name, bool val)
 {
   exprs[name] = std::make_shared<cs6300::LiteralExpression>(val);
   return *this;
@@ -90,9 +118,38 @@ BINARY_EXPR_DEF(lte, LteExpression)
 BINARY_EXPR_DEF(lt, LtExpression)
 BINARY_EXPR_DEF(mod, ModExpression)
 
-ProgramFactory& ProgramFactory::neg(std::string name, std::string exp)
+ProgramFactory& ProgramFactory::neg(const std::string& name,
+                                    const std::string& exp)
 {
   exprs[name] = std::make_shared<cs6300::UnaryMinusExpression>(exprs[exp]);
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::not_(const std::string& name,
+                                    const std::string& exp)
+{
+  exprs[name] = std::make_shared<cs6300::NotExpression>(exprs[exp]);
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::pred(const std::string& name,
+                                    const std::string& exp)
+{
+  exprs[name] = std::make_shared<cs6300::PredecessorExpression>(exprs[exp]);
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::succ(const std::string& name,
+                                    const std::string& exp)
+{
+  exprs[name] = std::make_shared<cs6300::SuccessorExpression>(exprs[exp]);
+  return *this;
+}
+
+ProgramFactory& ProgramFactory::string(const std::string& name,
+                                    const std::string& exp)
+{
+  exprs[name] = std::make_shared<cs6300::StringExpression>(exp.c_str());
   return *this;
 }
 
@@ -110,7 +167,7 @@ std::string ProgramFactory::str()
   return s;
 }
 
-std::string ProgramFactory::exprstr(std::string name)
+std::string ProgramFactory::exprstr(const std::string& name)
 {
   auto expr = exprs[name];
   auto bb = expr->emit();
