@@ -40,7 +40,7 @@ bool cs6300::AdditionExpression::isConst() const
 
 std::string cs6300::AdditionExpression::name() const
 {
-  return "\"+\"";
+  return R"("+")";
 }
 
 std::vector<std::string> cs6300::AdditionExpression::ASTDot() const

@@ -4,11 +4,20 @@
 #include <algorithm>
 #include <iterator>
 
+std::string cs6300::BasicBlock::getNextLabel(bool reset)
+{
+  static size_t blockNumber = 0;
+  if (reset)
+  {
+    blockNumber = 0;
+    return "";
+  }
+  return std::to_string(++blockNumber);
+}
+
 std::string cs6300::BasicBlock::getLabel()
 {
-
-  static size_t blockNumber = 0;
-  if (label.empty()) label = std::string("BB") + std::to_string(++blockNumber);
+  if (label.empty()) label = std::string("BB") + getNextLabel();
   return label;
 }
 

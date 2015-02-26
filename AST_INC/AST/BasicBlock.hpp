@@ -22,6 +22,7 @@ public:
   std::set<std::shared_ptr<BasicBlock>> parents;
   int branchOn;
   std::string getLabel();
+  static std::string getNextLabel(bool reset = false);
 
   // Used for register allocation
   cs6300::RegisterScope m;

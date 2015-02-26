@@ -19,9 +19,14 @@ std::string cs6300::Expression::node() const
   return id() + " [label=" + name() + "]";
 }
 
-int cs6300::Expression::getNextLabel()
+int cs6300::Expression::getNextLabel(bool reset)
 {
   static int curLabel = 0;
+  if (reset)
+  {
+    curLabel = 0;
+    return 0;
+  }
   return ++curLabel;
 }
 

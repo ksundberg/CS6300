@@ -33,7 +33,6 @@ std::string cs6300::ReturnStatement::ClassName() const
 std::vector<std::string> cs6300::ReturnStatement::_ASTLines() const
 {
   std::vector<std::string> lines;
-  if(value)
-      join(value, lines, id());
+  if (value) join(value, lines, id());
   return lines;
 }

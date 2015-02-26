@@ -7,7 +7,7 @@ namespace cs6300
 class StringExpression : public Expression
 {
 public:
-  StringExpression(char*);
+  StringExpression(const char*);
   std::shared_ptr<BasicBlock> emit() const;
   std::shared_ptr<Type> type() const;
   int value() const;

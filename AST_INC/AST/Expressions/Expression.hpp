@@ -24,7 +24,7 @@ public:
   virtual int getLabel() const;
   std::string id() const;
   virtual std::string node() const;
-  static int getNextLabel();
+  static int getNextLabel(bool reset = false);
 
 private:
   mutable int label;
