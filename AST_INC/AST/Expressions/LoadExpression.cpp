@@ -2,7 +2,7 @@
 #include "AST/LValue.hpp"
 
 cs6300::LoadExpression::LoadExpression(std::shared_ptr<cs6300::LValue> lval)
-  : Expression(), lval(lval)
+  : Expression(), lval(lval), reference(false)
 {
 }
 std::shared_ptr<cs6300::BasicBlock> cs6300::LoadExpression::emit() const
@@ -10,7 +10,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::LoadExpression::emit() const
   std::shared_ptr<cs6300::BasicBlock> block =
     std::make_shared<cs6300::BasicBlock>();
   block->instructions.emplace_back("Begin LoadExpression " + lval->name());
-  if (isConst())
+  if (!reference && isConst())
   {
     block->instructions.emplace_back(
       ThreeAddressInstruction::LoadValue, getLabel(), value(), 0);
@@ -25,9 +25,17 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::LoadExpression::emit() const
   std::copy(addrexpr->instructions.begin(),
             addrexpr->instructions.end(),
             std::back_inserter(block->instructions));
-  block->instructions.emplace_back("end addrexpr");
-  if (!(std::dynamic_pointer_cast<ArrayType>(lval->type()) ||
-        std::dynamic_pointer_cast<RecordType>(lval->type())))
+  block->instructions.emplace_back(
+    std::string("end addrexpr ") +
+    (reference ? " is reference" : " is not reference"));
+
+  if (reference)
+  {
+    block->instructions.emplace_back(
+      ThreeAddressInstruction::AddValue, getLabel(), address->getLabel(), 0);
+  }
+  else if (!(std::dynamic_pointer_cast<ArrayType>(lval->type()) ||
+             std::dynamic_pointer_cast<RecordType>(lval->type())))
   {
     block->instructions.emplace_back(
       ThreeAddressInstruction::LoadMemory, getLabel(), address->getLabel(), 0);
@@ -43,6 +51,8 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::LoadExpression::emit() const
 }
 std::shared_ptr<cs6300::Type> cs6300::LoadExpression::type() const
 {
+  if (reference && !std::dynamic_pointer_cast<ReferenceType>(lval->type()))
+    return std::make_shared<ReferenceType>(lval->type());
   return lval->type();
 }
 int cs6300::LoadExpression::value() const

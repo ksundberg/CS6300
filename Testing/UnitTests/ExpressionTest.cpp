@@ -475,6 +475,17 @@ lw $2, 0($1)
 )";
     REQUIRE(s == exp);
   }
+
+  SECTION("Load empty")
+  {
+    auto s = factory.id("a").load("load", "a", true).exprstr("load");
+
+    auto exp = R"(BB1:
+addi $1, $gp, 0 # Load a global
+addi $2, $1, 0
+)";
+    REQUIRE(s == exp);
+  }
 }
 
 TEST_CASE("MemoryAccessExpression", "[expression]")

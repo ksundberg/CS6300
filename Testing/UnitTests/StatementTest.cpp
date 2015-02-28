@@ -43,8 +43,10 @@ addi $sp, $sp, 0 #vars
     REQUIRE(s == exp);
 
     factory.literal("a", 5).literal("b", 10).literal("c", 70);
-    s = factory.call("fname", 35, factory.expressions()).str();
-    exp = R"(BB1:
+    SECTION("Call with arguments")
+    {
+      s = factory.call("fname", 35, factory.expressions()).str();
+      exp = R"(BB1:
 j BB2
 BB2:
 li $1, 5
@@ -67,7 +69,43 @@ lw $ra, -8($sp)
 lw $fp, -4($sp)
 addi $sp, $sp, 0 #vars
 )";
-    REQUIRE(s == exp);
+      REQUIRE(s == exp);
+    }
+
+    SECTION("Call with ref arguments")
+    {
+      s = factory.id("a")
+            .literal("b", 15)
+            .assign("a", "b")
+            .call("fname", 35, {"a"})
+            .str();
+      exp = R"(BB1:
+j BB2
+BB2:
+li $1, 15
+addi $2, $gp, 0 # Load a global
+sw $1, 0($2) #store memory
+j BB3
+BB3:
+addi $3, $gp, 0 # Load a global
+addi $4, $3, 0
+addi $sp, $sp, 0 # vars
+sw $fp, -4($sp) #store frame
+sw $ra, -8($sp)
+addi $sp, $sp, -8
+sw $4, -4($29) #copying argument
+move $fp, $sp
+addi $sp, $sp, -4
+jal F35
+addi $sp, $sp, 4
+addi $sp, $sp, 8 # restore frame
+lw $8, -12($sp)
+lw $ra, -8($sp)
+lw $fp, -4($sp)
+addi $sp, $sp, 0 #vars
+)";
+      REQUIRE(s == exp);
+    }
   }
 
   SECTION("For Statement")

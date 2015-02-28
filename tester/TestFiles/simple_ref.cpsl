@@ -1,0 +1,23 @@
+var x : integer;
+
+procedure simpleRef(ref a:integer);
+BEGIN
+  write(a,'\n');
+  a := succ(a);
+END;
+
+procedure nonRef(var a:integer);
+BEGIN
+  write(a,'\n');
+  a := succ(a);
+END;
+
+BEGIN
+  x := 10;
+  simpleRef(x);
+  write(x,'\n');
+
+  x := 10;
+  nonRef(x);
+  write(x,'\n');
+END.

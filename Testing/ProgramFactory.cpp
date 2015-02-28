@@ -33,6 +33,24 @@ ProgramFactory& ProgramFactory::call(
   return *this;
 }
 
+ProgramFactory& ProgramFactory::call(const std::string& name,
+                                     int label,
+                                     const std::vector<std::string>& args)
+{
+  std::vector<std::shared_ptr<cs6300::Expression>> expressions;
+  for (auto&& id : args)
+  {
+    auto lval = std::make_shared<cs6300::LoadExpression>(
+      std::make_shared<cs6300::IdAccess>(id, table));
+    lval->setRef();
+    expressions.push_back(lval);
+  }
+
+  stms.emplace_back(
+    std::make_shared<cs6300::Call>(name, label, expressions, table));
+  return *this;
+}
+
 ProgramFactory& ProgramFactory::callexpr(
   const std::string& name,
   const std::string& id,
@@ -125,11 +143,15 @@ ProgramFactory& ProgramFactory::write(const std::vector<std::string>& strExprs)
 }
 
 ProgramFactory& ProgramFactory::load(const std::string& name,
-                                     const std::string& id)
+                                     const std::string& id,
+                                     bool ref)
 {
 
-  exprs[name] = std::make_shared<cs6300::LoadExpression>(
+  auto exp = std::make_shared<cs6300::LoadExpression>(
     std::make_shared<cs6300::IdAccess>(id, table));
+  if (ref) exp->setRef();
+
+  exprs[name] = exp;
   return *this;
 }
 

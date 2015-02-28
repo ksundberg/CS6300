@@ -102,5 +102,15 @@ private:
   static std::shared_ptr<Type> m_bool;
   static std::shared_ptr<Type> m_str;
 };
+
+class ReferenceType : public Type
+{
+public:
+  ReferenceType(std::shared_ptr<Type> t) : Type(), type(t) {}
+  virtual int size() override final { return 4; }
+  virtual std::string name() override final { return "reference " + type->name(); }
+  virtual ~ReferenceType() = default;
+  const std::shared_ptr<Type> type;
+};
 }
 #endif
