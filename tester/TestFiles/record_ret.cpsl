@@ -1,0 +1,30 @@
+type
+ rt = record
+        a : integer;
+        b : char;
+ end;
+
+var r : rt;
+    t : rt;
+
+procedure printrt(ref a : rt);
+begin
+    write(a.a, ' ', a.b, '\n');
+end;
+
+function incr(ref a : rt) : rt;
+begin
+    a.a := succ(a.a);
+    a.b := succ(a.b);
+    return a;
+end;
+
+begin
+
+r.a := 2;
+r.b := 'a';
+printrt(r);
+t := incr(r);
+printrt(r);
+printrt(t);
+end.
