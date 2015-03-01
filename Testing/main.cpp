@@ -1,11 +1,10 @@
-#include <iostream>
-
-// Unit testing header
 #define CATCH_CONFIG_RUNNER
+#include "logger.h"
 #include "catch.hpp"
 
 int main(int argc, char* argv[])
 {
+  cpsl_log::init_log(argc, argv);
   try
   {
     return Catch::Session().run(argc, argv);
