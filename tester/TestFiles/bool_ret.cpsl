@@ -1,0 +1,13 @@
+var x : boolean;
+
+function simpleRef(ref a:boolean) : boolean;
+BEGIN
+    a := false;
+    return a;
+END;
+
+BEGIN
+  x := true;
+  write(x, '\n');
+  write(simpleRef(x), '\n');
+END.
