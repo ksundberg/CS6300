@@ -38,7 +38,11 @@ cs6300::FlowGraph cs6300::Write::emit()
     }
     else
     {
-      LOG(FATAL) << "Unsupported print type " << type;
+      if (type)
+        LOG(FATAL) << "Unsupported print type " << type->name() << " "
+                   << val->name();
+      else
+        LOG(FATAL) << "Unsupported print type NULL";
     }
   }
 
