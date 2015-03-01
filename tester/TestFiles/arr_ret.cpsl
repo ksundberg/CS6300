@@ -1,0 +1,20 @@
+type
+ ctype = array[2:3] of char;
+
+var x : ctype;
+    y : ctype;
+
+function simpleRef(ref a:ctype) : ctype;
+BEGIN
+    a[2] := 'v';
+    return a;
+END;
+
+BEGIN
+  x[2] := 'a';
+  x[3] := 'b';
+  write(x[2], x[3], '\n');
+  y := simpleRef(x);
+  write(x[2], x[3], '\n');
+  write(y[2], y[3], '\n');
+END.
