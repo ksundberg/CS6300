@@ -1,0 +1,35 @@
+type
+ rt = record
+        a : integer;
+        b : char;
+ end;
+
+VAR r : rt;
+
+PROCEDURE printrt(ref a : rt);
+BEGIN
+    write(a.a, ' ', a.b, '\n');
+END;
+
+PROCEDURE incr(ref r : rt);
+BEGIN
+    r.a := succ(r.a);
+    r.b := succ(r.b);
+END;
+
+PROCEDURE incrcopy(r : rt);
+BEGIN
+    r.a := succ(r.a);
+    r.b := succ(r.b);
+END;
+
+begin
+
+r.a := 2;
+r.b := 'a';
+printrt(r);
+incr(r);
+printrt(r);
+incrcopy(r);
+printrt(r);
+end.
