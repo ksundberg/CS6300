@@ -52,6 +52,9 @@ public:
     int label,
     const std::vector<std::shared_ptr<cs6300::Expression>>& args =
       std::vector<std::shared_ptr<cs6300::Expression>>());
+  ProgramFactory& call(const std::string& name,
+                       int label,
+                       const std::vector<std::string>& args);
   ProgramFactory& callexpr(
     const std::string& name,
     const std::string& id,
@@ -103,7 +106,9 @@ public:
   ProgramFactory& pred(const std::string& name, const std::string& exp);
   ProgramFactory& succ(const std::string& name, const std::string& exp);
   ProgramFactory& string(const std::string& name, const std::string& exp);
-  ProgramFactory& load(const std::string& name, const std::string& id);
+  ProgramFactory& load(const std::string& name,
+                       const std::string& id,
+                       bool ref = false);
   ProgramFactory& memaccess(const std::string& name,
                             int memory_value,
                             int value_offset);

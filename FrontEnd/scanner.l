@@ -38,6 +38,7 @@ to|TO               {return TOSY;}
 type|TYPE           {return TYPESY;}
 until|UNTIL         {return UNTILSY;}
 var|VAR             {return VARSY;}
+ref|REF             {return REFSY;}
 while|WHILE         {return WHILESY;}
 write|WRITE         {return WRITESY;} 
 

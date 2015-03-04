@@ -1,0 +1,13 @@
+var x : integer;
+
+function simpleRef(ref a:integer) : integer;
+BEGIN
+    a := a+1;
+    return a;
+END;
+
+BEGIN
+  x := 10;
+  write(x, '\n');
+  write(simpleRef(x), '\n');
+END.

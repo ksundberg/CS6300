@@ -6,7 +6,14 @@ bool cs6300::FunctionSignature::operator==(const FunctionSignature& other) const
   if (args.size() != other.args.size()) return false;
   for (size_t i = 0; i < args.size(); ++i)
   {
-    if (args[i].second != other.args[i].second) return false;
+    auto rlhs = std::dynamic_pointer_cast<ReferenceType>(args[i].second);
+    auto rrhs = std::dynamic_pointer_cast<ReferenceType>(other.args[i].second);
+    auto lhs = rlhs != nullptr ? rlhs->type : args[i].second;
+    auto rhs = rrhs != nullptr ? rrhs->type : other.args[i].second;
+    if (lhs != rhs)
+    {
+      return false;
+    }
   }
 
   return true;

@@ -9,18 +9,18 @@ class MemoryAccessExpression : public Expression
 {
 public:
   MemoryAccessExpression(int memory_value, int offset);
+  MemoryAccessExpression(std::shared_ptr<Expression> memory_location);
   std::shared_ptr<BasicBlock> emit() const;
   std::shared_ptr<Type> type() const;
   bool isConst() const;
   std::string name() const;
   std::vector<std::string> ASTDot() const;
   int value() const;
-  int offset() const;
 
 private:
   std::shared_ptr<Type> m_type;
   int m_value;
-  int m_offset;
+  std::shared_ptr<Expression> m_offset;
 };
 }
 #endif

@@ -13,29 +13,36 @@ cs6300::FlowGraph cs6300::Write::emit()
     std::copy(b->instructions.begin(),
               b->instructions.end(),
               std::back_inserter(block->instructions));
-    if (val->type() == BuiltInType::getInt())
+    auto type = val->type();
+    auto rtype = std::dynamic_pointer_cast<ReferenceType>(type);
+    if (rtype) type = rtype->type;
+    if (type == BuiltInType::getInt())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteInt, 0, val->getLabel(), 0));
     }
-    else if (val->type() == BuiltInType::getChar())
+    else if (type == BuiltInType::getChar())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteChar, 0, val->getLabel(), 0));
     }
-    else if (val->type() == BuiltInType::getBool())
+    else if (type == BuiltInType::getBool())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteBool, 0, val->getLabel(), 0));
     }
-    else if (val->type() == BuiltInType::getStr())
+    else if (type == BuiltInType::getStr())
     {
       block->instructions.push_back(ThreeAddressInstruction(
         ThreeAddressInstruction::WriteStr, 0, val->value(), 0));
     }
     else
     {
-      LOG(FATAL) << "Unsupported print type " << val->type();
+      if (type)
+        LOG(FATAL) << "Unsupported print type " << type->name() << " "
+                   << val->name();
+      else
+        LOG(FATAL) << "Unsupported print type NULL";
     }
   }
 

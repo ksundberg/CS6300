@@ -16,8 +16,11 @@ public:
   std::string name() const;
   std::vector<std::string> ASTDot() const;
 
+  void setRef() { reference = true; }
+
 private:
   std::shared_ptr<LValue> lval;
+  bool reference;
 };
 }
 #endif

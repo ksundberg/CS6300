@@ -1,0 +1,41 @@
+const
+  ALEN = 5;
+
+type
+ ctype = array[2:ALEN] of char;
+
+VAR c : ctype;
+
+FUNCTION a(ref a : ctype) : CHAR;
+BEGIN
+  a[2] := succ(a[2]);
+  a[3] := succ(a[3]);
+  a[4] := succ(a[4]);
+  a[5] := succ(a[5]);
+  return 'z';
+END;
+
+FUNCTION b(var a : ctype) : CHAR;
+BEGIN
+  a[2] := succ(a[2]);
+  a[3] := succ(a[3]);
+  a[4] := succ(a[4]);
+  a[5] := succ(a[5]);
+  return 'z';
+END;
+
+begin
+
+  c[2] := 'c';
+  c[3] := 'd';
+  c[4] := 'e';
+  c[5] := 'f';
+
+  write(c[2], c[3], c[4], c[5], '\n');
+  write(b(c), '\n');
+  write(c[2], c[3], c[4], c[5], '\n');
+
+  write(c[2], c[3], c[4], c[5], '\n');
+  write(a(c), '\n');
+  write(c[2], c[3], c[4], c[5], '\n');
+end.

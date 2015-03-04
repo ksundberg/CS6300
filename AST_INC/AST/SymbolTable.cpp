@@ -57,7 +57,7 @@ void cs6300::SymbolTable::addVariable(std::string id,
   auto found = m_variables.find(id);
   if (found == m_variables.end())
   {
-    // LOG(DEBUG) << "adding variable " << id << "::" << type->name();
+    LOG(DEBUG) << "adding variable " << id << "::" << type->name();
     m_variables[id] =
       std::make_shared<Symbol>(id, type, m_memory_offset, m_memorylocation);
     m_memory_offset += type->size();
@@ -70,7 +70,7 @@ void cs6300::SymbolTable::addParameter(std::string id,
   auto found = m_variables.find(id);
   if (found == m_variables.end())
   {
-    // LOG(DEBUG) << "adding parameter " << id << "::" << type->name();
+    LOG(DEBUG) << "adding parameter " << id << "::" << type->name();
     m_variables[id] = std::make_shared<Symbol>(id, type, m_param_offset, FRAME);
     m_param_offset += type->size();
   }

@@ -47,7 +47,7 @@ int NeqExpr(int a, int b);
 int NotExpr(int a);
 int OrExpr(int a, int b);
 int OrdExpr(int a);
-int Parameter(int list, int type);
+int Parameter(int ref, int list, int type);
 int ParameterList(int list, int parameter);
 int PredExpr(int a);
 int ReadValue(int lval);

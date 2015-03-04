@@ -67,7 +67,13 @@ public:
         cs6300::GLOBAL) // on the stack memory starts on the negative side
       offset += entry->type->size();
 
-    return std::make_shared<MemoryAccessExpression>(location, offset);
+    auto paramAddress =
+      std::make_shared<MemoryAccessExpression>(location, offset);
+
+    if (std::dynamic_pointer_cast<ReferenceType>(entry->type))
+      return std::make_shared<MemoryAccessExpression>(paramAddress);
+
+    return paramAddress;
   }
   std::shared_ptr<Type> type() const
   {
@@ -75,6 +81,8 @@ public:
     auto v = m_table->lookupVariable(_name);
     if (!v) LOG(FATAL) << "Unable to lookup variable " << _name;
 
+    auto rtype = std::dynamic_pointer_cast<ReferenceType>(v->type);
+    if (rtype) return rtype->type;
     return v->type;
   }
   bool isConst() const { return (m_table->lookupConstant(_name) != nullptr); }
@@ -116,6 +124,8 @@ public:
   }
   std::shared_ptr<RecordType> btype() const
   {
+    auto rtype = std::dynamic_pointer_cast<ReferenceType>(base->type());
+    if (rtype) return std::dynamic_pointer_cast<RecordType>(rtype->type);
     return std::dynamic_pointer_cast<RecordType>(base->type());
   }
   std::shared_ptr<Type> type() const
@@ -152,8 +162,7 @@ public:
   std::shared_ptr<Expression> address() const
   {
     auto baseAddr = base->address();
-    auto type = std::dynamic_pointer_cast<ArrayType>(base->type());
-    if (!type) LOG(FATAL) << "Programming Error";
+    auto type = aType();
 
     if (expr->isConst())
     {
@@ -178,10 +187,19 @@ public:
       return std::make_shared<AdditionExpression>(baseAddr, offset);
     }
   }
-  std::shared_ptr<Type> type() const
+  std::shared_ptr<Type> type() const { return aType()->baseType; }
+  std::shared_ptr<ArrayType> aType() const
   {
+    auto rtype = std::dynamic_pointer_cast<ReferenceType>(base->type());
+    if (rtype)
+    {
+      auto type = std::dynamic_pointer_cast<ArrayType>(rtype->type);
+      return type;
+    }
+
     auto type = std::dynamic_pointer_cast<ArrayType>(base->type());
-    return type->baseType;
+    if (!type) LOG(FATAL) << "Programming Error - " << base->type()->name();
+    return type;
   }
   bool isConst() const { return false; }
   std::shared_ptr<Expression> value() const { return expr; }

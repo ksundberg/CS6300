@@ -1,0 +1,30 @@
+var x : integer;
+
+procedure nestedRef(ref a:integer);
+BEGIN
+  write(a,'\n');
+  a := succ(a);
+END;
+
+procedure simpleRef(ref b:integer);
+BEGIN
+  nestedRef(b);
+  write(b,'\n');
+  b := succ(b);
+END;
+
+procedure nonRef(var c:integer);
+BEGIN
+  write(c,'\n');
+  c := succ(c);
+END;
+
+BEGIN
+  x := 10;
+  simpleRef(x);
+  write(x,'\n');
+
+  x := 10;
+  nonRef(x);
+  write(x,'\n');
+END.

@@ -303,6 +303,19 @@ int cs6300::CallExpr(char* a, int b)
       program->functions.erase(
         iter.first); // we need label on function sig to be updated, so reinsert
       program->functions[iter.first] = val;
+
+      for (int i = 0; i < args.size(); i++)
+      {
+        if (std::dynamic_pointer_cast<ReferenceType>(iter.first.args[i].second))
+        {
+          auto lval = std::dynamic_pointer_cast<LoadExpression>(args[i]);
+          if (!lval)
+            LOG(FATAL) << "Expected lvalue for argument " << i + 1
+                       << " in function " << a << " received "
+                       << args[i]->name();
+          lval->setRef();
+        }
+      }
       break;
     }
 
@@ -317,37 +330,46 @@ int cs6300::CallProc(char* name, int argsIndex)
   auto state = FrontEndState::instance();
   auto a = state->actualArguments.get(argsIndex);
   std::vector<std::shared_ptr<cs6300::Expression>> args;
+  auto sigArgs = std::vector<std::pair<std::string, std::shared_ptr<Type>>>();
   if (a)
   {
     std::copy(a->begin(), a->end(), std::back_inserter(args));
+
+    for (int i = 0; i < args.size(); i++)
+      sigArgs.push_back(std::make_pair("", args[i]->type()));
   }
 
   // build signature to get function label
   auto program = state->getProgram();
-  auto sigArgs = std::vector<std::pair<std::string, std::shared_ptr<Type>>>();
-  if (a)
-    for (int i = 0; i < a->size(); i++)
-      sigArgs.push_back(std::make_pair<std::string, std::shared_ptr<Type>>(
-        "", (*a)[i]->type()));
   auto functionSig = FunctionSignature(name, sigArgs, nullptr);
-  int label = -1;
-  bool found = false;
   for (auto iter : program->functions)
     if (iter.first == functionSig)
     { // find matching signature and get label
-      found = true;
-      label = iter.first.getLabel();
+      auto label = iter.first.getLabel();
       auto val = iter.second;
       program->functions.erase(
         iter.first); // we need label on function sig to be updated, so reinsert
       program->functions[iter.first] = val;
-      break;
+
+      for (int i = 0; i < args.size(); i++)
+      {
+        if (std::dynamic_pointer_cast<ReferenceType>(iter.first.args[i].second))
+        {
+          auto lval = std::dynamic_pointer_cast<LoadExpression>(args[i]);
+          if (!lval)
+            LOG(FATAL) << "Expected lvalue for argument " << i + 1
+                       << " in procedure " << name << " received "
+                       << args[i]->name();
+          lval->setRef();
+        }
+      }
+
+      return state->statements.add(std::make_shared<cs6300::Call>(
+        name, label, args, state->getSymTable()));
     }
 
-  if (!found) LOG(FATAL) << "Unable to find function " << name;
-
-  return state->statements.add(
-    std::make_shared<cs6300::Call>(name, label, args, state->getSymTable()));
+  LOG(FATAL) << "Unable to find function " << name;
+  return -1;
 }
 
 int cs6300::CharExpr(char a)
@@ -549,11 +571,12 @@ int cs6300::OrdExpr(int a)
 {
   return unaryOp<OrdExpression>(a);
 }
-int cs6300::Parameter(int list, int type)
+int cs6300::Parameter(int ref, int list, int type)
 {
   auto state = FrontEndState::instance();
   auto ids = state->idLists.get(list);
   auto t = state->types.get(type);
+  if (ref) t = std::make_shared<ReferenceType>(t);
   auto p = std::make_shared<
     std::vector<std::pair<std::string, std::shared_ptr<cs6300::Type>>>>();
   for (auto&& id : *ids)

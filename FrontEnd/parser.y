@@ -56,6 +56,7 @@ void yyerror(const char*);
 %token RBRACKETSY
 %token READSY 
 %token RECORDSY 
+%token REFSY 
 %token REPEATSY 
 %token RETURNSY 
 %token RPARENSY 
@@ -98,6 +99,7 @@ void yyerror(const char*);
 %type <int_val> FunctionCall 
 %type <int_val> INTSY 
 %type <int_val> IdentList 
+%type <int_val> OptVar 
 %type <int_val> IfHead 
 %type <int_val> IfStatement 
 %type <int_val> LValue 
@@ -168,11 +170,12 @@ FormalParameters : FormalParameters SCOLONSY FormalParameter {$$ = cs6300::Param
                  | FormalParameter {$$ = $1;}
                  ;
 
-FormalParameter : OptVar IdentList COLONSY Type {$$ = cs6300::Parameter($2,$4);}
+FormalParameter : OptVar IdentList COLONSY Type {$$ = cs6300::Parameter($1, $2, $4);}
                 ;
 
-OptVar : VARSY
-       |
+OptVar : VARSY {$$ = 0;}
+       | REFSY {$$ = 1;}
+       | {$$ = 0;}
        ;
 
 
