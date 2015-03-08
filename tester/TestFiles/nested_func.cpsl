@@ -1,0 +1,42 @@
+var
+  a : integer;
+
+function B(b : integer) : integer; forward;
+function C(c : integer) : integer; forward;
+function D(d : integer) : integer; forward;
+function E() : integer; forward;
+
+function A(a : integer) : integer;
+begin
+  return B(a)*2;
+end;
+
+function B(b : integer) : integer;
+begin
+  return C(b)*2;
+end;
+
+function C(c : integer) : integer;
+begin
+  return D(c)*2;
+end;
+
+function D(d : integer) : integer;
+begin
+  return E()*d;
+end;
+
+function E() : integer;
+begin
+  return a;
+end;
+
+begin
+    a := 4;
+
+    write( A(5), '\n');
+    write( B(5), '\n');
+    write( C(5), '\n');
+    write( D(5), '\n');
+    write( E(),  '\n');
+end.
