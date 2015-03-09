@@ -1,16 +1,5 @@
 ﻿#include "catch.hpp"
 #include "Optimizations/MaximizeBlocks/MaximizeBlocks.hpp"
-#include "Optimizations/MaximizeBlocks/VisitedBlocks.hpp"
-#include "Optimizations/MaximizeBlocks/NumParents.hpp"
-
-void singletonCleanUp()
-{
-  // Clean up after singleton
-  auto vb = cs6300::VisitedBlocks::instance();
-  auto np = cs6300::NumParents::instance();
-  np->reset();
-  vb->reset();
-}
 
 TEST_CASE("Complex", "[maximizeBlocks]")
 {
@@ -82,8 +71,6 @@ TEST_CASE("Complex", "[maximizeBlocks]")
   REQUIRE(b5 == b4->jumpTo);
   REQUIRE(b6 == b5->jumpTo);
   REQUIRE(b1 == b5->branchTo);
-
-  singletonCleanUp();
 }
 
 TEST_CASE("Simple", "[maximizeBlocks]")
@@ -120,13 +107,10 @@ TEST_CASE("Simple", "[maximizeBlocks]")
 
   REQUIRE(7 == b0->instructions.size());
   REQUIRE(nullptr == b0->jumpTo);
-
-  singletonCleanUp();
 }
 
 TEST_CASE("Check Block Merge Order", "[maximizeBlocks]")
 {
-
   auto emptyBlock = std::make_shared<cs6300::BasicBlock>();
   auto b0 = std::make_shared<cs6300::BasicBlock>();
   auto b1 = std::make_shared<cs6300::BasicBlock>();
@@ -171,6 +155,4 @@ TEST_CASE("Check Block Merge Order", "[maximizeBlocks]")
   REQUIRE(cs6300::ThreeAddressInstruction::Modulo == b0->instructions[5].op);
   REQUIRE(cs6300::ThreeAddressInstruction::StoreMemory ==
           b0->instructions[6].op);
-
-  singletonCleanUp();
 }

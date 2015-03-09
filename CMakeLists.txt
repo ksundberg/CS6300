@@ -172,10 +172,6 @@ list(APPEND cpsl_srcs ${backend_srcs})
 set(optimization_srcs
   Optimizations/Optimizer.hpp
   Optimizations/Optimizer.cpp
-  Optimizations/MaximizeBlocks/VisitedBlocks.hpp
-  Optimizations/MaximizeBlocks/VisitedBlocks.cpp
-  Optimizations/MaximizeBlocks/NumParents.hpp
-  Optimizations/MaximizeBlocks/NumParents.cpp
   Optimizations/MaximizeBlocks/MaximizeBlocks.hpp
   Optimizations/MaximizeBlocks/MaximizeBlocks.cpp
   Optimizations/FlowGraph.h
