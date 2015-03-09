@@ -29,8 +29,8 @@ int main(int argc, char* argv[])
     desc.add_options()("help,h", "produce help message")(
       "input,i", po::value<std::string>(), "input cpsl file")(
       "output,o", po::value<std::string>(), "output asm file")(
-      "comments,c", "output assembly comments")(
-      "flowgraph,f", "output flowgraph")("ast,a", "output ast digraph")(
+      "comments,c", "output assembly comments")
+      ("ast,a", "output ast digraph")(
       "flowgraph,f", "output flowgraph")(
       "flowgraph-optimized,F", "output optimized flowgraph");
 

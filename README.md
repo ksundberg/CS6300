@@ -31,7 +31,6 @@ Allowed options:
     -i [ --input ] arg            input cpsl file
     -o [ --output ] arg           output asm file
     -c [ --comments ]             output assembly comments
-    -f [ --flowgraph ]            output flowgraph
     -a [ --ast ]                  output ast digraph
     -f [ --flowgraph ]            output flowgraph
     -F [ --flowgraph-optimized ]  output optimized flowgraph
