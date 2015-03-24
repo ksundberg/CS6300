@@ -19,7 +19,7 @@ ASM=asm/ #tmp directory for asm files for mars to run
 MARSDIR=${MARSDIR:-./}
 MARSJAR=Mars4_4.jar
 
-files=`ls ${TESTDIR}${1}*.cpsl`
+files=`ls ${TESTDIR}${1}*.cpsl | grep -v input_*`
 
 #create these directories if they don't exist already
 mkdir -p ${ASM} ${RESULTS}
