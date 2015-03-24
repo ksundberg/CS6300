@@ -53,6 +53,9 @@ std::string cs6300::flowGraphDot(cs6300::FlowGraph graph)
     if (v->jumpTo)
       edges.emplace_back("\t" + v->getLabel() + " -> " + v->jumpTo->getLabel() +
                          " [label=j];");
+
+    if (!v->jumpTo && !v->branchTo)
+        edges.emplace_back("\t" + v->getLabel() + ";");
   }
 
   std::string digraph = "digraph G {";

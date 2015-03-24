@@ -1,5 +1,6 @@
 #include "Optimizer.hpp"
 #include "MaximizeBlocks/MaximizeBlocks.hpp"
+#include "SuperBlockClone/SuperBlockClone.hpp"
 #include "logger.h"
 
 #include <sstream>
@@ -15,5 +16,6 @@ cs6300::FlowGraph cs6300::optimizer(cs6300::FlowGraph original)
 {
   LOG(DEBUG) << "Optimizing flowgraph";
   maximizeBlocks(original);
+  superBlockClone(original);
   return original;
 }
