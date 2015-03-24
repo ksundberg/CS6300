@@ -1,5 +1,7 @@
 #include "Expression.hpp"
 
+size_t cs6300::Expression::curLabel = 0;
+
 int cs6300::Expression::getLabel() const
 {
   if (label == -1)
@@ -19,15 +21,14 @@ std::string cs6300::Expression::node() const
   return id() + " [label=" + name() + "]";
 }
 
-int cs6300::Expression::getNextLabel(bool reset)
+int cs6300::Expression::getNextLabel()
 {
-  static int curLabel = 0;
-  if (reset)
-  {
-    curLabel = 0;
-    return 0;
-  }
   return ++curLabel;
+}
+
+void cs6300::Expression::resetLabelCount()
+{
+    curLabel = 0;
 }
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::emitBinaryOp(

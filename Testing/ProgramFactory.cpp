@@ -8,7 +8,7 @@
 ProgramFactory::ProgramFactory()
   : table(std::make_shared<cs6300::SymbolTable>(nullptr, cs6300::GLOBAL))
 {
-  cs6300::Expression::getNextLabel(true);
+  cs6300::Expression::resetLabelCount();
 }
 
 ProgramFactory& ProgramFactory::id(std::string name)
@@ -296,6 +296,6 @@ void ProgramFactory::reset()
   table = std::make_shared<cs6300::SymbolTable>(nullptr, cs6300::GLOBAL);
   stms.clear();
   exprs.clear();
-  cs6300::Expression::getNextLabel(true);
-  cs6300::BasicBlock::getNextLabel(true);
+  cs6300::Expression::resetLabelCount();
+  cs6300::BasicBlock::resetLabelCount();
 }

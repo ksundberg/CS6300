@@ -4,15 +4,16 @@
 #include <algorithm>
 #include <iterator>
 
-std::string cs6300::BasicBlock::getNextLabel(bool reset)
+size_t cs6300::BasicBlock::blockNumber = 0;
+
+std::string cs6300::BasicBlock::getNextLabel()
 {
-  static size_t blockNumber = 0;
-  if (reset)
-  {
-    blockNumber = 0;
-    return "";
-  }
   return std::to_string(++blockNumber);
+}
+
+void cs6300::BasicBlock::resetLabelCount()
+{
+    blockNumber = 0;
 }
 
 std::string cs6300::BasicBlock::getLabel()

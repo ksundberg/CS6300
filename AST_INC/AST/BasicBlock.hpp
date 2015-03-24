@@ -22,7 +22,8 @@ public:
   std::set<std::shared_ptr<BasicBlock>> parents;
   int branchOn;
   std::string getLabel();
-  static std::string getNextLabel(bool reset = false);
+  static std::string getNextLabel();
+  static void resetLabelCount();
 
   // Used for register allocation
   cs6300::RegisterScope m;
@@ -32,6 +33,7 @@ public:
 
 private:
   std::string label;
+  static size_t blockNumber;
 };
 
 typedef std::pair<std::shared_ptr<cs6300::BasicBlock>,
