@@ -47,8 +47,21 @@ for file in ${files}; do
         continue
     fi
 
-    echo -n "Executing: ${file}..."
-    java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} me ic nc 1000000 ${ASM}${file} 2> stderr.txt > ${RESULTS}${file}
+    if [[ -f ${TESTDIR}input_${file} ]]; then
+        rm ${RESULTS}${file} 2> /dev/null
+        echo "Executing: ${file} from input file..."
+        while read line
+        do
+            echo ${line} | java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} me ic nc 1000000 ${ASM}${file} 2> stderr.txt >> ${RESULTS}${file}
+            if [ $? -ne 0 ]; then
+            echo "  Error running: java -jar nc 1000000 ${MARSDIR}${MARSJAR} ${ASM}${file} > ${RESULTS}${file}"
+                break
+            fi
+        done<${TESTDIR}input_${file}
+    else
+        echo -n "Executing: ${file}..."
+        java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} me ic nc 1000000 ${ASM}${file} 2> stderr.txt > ${RESULTS}${file}
+    fi
     if [ $? -ne 0 ]; then
         echo "  Error running: java -jar nc 1000000 ${MARSDIR}${MARSJAR} ${ASM}${file} > ${RESULTS}${file}"
         cat stderr.txt

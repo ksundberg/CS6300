@@ -1,0 +1,21 @@
+VAR i : integer;
+
+BEGIN
+
+read(i);
+
+if i < 12 then
+  write(i, " is less than 12");
+end;
+
+if i > 12 then
+  write(i, " is greater than 12");
+end;
+
+if i = 12 then
+  write(i, " is equal to 12");
+end;
+
+write('\n')
+
+END.
