@@ -31,7 +31,6 @@ Allowed options:
     -i [ --input ] arg            input cpsl file
     -o [ --output ] arg           output asm file
     -c [ --comments ]             output assembly comments
-    -f [ --flowgraph ]            output flowgraph
     -a [ --ast ]                  output ast digraph
     -f [ --flowgraph ]            output flowgraph
     -F [ --flowgraph-optimized ]  output optimized flowgraph
@@ -113,6 +112,16 @@ a prefix for test names that you want to run. So if you wanted to run all the 's
 
 All output is placed in the 'Result' directory. The output is compared against the 'Base' directory. Test cases are
 stored in the 'TestFiles' directory. Generated assembly output is placed in the 'asm' folder.
+
+#### Count Files
+Special files inside of the Base directory mandate how many assembly instructions a test is expected to take. These files
+have a prefix of 'count_'
+
+#### Input Files
+The integration system also allows for testing user input. If you supply a file in the TestFiles directory with a prefix
+of 'input_' then each line inside of that file will be the user input for the program. This is helpful for running the
+same compiled program with different inputs. For an example of this see the read_simple_if.cpsl test along with the
+input_read_simple_if.cpsl in the TestFiles directory.
 
 ### Unit tests
 

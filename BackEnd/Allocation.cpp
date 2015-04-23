@@ -13,30 +13,24 @@ struct RegColorNode
 
 void cs6300::locRegAlloc(cs6300::FlowGraph graph)
 {
-  int count = 0;
+  auto&& blocks = allBlocks(graph);
 
-  for (auto&& v : allBlocks(graph))
-    v->initSets();
+  for (auto&& bb : blocks)
+    bb->initSets();
 
-  // propogate block meta
-  bool change;
-  do
+  // propogate block metadata
+  for (auto&& bb : blocks)
   {
-    change = false;
-    for (auto&& v : allBlocks(graph))
-    {
-      if (pushUp(v, v->jumpTo)) change = true;
-
-      if (pushUp(v, v->branchTo)) change = true;
-    }
-  } while (change);
+    pushUp(bb, bb->jumpTo);
+    pushUp(bb, bb->branchTo);
+  }
 
   std::map<int, RegColorNode*> nodes;
-  for (auto&& cur : allBlocks(graph))
+  for (auto&& bb : blocks)
   {
-    auto t = regDeps(cur);
+    auto t = regDeps(bb);
     auto s = std::set<std::set<int>>(t.begin(), t.end());
-    for (auto& v : s)
+    for (auto&& v : s)
     {
       for (int reg : v)
       {
@@ -51,7 +45,7 @@ void cs6300::locRegAlloc(cs6300::FlowGraph graph)
 
   std::map<int, int> regRemap;
   // color nodes
-  for (auto& p : nodes)
+  for (auto&& p : nodes)
   {
     if (p.second->color != -1)
     {
@@ -65,7 +59,7 @@ void cs6300::locRegAlloc(cs6300::FlowGraph graph)
         p.second->color = i;
         regRemap[p.first] = i;
         // remapping p.first to i
-        for (auto& n : p.second->nodes)
+        for (auto&& n : p.second->nodes)
         {
           n->cant.insert(i);
         }
@@ -79,9 +73,9 @@ void cs6300::locRegAlloc(cs6300::FlowGraph graph)
     }
   }
 
-  for (auto&& v : allBlocks(graph))
+  for (auto&& bb : blocks)
   {
-    v->remap(regRemap);
+    bb->remap(regRemap);
   }
 }
 

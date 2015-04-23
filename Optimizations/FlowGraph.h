@@ -1,23 +1,23 @@
-#ifndef __cpsl__TraverseBasicBlock__
-#define __cpsl__TraverseBasicBlock__
+#ifndef __FLOWGRAPH_H_
+#define __FLOWGRAPH_H_
 
 #include "AST/BasicBlock.hpp"
+#include <list>
 
 namespace cs6300
 {
-std::map<std::shared_ptr<cs6300::BasicBlock>,
-         std::vector<std::shared_ptr<cs6300::BasicBlock>>>
-buildParentMap(std::shared_ptr<cs6300::BasicBlock> flowGraph);
-
-void traverseFlowGraph(
-  std::shared_ptr<cs6300::BasicBlock> sourceBlock,
-  std::function<bool(std::shared_ptr<cs6300::BasicBlock>)> action);
 
 /* Generate a Dot file for the given cs6300::FlowGraph */
 std::string flowGraphDot(cs6300::FlowGraph);
 
-std::set<std::shared_ptr<cs6300::BasicBlock>> allBlocks(
+/* Initialize parent lists for basic blocks */
+void initParents(cs6300::FlowGraph graph);
+
+/* return a list of all basic blocks in postorder (bottom-up traversing).
+ * use reverse iterator for reverse-postorder top down traversing of the
+ * flowgraph */
+std::list<std::shared_ptr<cs6300::BasicBlock>> allBlocks(
   cs6300::FlowGraph graph);
 }
 
-#endif /* defined(__cpsl__TraverseBasicBlock__) */
+#endif // __FLOWGRAPH_H_

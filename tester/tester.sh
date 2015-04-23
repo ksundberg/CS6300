@@ -19,7 +19,7 @@ ASM=asm/ #tmp directory for asm files for mars to run
 MARSDIR=${MARSDIR:-./}
 MARSJAR=Mars4_4.jar
 
-files=`ls ${TESTDIR}${1}*.cpsl`
+files=`ls ${TESTDIR}${1}*.cpsl | grep -v input_*`
 
 #create these directories if they don't exist already
 mkdir -p ${ASM} ${RESULTS}
@@ -47,8 +47,21 @@ for file in ${files}; do
         continue
     fi
 
-    echo -n "Executing: ${file}..."
-    java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} me ic nc 1000000 ${ASM}${file} 2> stderr.txt > ${RESULTS}${file}
+    if [[ -f ${TESTDIR}input_${file} ]]; then
+        rm ${RESULTS}${file} 2> /dev/null
+        echo -n "Executing: ${file} from input file..."
+        while read line
+        do
+            echo ${line} | tr ' ' '\n' | java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} me ic nc 1000000 ${ASM}${file} 2> stderr.txt >> ${RESULTS}${file}
+            if [ $? -ne 0 ]; then
+            echo "  Error running: java -jar nc 1000000 ${MARSDIR}${MARSJAR} ${ASM}${file} > ${RESULTS}${file}"
+                break
+            fi
+        done<${TESTDIR}input_${file}
+    else
+        echo -n "Executing: ${file}..."
+        java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} me ic nc 1000000 ${ASM}${file} 2> stderr.txt > ${RESULTS}${file}
+    fi
     if [ $? -ne 0 ]; then
         echo "  Error running: java -jar nc 1000000 ${MARSDIR}${MARSJAR} ${ASM}${file} > ${RESULTS}${file}"
         cat stderr.txt

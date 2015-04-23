@@ -1,0 +1,22 @@
+VAR i,j : integer;
+
+BEGIN
+
+read(i);
+read(j);
+
+if i < j then
+  write(i, " is less than ");
+end;
+
+if i > j then
+  write(i, " is greater than ");
+end;
+
+if i = j then
+  write(i, " is equal to ");
+end;
+
+write(j, '\n')
+
+END.

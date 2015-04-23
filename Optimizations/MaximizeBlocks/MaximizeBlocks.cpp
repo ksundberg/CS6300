@@ -1,51 +1,29 @@
-#include <algorithm>
-
 #include "MaximizeBlocks.hpp"
-#include "AST/BasicBlock.hpp"
-#include "AST/ThreeAddressInstruction.hpp"
-#include "VisitedBlocks.hpp"
-#include "NumParents.hpp"
+#include "FlowGraph.h"
 
 void cs6300::maximizeBlocks(cs6300::FlowGraph original)
 {
-  // traverse the blocks
-  cs6300::traverse(original.first);
-  cs6300::traverse(original.second);
-}
+  initParents(original);
 
-void cs6300::traverse(std::shared_ptr<BasicBlock> block)
-{
-  auto vb = VisitedBlocks::instance();
-  auto np = NumParents::instance();
-
-  if (vb->isVisited(block))
+  for (auto bb : allBlocks(original))
   {
-    return;
-  }
-
-  if (block->branchTo != nullptr)
-  {
-    // add parents on the way down...
-    np->addParent(block->branchTo);
-    traverse(block->branchTo);
-  }
-  if (block->jumpTo != nullptr)
-  {
-    // add parents on the way down...
-    np->addParent(block->jumpTo);
-    traverse(block->jumpTo);
-  }
-  // determine if they can be merged on the way back up...
-  if (block->jumpTo != nullptr && block->branchTo == nullptr &&
-      np->getNumParents(block->jumpTo) == 1)
-  {
-    // merge jumpTo to this block
-    for (auto inst : block->jumpTo->instructions)
+    if (bb->jumpTo != nullptr && bb->branchTo == nullptr &&
+        bb->jumpTo->parents.size() == 1)
     {
-      block->instructions.push_back(inst);
+      // merge jumpTo to this block
+      for (auto&& inst : bb->jumpTo->instructions)
+        bb->instructions.emplace_back(std::move(inst));
+
+      auto erasing = bb->jumpTo;
+      if (erasing->jumpTo)
+      {
+        erasing->jumpTo->parents.erase(erasing);
+        erasing->jumpTo->parents.insert(bb);
+      }
+
+      bb->branchTo = erasing->branchTo;
+      bb->branchOn = erasing->branchOn;
+      bb->jumpTo = erasing->jumpTo;
     }
-    block->branchTo = block->jumpTo->branchTo;
-    block->branchOn = block->jumpTo->branchOn;
-    block->jumpTo = block->jumpTo->jumpTo;
   }
 }

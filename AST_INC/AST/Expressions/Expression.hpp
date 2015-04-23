@@ -24,10 +24,12 @@ public:
   virtual int getLabel() const;
   std::string id() const;
   virtual std::string node() const;
-  static int getNextLabel(bool reset = false);
+  static int getNextLabel();
+  static void resetLabelCount();
 
 private:
   mutable int label;
+  static size_t curLabel;
 };
 
 std::shared_ptr<BasicBlock> emitBinaryOp(ThreeAddressInstruction::Type,
