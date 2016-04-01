@@ -81,7 +81,7 @@ table[1].name[4] := 'd';
 table[1].name[5] := 'r';
 for j:=2 to ALEN do
     for i:=1 to ALEN do
-      table[j].name[i] := chr((table[j-1].name[(j+i%ALEN)+1]+1)%20+'a');
+      table[j].name[i] := chr((ord(table[j-1].name[(j+i%ALEN)+1])+1)%20+ord('a'));
     end;
     table[j].age := (j*j)%30;
 end;

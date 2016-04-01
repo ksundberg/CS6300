@@ -14,13 +14,13 @@ END;
 PROCEDURE incr(ref r : rt);
 BEGIN
     r.a := succ(r.a);
-    r.b := succ(r.b);
+    r.b := chr(succ(ord(r.b)));
 END;
 
 PROCEDURE incrcopy(r : rt);
 BEGIN
     r.a := succ(r.a);
-    r.b := succ(r.b);
+    r.b := chr(succ(ord(r.b)));
 END;
 
 begin

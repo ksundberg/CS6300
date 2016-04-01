@@ -20,9 +20,9 @@ var
 i:integer;
 begin
 for i := 1 to NAMELEN do
-if a[i] > b[i]
+if ord(a[i]) > ord(b[i])
 then return true;
-elseif a[i] < b[i]
+elseif ord(a[i]) < ord(b[i])
 then return false;
 end;
 end;
@@ -44,8 +44,8 @@ begin
   end;
 
   for i:=1 to persons do
-    $write("setting ",i," to ",chr(j+i+'a'),'\n');
-    a[i] := chr(j+i+'a');
+    $write("setting ",i," to ",chr(j+i+ord('a')),'\n');
+    a[i] := chr(j+i+ord('a'));
   end;
 
   write("returning '",a[1],a[2],a[3],"'...\n");

@@ -45,7 +45,7 @@ BEGIN
     end;
 
     for a := 2 to 5 do
-        c[a] := succ(c[a]);
+        c[a] := chr(succ(ord(c[a])));
     end;
 
     return recurse(c, pred(i));

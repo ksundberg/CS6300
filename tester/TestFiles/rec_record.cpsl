@@ -17,7 +17,7 @@ BEGIN
   end;
 
   x.a := succ(x.a);
-  x.b := succ(x.b);
+  x.b := chr(succ(ord(x.b)));
 
   $write(i, ' ', x.a, ' ', x.b,'\n');
   return recurseFoo(x, pred(i));

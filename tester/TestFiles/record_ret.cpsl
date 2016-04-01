@@ -15,7 +15,7 @@ end;
 function incr(ref a : rt) : rt;
 begin
     a.a := succ(a.a);
-    a.b := succ(a.b);
+    a.b := chr(succ(ord(a.b)));
     return a;
 end;
 
