@@ -35,15 +35,11 @@ BEGIN
   write("2>=2=",2>=2,'\n');
   write("2<=2=",2<=2,'\n');
   write("2<>2=",2<>2,'\n');
-  write("2|8=",2|8,'\n');
-  write("5&15=",5&15,'\n');
   a := 2;
   b := 8;
   write(a,' ',b,'\n');
-  write("a|b=",a|b,'\n');
   a := 5;
   b := 15;
-  write("a&b=",a&b,'\n');
   write("~-5=",~-5,'\n');
   write("~5=",~5,'\n');
   write("Setting A to 5:");

@@ -22,7 +22,7 @@ END;
 begin
 s := 4;
 for n:=1 to s do
-    myArray[n] := getRt(n,chr(pred('a'+n)));
+    myArray[n] := getRt(n,chr(pred(ord('a')+n)));
     write(myArray[n].a,' ',myArray[n].b,'\n');
 end;
 
