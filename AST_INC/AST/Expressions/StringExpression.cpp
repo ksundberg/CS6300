@@ -10,7 +10,10 @@ cs6300::StringExpression::StringExpression(const char* a)
 
 std::shared_ptr<cs6300::BasicBlock> cs6300::StringExpression::emit() const
 {
-  return std::make_shared<BasicBlock>();
+  auto result = std::make_shared<BasicBlock>();
+  result->instructions.emplace_back(
+    ThreeAddressInstruction::LoadString, getLabel(), m_label, 0);
+  return result;
 }
 
 std::shared_ptr<cs6300::Type> cs6300::StringExpression::type() const
@@ -20,12 +23,12 @@ std::shared_ptr<cs6300::Type> cs6300::StringExpression::type() const
 
 int cs6300::StringExpression::value() const
 {
-  return m_label;
+  return getLabel();
 }
 
 bool cs6300::StringExpression::isConst() const
 {
-  return true;
+  return false;
 }
 std::string cs6300::StringExpression::name() const
 {

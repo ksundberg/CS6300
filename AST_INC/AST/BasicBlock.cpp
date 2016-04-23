@@ -46,12 +46,13 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
   cs6300::RegisterScope m;
   switch (tal.op)
   {
-  case ThreeAddressInstruction::
-    CallFunction: // CallFunction should have no allocation
+  case ThreeAddressInstruction::CallFunction
+    : // CallFunction should have no allocation
   case ThreeAddressInstruction::StoreFrame:
   case ThreeAddressInstruction::RestoreFrame:
     break;
   case ThreeAddressInstruction::CopyArgument:
+  case ThreeAddressInstruction::WriteStr: // none
     m.used.insert(tal.src1);
     break;
   case ThreeAddressInstruction::LoadMemory:
@@ -61,10 +62,12 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
     break;
   case ThreeAddressInstruction::LoadMemoryOffset:
   case ThreeAddressInstruction::LoadValue: // LoadValue has constants
+  case ThreeAddressInstruction::LoadString
+    : // LoadString uses a constant label value
     m.dead.insert(tal.dest);
     break;
-  case ThreeAddressInstruction::
-    StoreMemory: // special case store memory dest is src1
+  case ThreeAddressInstruction::StoreMemory
+    : // special case store memory dest is src1
     m.used.insert(tal.dest);
     m.used.insert(tal.src1);
     break;
@@ -72,7 +75,6 @@ cs6300::RegisterScope cs6300::BasicBlock::scope(
     m.dead.insert(tal.dest);
     m.used.insert(tal.src1);
     break;
-  case ThreeAddressInstruction::WriteStr: // none
   case ThreeAddressInstruction::Comment:
     break;
   default:
@@ -99,9 +101,11 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       break;
     case ThreeAddressInstruction::LoadValue: // LoadValue has constants
+    case ThreeAddressInstruction::LoadString: // LoadString uses a constant label value
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       break;
     case ThreeAddressInstruction::CopyArgument:
+    case ThreeAddressInstruction::WriteStr: // none
       if (i.src1 && m.count(i.src1)) i.src1 = m[i.src1];
       break;
     case ThreeAddressInstruction::StoreMemory:
@@ -112,7 +116,6 @@ void cs6300::BasicBlock::remap(std::map<int, int> m)
       if (i.dest && m.count(i.dest)) i.dest = m[i.dest];
       if (i.src1 && m.count(i.src1)) i.src1 = m[i.src1];
       break;
-    case ThreeAddressInstruction::WriteStr: // none
     case ThreeAddressInstruction::Comment:
       break;
     default:

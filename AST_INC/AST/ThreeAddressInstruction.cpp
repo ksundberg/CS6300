@@ -89,6 +89,9 @@ std::ostream& cs6300::operator<<(std::ostream& out,
   case cs6300::ThreeAddressInstruction::LoadMemory:
     out << "lw $" << i.dest << ", " << i.src2 << "($" << i.src1 << ")";
     break;
+  case cs6300::ThreeAddressInstruction::LoadString:
+    out << "la $" << i.dest << ", SL" << i.src1 << " # load string expression";
+    break;
   case cs6300::ThreeAddressInstruction::LoadMemoryOffset:
     if (i.src1 == cs6300::GLOBAL)
       out << "addi $" << i.dest << ", $gp, " << i.src2 << " # Load a global";
@@ -205,7 +208,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     break;
   case cs6300::ThreeAddressInstruction::WriteStr:
     out << "li $v0, 4" << std::endl;
-    out << "\tla $a0, SL" << i.src1 << std::endl;
+    out << "\tmove $a0, $" << i.src1 << std::endl;
     out << "\tsyscall    # writing a string";
     break;
   default:

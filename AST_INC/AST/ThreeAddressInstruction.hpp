@@ -39,6 +39,7 @@ public:
     LoadLabel,
     LoadMemory,
     LoadMemoryOffset,
+    LoadString,
     LoadValue,
     Modulo,
     Multiply,
