@@ -75,8 +75,8 @@ TEST_CASE("AllocationTest", "regalloc")
   REQUIRE(b0->m.used.size() == 0);
   REQUIRE(b1->m.used.size() == 2);
   REQUIRE(b2->m.used.size() == 3);
-  REQUIRE(b3->m.used.size() == 0);
-  REQUIRE(b4->m.used.size() == 0);
+  REQUIRE(b3->m.used.size() == 1);
+  REQUIRE(b4->m.used.size() == 1);
   REQUIRE(b5->m.used.size() == 2);
 
   REQUIRE(*(b1->m.used.find(2)) == 2);
@@ -91,12 +91,12 @@ TEST_CASE("AllocationTest", "regalloc")
 
   // Validate Alive set
 
-  REQUIRE(b0->m.alive.size() == 0);
-  REQUIRE(b1->m.alive.size() == 0);
-  REQUIRE(b2->m.alive.size() == 1);
-  REQUIRE(b3->m.alive.size() == 0);
-  REQUIRE(b4->m.alive.size() == 0);
-  REQUIRE(b5->m.alive.size() == 0);
+  REQUIRE(b0->m.alive.size() == 1);
+  REQUIRE(b1->m.alive.size() == 1);
+  REQUIRE(b2->m.alive.size() == 2);
+  REQUIRE(b3->m.alive.size() == 1);
+  REQUIRE(b4->m.alive.size() == 1);
+  REQUIRE(b5->m.alive.size() == 1);
 
   REQUIRE(*(b2->m.alive.find(2)) == 2);
 }

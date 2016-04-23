@@ -575,6 +575,7 @@ TEST_CASE("StringExpression", "[expression]")
     auto s = factory.string("str", "I am a string!").exprstr("str");
 
     auto exp = R"(BB1:
+la $1, SL0 # load string expression
 )";
     REQUIRE(s == exp);
   }

@@ -38,7 +38,7 @@ public:
 class StringType : public Type
 {
 public:
-  int size() { return 0; }
+  int size() { return 4; }
   std::string name() { return "string"; }
 };
 

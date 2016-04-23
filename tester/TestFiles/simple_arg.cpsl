@@ -1,0 +1,34 @@
+function String(var a : string) : string;
+BEGIN
+  write(a);
+  return a;
+END;
+
+function Int(var a : integer) : integer;
+BEGIN
+  write(a);
+  return a;
+END;
+
+function Char(var a : char) : char;
+BEGIN
+  write(a);
+  return a;
+END;
+
+function Bool(var a : boolean) : boolean;
+BEGIN
+  write(a);
+  return a;
+END;
+
+BEGIN
+ write(String("a"));
+ write(String("b"));
+ write(Int(14));
+ write(Int(32));
+ write(Char('s'));
+ write(Char('z'));
+ write(Bool(true));
+ write(Bool(false));
+END.

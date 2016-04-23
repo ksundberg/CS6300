@@ -34,7 +34,7 @@ cs6300::FlowGraph cs6300::Write::emit()
     else if (type == BuiltInType::getStr())
     {
       block->instructions.push_back(ThreeAddressInstruction(
-        ThreeAddressInstruction::WriteStr, 0, val->value(), 0));
+        ThreeAddressInstruction::WriteStr, 0, val->getLabel(), 0));
     }
     else
     {

@@ -9,6 +9,7 @@ std::shared_ptr<cs6300::BasicBlock> cs6300::LoadExpression::emit() const
 {
   std::shared_ptr<cs6300::BasicBlock> block =
     std::make_shared<cs6300::BasicBlock>();
+
   block->instructions.emplace_back("Begin LoadExpression " + lval->name());
   if (!reference && isConst())
   {
