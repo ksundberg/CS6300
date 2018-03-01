@@ -73,8 +73,10 @@ write|WRITE         {return WRITESY;}
 [0-9]+[0-9]*       {yylval.int_val = strtol(yytext,nullptr,0);return INTSY;}
 
 '\\n'               {yylval.char_val = '\n';return CHARCONSTSY;}
-'\\t'               {yylval.char_val = '\t';return CHARCONSTSY;}
 '\\r'               {yylval.char_val = '\r';return CHARCONSTSY;}
+'\\b'               {yylval.char_val = '\b';return CHARCONSTSY;}
+'\\t'               {yylval.char_val = '\t';return CHARCONSTSY;}
+'\\f'               {yylval.char_val = '\f';return CHARCONSTSY;}
 '[ !-\[\]-~]'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
 '\\[ !-~]'             {yylval.char_val = yytext[2];return CHARCONSTSY;}
 
