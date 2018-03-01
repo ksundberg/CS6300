@@ -75,8 +75,8 @@ write|WRITE         {return WRITESY;}
 '\\n'               {yylval.char_val = '\n';return CHARCONSTSY;}
 '\\t'               {yylval.char_val = '\t';return CHARCONSTSY;}
 '\\r'               {yylval.char_val = '\r';return CHARCONSTSY;}
-'.'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
-'\\.'             {yylval.char_val = yytext[2];return CHARCONSTSY;}
+'[ !-\[\]-~]'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
+'\\[ !-~]'             {yylval.char_val = yytext[2];return CHARCONSTSY;}
 
 \"([ !#-~]|\\[!-~])*\" {yylval.str_val = strdup(yytext); return STRINGSY;}
 
