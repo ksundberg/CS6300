@@ -78,7 +78,7 @@ write|WRITE         {return WRITESY;}
 '.'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
 '\\.'             {yylval.char_val = yytext[2];return CHARCONSTSY;}
 
-\"([a-zA-Z0-9~`!@'#$%^&*()_+=\-\[\]{}\/><,.:;| ]|\\[!-~])*\" {yylval.str_val = strdup(yytext); return STRINGSY;}
+\"([ !#-~]|\\[!-~])*\" {yylval.str_val = strdup(yytext); return STRINGSY;}
 
 \$.*$ {ProcessLog::getInstance()->nextLine();}
 \n {ProcessLog::getInstance()->nextLine();}
