@@ -4,6 +4,8 @@
 #include "parser.hpp"
 #include "ProcessLog.hpp"
 #include "logger.h"
+
+char* replaceAllNullWithZero(char*);
 %}
 
 %option nounput
@@ -80,7 +82,7 @@ write|WRITE         {return WRITESY;}
 '[ !-\[\]-~]'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
 '\\[ !-~]'             {yylval.char_val = yytext[2];return CHARCONSTSY;}
 
-\"([ !#-~]|\\[ !-~])*\" {yylval.str_val = strdup(yytext); return STRINGSY;}
+\"([ !#-~]|\\[ !-~])*\" {yylval.str_val = replaceAllNullWithZero(yytext); return STRINGSY;}
 
 \$.*$ {ProcessLog::getInstance()->nextLine();}
 \n {ProcessLog::getInstance()->nextLine();}
@@ -88,3 +90,49 @@ write|WRITE         {return WRITESY;}
 . {LOG(ERROR) << std::string("Unexpected token ")+yytext;}
 
 %%
+
+char* replaceAllNullWithZero(char* str)
+{
+  char* s = strdup(str);
+  
+  int str_i = 0;
+  int s_i = 0;
+  while (str[str_i])
+  {
+    if (str[str_i] == '\\' && str[str_i+1] == '0')
+    {
+      s[s_i++] = str[++str_i]; 
+      str_i++;
+    }
+    else if (str[str_i] == '\\')
+    {
+      s[s_i++] = str[str_i++];
+      s[s_i++] = str[str_i++];
+    }
+    else
+      s[s_i++] = str[str_i++];
+  }
+
+  s[s_i++] = 0;
+  return s;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
