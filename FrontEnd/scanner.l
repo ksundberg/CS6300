@@ -117,22 +117,3 @@ char* replaceAllNullWithZero(char* str)
   return s;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
