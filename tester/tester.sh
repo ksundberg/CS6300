@@ -29,6 +29,13 @@ trap on_die TERM
 
 ret=0
 
+baseTotal=0
+outTotal=0
+totalPerc=0
+count=0
+best=900
+worst=0
+
 for file in ${files}; do
 
     file=$(basename ${file})
@@ -82,7 +89,32 @@ for file in ${files}; do
         echo "  diff ${RESULTS}${file} ${BASE}${file}"
         echo ${diff}
         echo
+        ret=1
     fi
+
+    baseTotal=$((baseTotal + be))
+    outTotal=$((outTotal + le))
+    totalPerc=$((totalPerc + div))
+    count=$((count + 1))
+    worst=$((worst<div?div:worst))
+    best=$((best>div?div:best))
+
 done
 rm -f stderr.txt
+
+if [ $ret -ne 1 ]; then
+    echo
+    echo "No Errors Found"
+    echo
+    totalDiv=$(((outTotal*100)/baseTotal))
+    echo "Total Instructions: ${outTotal}/${baseTotal} ${totalDiv}%"
+    avgPerc=$((totalPerc/count))
+    echo "Average of Percentages: ${totalPerc}%/${count} ${avgPerc}%"
+    echo "Best Improvement Percentage: ${best}%"
+    echo "Worst Improvement Percentage: ${worst}%"
+else
+    echo
+    echo "Errors Found"
+fi
+
 exit ${ret}
