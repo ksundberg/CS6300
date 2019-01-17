@@ -9,31 +9,42 @@
 void cs6300::maximizeBlocks(cs6300::FlowGraph original)
 {
   // traverse the blocks
-  cs6300::traverse(original.first);
+  auto vb = VisitedBlocks::instance();
+  vb->reset();
+  buildParentCounts(original.first);
+  vb->reset();
+  combineBlocks(original.first);
 }
 
-void cs6300::traverse(std::shared_ptr<BasicBlock> block)
+void cs6300::buildParentCounts(std::shared_ptr<BasicBlock> block)
 {
   auto vb = VisitedBlocks::instance();
   auto np = NumParents::instance();
 
-  if (vb->isVisited(block))
-  {
-    return;
-  }
+  if (vb->isVisited(block)) return;
 
   if (block->branchTo != nullptr)
   {
-    // add parents on the way down...
     np->addParent(block->branchTo);
     traverse(block->branchTo);
   }
   if (block->jumpTo != nullptr)
   {
-    // add parents on the way down...
     np->addParent(block->jumpTo);
     traverse(block->jumpTo);
   }
+}
+
+void cs6300::combineBlocks(std::shared_ptr<BasicBlock> block)
+{
+  auto vb = VisitedBlocks::instance();
+  auto np = NumParents::instance();
+
+  if (vb->isVisited(block)) return;
+
+  if (block->branchTo) combineBlocks(block->branchTo);
+  if (block->jumpTo) combineBlocks(block->jumpTo);
+
   // determine if they can be merged on the way back up...
   if (block->jumpTo != nullptr && block->branchTo == nullptr &&
       np->getNumParents(block->jumpTo) == 1)

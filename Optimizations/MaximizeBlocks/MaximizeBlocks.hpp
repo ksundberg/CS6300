@@ -12,9 +12,10 @@
 
 namespace cs6300
 {
-void maximizeBlocks(cs6300::FlowGraph);
+void maximizeBlocks(FlowGraph);
 
-void traverse(std::shared_ptr<BasicBlock> block);
+void buildParentCounts(std::shared_ptr<BasicBlock> block);
+void combineBlocks(std::shared_ptr<BasicBlock>);
 }
 
 #endif
