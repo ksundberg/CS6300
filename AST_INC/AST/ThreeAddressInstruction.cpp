@@ -18,8 +18,8 @@ cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c)
 }
 
 cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c,
-                                                         std::string line,
-                                                         std::string file)
+                                                         std::string file,
+                                                         std::string line)
   : op(Comment), dest(0), src1(0), src2(0), comment(c)
 {
   comment += "(" + file + ":" + line + ")";
