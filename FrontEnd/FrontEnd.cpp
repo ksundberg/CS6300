@@ -750,7 +750,11 @@ void cs6300::AddFunction(int signature, int body)
     state->getSymTable()->addParameter(param.first, param.second);
   }
   auto b = state->statementLists.get(body);
-  b->push_back(std::make_shared<cs6300::ReturnStatement>(nullptr));
+
+  if (b->at(b->size()-1)->ClassName().compare("Return") != 0)
+  {
+    b->push_back(std::make_shared<cs6300::ReturnStatement>(nullptr));
+  }
   auto program = state->getProgram();
   program->functions[*sig] =
     std::make_shared<cs6300::Function>(sig, *b, state->getSymTable());
