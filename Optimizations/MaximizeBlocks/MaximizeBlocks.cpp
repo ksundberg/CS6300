@@ -10,7 +10,6 @@ void cs6300::maximizeBlocks(cs6300::FlowGraph original)
 {
   // traverse the blocks
   cs6300::traverse(original.first);
-  cs6300::traverse(original.second);
 }
 
 void cs6300::traverse(std::shared_ptr<BasicBlock> block)
