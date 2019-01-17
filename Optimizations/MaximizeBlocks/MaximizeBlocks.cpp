@@ -26,12 +26,12 @@ void cs6300::buildParentCounts(std::shared_ptr<BasicBlock> block)
   if (block->branchTo != nullptr)
   {
     np->addParent(block->branchTo);
-    traverse(block->branchTo);
+    buildParentCounts(block->branchTo);
   }
   if (block->jumpTo != nullptr)
   {
     np->addParent(block->jumpTo);
-    traverse(block->jumpTo);
+    buildParentCounts(block->jumpTo);
   }
 }
 
