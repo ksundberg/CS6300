@@ -766,9 +766,9 @@ void cs6300::AddMain(int body)
   std::copy(b->begin(), b->end(), std::back_inserter(program->main));
 
   int t =
-    state->expressions.add(std::make_shared<cs6300::LiteralExpression>(1));
+    state->expressions.add(std::make_shared<cs6300::LiteralExpression>(true));
   int f =
-    state->expressions.add(std::make_shared<cs6300::LiteralExpression>(0));
+    state->expressions.add(std::make_shared<cs6300::LiteralExpression>(false));
   AddLiteral("true", t);
   AddLiteral("TRUE", t);
   AddLiteral("false", f);
