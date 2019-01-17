@@ -9,6 +9,8 @@ char* replaceAllNullWithZero(char*);
 %}
 
 %option nounput
+%option never-interactive
+%option noyywrap
 
 %%
 
