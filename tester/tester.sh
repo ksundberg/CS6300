@@ -49,7 +49,7 @@ for file in ${files}; do
 
     echo -n "Executing: ${file}..."
     java -Djava.awt.headless=true -jar ${MARSDIR}${MARSJAR} me ic nc 1000000 ${ASM}${file} 2> stderr.txt > ${RESULTS}${file}
-    if [ $? -ne 0 ]; then
+    if [ ! -s ${RESULTS}${file} ]; then
         echo "  Error running: java -jar nc 1000000 ${MARSDIR}${MARSJAR} ${ASM}${file} > ${RESULTS}${file}"
         cat stderr.txt
         ret=1
