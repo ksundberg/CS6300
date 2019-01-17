@@ -7,13 +7,13 @@ INITIALIZE_EASYLOGGINGPP
 
 const char* cpsl_log::getLine()
 {
-  return std::to_string(ProcessLog::getInstance()->line()).c_str();
+  return strdup(std::to_string(ProcessLog::getInstance()->line()).c_str());
 }
 
 const char* cpsl_log::getFile()
 {
-  return boost::filesystem::basename(&ProcessLog::getInstance()->file()[0])
-    .c_str();
+  return strdup(boost::filesystem::basename(&ProcessLog::getInstance()->file()[0])
+    .c_str());
 }
 
 const std::string defaultLogFile = "log/log.conf";
