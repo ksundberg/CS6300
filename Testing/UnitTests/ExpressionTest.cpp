@@ -531,7 +531,7 @@ TEST_CASE("NotExpression", "[expression]")
 
     auto exp = R"(BB1:
 li $1, 15
-not $2, $1
+xori $2, $1, 1
 )";
     REQUIRE(s == exp);
   }
