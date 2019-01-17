@@ -154,7 +154,7 @@ int appendList(FEC<T>& listSrc,
                int elementIndex)
 {
   auto elem = elementSrc.get(elementIndex);
-  return appendList(listSrc, listIndex, elem);
+  return (elem) ? appendList(listSrc, listIndex, elem) : listIndex;
 }
 
 template <typename ExprType> int binaryOp(int a, int b)
