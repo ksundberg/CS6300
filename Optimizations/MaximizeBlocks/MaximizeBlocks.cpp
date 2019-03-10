@@ -6,39 +6,55 @@
 #include "VisitedBlocks.hpp"
 #include "NumParents.hpp"
 
-void cs6300::maximizeBlocks(cs6300::FlowGraph original)
+void cs6300::maximizeBlocks(cs6300::FlowGraph& original)
 {
   // traverse the blocks
-  cs6300::traverse(original.first);
-  cs6300::traverse(original.second);
+  auto vb = VisitedBlocks::instance();
+  vb->reset();
+  buildParentCounts(original.first);
+  vb->reset();
+  combineBlocks(original.first, original);
 }
 
-void cs6300::traverse(std::shared_ptr<BasicBlock> block)
+void cs6300::buildParentCounts(std::shared_ptr<BasicBlock> block)
 {
   auto vb = VisitedBlocks::instance();
   auto np = NumParents::instance();
 
-  if (vb->isVisited(block))
-  {
-    return;
-  }
+  if (vb->isVisited(block)) return;
 
   if (block->branchTo != nullptr)
   {
-    // add parents on the way down...
     np->addParent(block->branchTo);
-    traverse(block->branchTo);
+    buildParentCounts(block->branchTo);
   }
   if (block->jumpTo != nullptr)
   {
-    // add parents on the way down...
     np->addParent(block->jumpTo);
-    traverse(block->jumpTo);
+    buildParentCounts(block->jumpTo);
   }
+}
+
+void cs6300::combineBlocks(std::shared_ptr<BasicBlock> block, FlowGraph& graph)
+{
+  auto vb = VisitedBlocks::instance();
+  auto np = NumParents::instance();
+
+  if (vb->isVisited(block)) return;
+
+  if (block->branchTo) combineBlocks(block->branchTo, graph);
+  if (block->jumpTo) combineBlocks(block->jumpTo, graph);
+
   // determine if they can be merged on the way back up...
   if (block->jumpTo != nullptr && block->branchTo == nullptr &&
       np->getNumParents(block->jumpTo) == 1)
   {
+    //Redirect the end of the graph
+    if (block->jumpTo == graph.second)
+    {
+      graph.second = block;
+    }
+
     // merge jumpTo to this block
     for (auto inst : block->jumpTo->instructions)
     {

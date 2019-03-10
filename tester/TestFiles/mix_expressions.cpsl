@@ -40,8 +40,8 @@ BEGIN
   write(a,' ',b,'\n');
   a := 5;
   b := 15;
-  write("~-5=",~-5,'\n');
-  write("~5=",~5,'\n');
+  write("~true=",~true,'\n');
+  write("~false=",~false,'\n');
   write("Setting A to 5:");
   a := 5;
   write("\nSetting B to 8:");

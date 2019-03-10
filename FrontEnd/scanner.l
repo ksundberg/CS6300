@@ -4,9 +4,13 @@
 #include "parser.hpp"
 #include "ProcessLog.hpp"
 #include "logger.h"
+
+char* replaceAllNullWithZero(char*);
 %}
 
 %option nounput
+%option never-interactive
+%option noyywrap
 
 %%
 
@@ -73,11 +77,14 @@ write|WRITE         {return WRITESY;}
 [0-9]+[0-9]*       {yylval.int_val = strtol(yytext,nullptr,0);return INTSY;}
 
 '\\n'               {yylval.char_val = '\n';return CHARCONSTSY;}
-'\\t'               {yylval.char_val = '\t';return CHARCONSTSY;}
 '\\r'               {yylval.char_val = '\r';return CHARCONSTSY;}
-'\\?.'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
+'\\b'               {yylval.char_val = '\b';return CHARCONSTSY;}
+'\\t'               {yylval.char_val = '\t';return CHARCONSTSY;}
+'\\f'               {yylval.char_val = '\f';return CHARCONSTSY;}
+'[ !-\[\]-~]'             {yylval.char_val = yytext[1];return CHARCONSTSY;}
+'\\[ !-~]'             {yylval.char_val = yytext[2];return CHARCONSTSY;}
 
-\"[a-zA-Z0-9~`!@'#$%^&*()_+=\-\[\]{}\\\/><,.:;| ]*\" {yylval.str_val = strdup(yytext); return STRINGSY;}
+\"([ !#-~]|\\[ !-~])*\" {yylval.str_val = replaceAllNullWithZero(yytext); return STRINGSY;}
 
 \$.*$ {ProcessLog::getInstance()->nextLine();}
 \n {ProcessLog::getInstance()->nextLine();}
@@ -85,3 +92,30 @@ write|WRITE         {return WRITESY;}
 . {LOG(ERROR) << std::string("Unexpected token ")+yytext;}
 
 %%
+
+char* replaceAllNullWithZero(char* str)
+{
+  char* s = strdup(str);
+  
+  int str_i = 0;
+  int s_i = 0;
+  while (str[str_i])
+  {
+    if (str[str_i] == '\\' && str[str_i+1] == '0')
+    {
+      s[s_i++] = str[++str_i]; 
+      str_i++;
+    }
+    else if (str[str_i] == '\\')
+    {
+      s[s_i++] = str[str_i++];
+      s[s_i++] = str[str_i++];
+    }
+    else
+      s[s_i++] = str[str_i++];
+  }
+
+  s[s_i++] = 0;
+  return s;
+}
+

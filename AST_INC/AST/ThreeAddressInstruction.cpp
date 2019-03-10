@@ -18,8 +18,8 @@ cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c)
 }
 
 cs6300::ThreeAddressInstruction::ThreeAddressInstruction(std::string c,
-                                                         std::string line,
-                                                         std::string file)
+                                                         std::string file,
+                                                         std::string line)
   : op(Comment), dest(0), src1(0), src2(0), comment(c)
 {
   comment += "(" + file + ":" + line + ")";
@@ -112,7 +112,7 @@ std::ostream& cs6300::operator<<(std::ostream& out,
     out << "\tmflo $" << i.dest;
     break;
   case cs6300::ThreeAddressInstruction::Not:
-    out << "not $" << i.dest << ", $" << i.src1;
+    out << "xori $" << i.dest << ", $" << i.src1 << ", 1";
     break;
   case cs6300::ThreeAddressInstruction::Or:
     out << "or $" << i.dest << ", $" << i.src1 << ", $" << i.src2;

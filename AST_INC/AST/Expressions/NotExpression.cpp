@@ -18,7 +18,7 @@ std::shared_ptr<cs6300::Type> cs6300::NotExpression::type() const
 }
 int cs6300::NotExpression::value() const
 {
-  return ~m_expr->value();
+  return !m_expr->value();
 }
 bool cs6300::NotExpression::isConst() const
 {

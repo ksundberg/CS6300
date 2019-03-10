@@ -31,7 +31,7 @@ include_directories(
   ${WINDOWS_GNU}
 )
 
-set(EXTRA_COMPILE_FLAGS "-g -std=c++0x")
+set(EXTRA_COMPILE_FLAGS "-g -std=c++11")
 #set(LCOV_FLAGS "--coverage")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_COMPILE_FLAGS} ${LCOV_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LCOV_FLAGS}")

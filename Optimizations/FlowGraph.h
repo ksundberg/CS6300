@@ -2,6 +2,7 @@
 #define __cpsl__TraverseBasicBlock__
 
 #include "AST/BasicBlock.hpp"
+#include <functional>
 
 namespace cs6300
 {
